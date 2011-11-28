@@ -31,7 +31,10 @@ WIKI
 - Notes on #ifdef stuff for dlls
 - Libraries config 
 - Preprocessor config 
+- Flags config
+- Config: all projects vs specific projects
 - Command-line 
+- Building for cygwin
 
 
 QUESTIONS
