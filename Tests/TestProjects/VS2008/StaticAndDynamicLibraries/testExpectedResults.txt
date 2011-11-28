@@ -1,0 +1,2 @@
+gccDebug/testOutput.txt = 6+7:13.00,8*9:72.00
+gccRelease/testOutput.txt = 6+7:13.00,8*9:72.00

@@ -1,0 +1,8 @@
+HelloWorldWithStaticLibrary_ImplicitlyLinked
+--------------------------------------------
+
+HelloApp links TextLibrary implicitly, by having a dependency on it
+and the linker flag LinkLibraryDependencies is Yes (the default for exes).
+
+It does not explicitly include TextLibrary in the library path or in the 
+list of addition libraries to link.

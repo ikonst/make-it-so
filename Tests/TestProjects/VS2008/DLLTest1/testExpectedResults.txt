@@ -1,0 +1,2 @@
+gccDebug/testOutput.txt = 2+3is5.00,4*5is20.00
+gccRelease/testOutput.txt = 2+3is5.00,4*5is20.00

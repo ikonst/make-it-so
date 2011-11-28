@@ -1,0 +1,10 @@
+MultipleStaticLibraries
+-----------------------
+The app uses two libraries which in turn rely on a function
+from a third library.
+
+All libraries are static libraries.
+
+They are implicitly linked via dependencies, and the App is not
+set to depend directly on Utility. Instead, it gets this indirectly
+bcause HelloLib and WorldLib depend on it.

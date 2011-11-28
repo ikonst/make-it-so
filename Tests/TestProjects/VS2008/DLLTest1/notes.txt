@@ -1,0 +1,7 @@
+Notes
+-----
+
+This project creates and uses a DLL 'MathLib'. 
+
+It is implicitly linking the .lib file for the DLL.
+

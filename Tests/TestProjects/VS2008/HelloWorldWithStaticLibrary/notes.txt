@@ -1,0 +1,4 @@
+Explicit linkage of static library
+----------------------------------
+
+This project links the static library explicitly.

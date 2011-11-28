@@ -1,0 +1,49 @@
+Version 1.0
+-----------
+
+  
+Version 1.1
+-----------  
+- VS2010 parser
+- Auto-detect VS version from the .sln file  
+- Ability to add or suppress compiler flags
+- Projects with property sheets, and inherited properties
+- Make path to cygwin configurable for the tester
+- Output target names might not be the same as project names.
+- 32-bit vs 64-bit generation?
+- Config option to suppress checking in current folder for dlls. 
+
+
+Version 1.2
+-----------
+- Custom build steps
+- Pre / post build steps
+- Allow change to folder prefix "gcc" (maybe v 1.2) 
+
+
+Version 2.0
+-----------
+- C# / mono
+
+
+WIKI
+----
+- Notes on #ifdef stuff for dlls
+- Libraries config 
+- Preprocessor config 
+- Command-line 
+
+
+QUESTIONS
+---------
+  
+
+BUGS
+----
+- OnDemandPriceLogger: fails with 'Value cannot be null'
+- Tests sometime fail. Are files sometimes not building? Timing thing?
+
+
+
+
+

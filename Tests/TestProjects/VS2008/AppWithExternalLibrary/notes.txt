@@ -1,0 +1,4 @@
+This solution has two external libraries: a Windows version and a Linux version.
+
+It has a MakeItSo.config file that defines how to replace the Windows libraries
+with the Linux version when we build the gcc version.

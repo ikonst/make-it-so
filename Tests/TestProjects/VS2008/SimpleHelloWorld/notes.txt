@@ -1,0 +1,5 @@
+SimpleHelloWorld
+----------------
+
+The simples Hello World app, ie one project with one file 
+containing main().

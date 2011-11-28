@@ -1,0 +1,8 @@
+This solution has two external libraries: a Windows version and a Linux version.
+
+It has a MakeItSo.config file that defines how to replace the Windows libraries
+with the Linux version when we build the gcc version.
+
+The config has project-specific settings for the 'App' project, and dummy config
+for 'AllProjects'. This is to test that project-specific settings override solution
+settings.
