@@ -11,8 +11,9 @@ namespace MakeItSoLib
     /// </summary><remarks>
     /// To parse a new type of solution (e.g. VS2008, VS2010 etc) you should:
     /// - Create an assembly for the parser.
-    /// - Create a class in it that implements ISolutionParser
-    /// - Register the class with te main MakeItSo project
+    /// - Create a class in it that derives from SolutionParserBase, 
+    ///   and implement the abstract methods.
+    /// - Register the class with the main MakeItSo project
     /// </remarks>
     public abstract class SolutionParserBase
     {
