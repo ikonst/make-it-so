@@ -319,7 +319,7 @@ namespace SolutionParser_VS2008
                 return;
             }
 
-            string[] additionalIncludeDirectories = strAdditionalIncludeDirectories.Split(';');
+            string[] additionalIncludeDirectories = strAdditionalIncludeDirectories.Split(';', ',');
             foreach (string additionalIncludeDirectory in additionalIncludeDirectories)
             {
                 // The string may be quoted. We need to remove the quotes...
