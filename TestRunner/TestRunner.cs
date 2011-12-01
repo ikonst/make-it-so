@@ -44,9 +44,6 @@ namespace TestRunner
             {
                 // Finds the solutions to convert and test...
                 findSolutions();
-
-                // We convert, build, run and test each solution...
-                runTests();
             }
             catch(Exception ex)
             {
@@ -67,12 +64,13 @@ namespace TestRunner
             // We loop through the solutions by index. (These are
             // the same indexes as the ones in the list view, which
             // lets us color the rows.)
-            for (int i=0; i<m_solutionInfos.Count; ++i)
+            foreach(int index in ctrlSolutions.CheckedIndices)
             {
+                SolutionInfo solutionInfo = (SolutionInfo)ctrlSolutions.Items[index];
+
                 TestResults results;
                 try
                 {
-                    SolutionInfo solutionInfo = m_solutionInfos[i];
 
                     // We run MakeItSo for this solution...
                     runMakeItSo(solutionInfo);
@@ -91,16 +89,14 @@ namespace TestRunner
                 }
 
                 // We update the display with the results...
-                ListViewItem listViewItem = ctrlSolutions.Items[i];
                 switch (results.Result)
                 {
                     case TestResults.PassFail.PASSED:
-                        listViewItem.BackColor = Color.LightGreen;
+                        solutionInfo.TestResult = "PASS";
                         break;
 
                     case TestResults.PassFail.FAILED:
-                        listViewItem.BackColor = Color.Pink;
-                        listViewItem.ToolTipText = results.Description;
+                        solutionInfo.TestResult = String.Format("FAIL ({0})", results.Description);
                         break;
                 }
             }
@@ -204,7 +200,46 @@ namespace TestRunner
                 m_solutionInfos.Add(solutionInfo);
 
                 // And show it in the list view...
-                ctrlSolutions.Items.Add(solutionInfo.RelativePath);
+                ctrlSolutions.Items.Add(solutionInfo, true);
+            }
+        }
+
+        /// <summary>
+        /// Called when the 'Run tests' button is pressed.
+        /// </summary>
+        private void cmdRunTests_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // We convert, build, run and test each solution...
+                runTests();
+                Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "TestRunner");
+            }
+        }
+
+        /// <summary>
+        /// Called when the 'Select all' button is pressed.
+        /// </summary>
+        private void cmdSelectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < ctrlSolutions.Items.Count; ++i)
+            {
+                ctrlSolutions.SetItemChecked(i, true);
+            }
+        }
+
+        /// <summary>
+        /// Called when the 'Unselect all' button is pressed.
+        /// </summary>
+        private void cmdUnselectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < ctrlSolutions.Items.Count; ++i)
+            {
+                ctrlSolutions.SetItemChecked(i, false);
             }
         }
 
@@ -215,12 +250,25 @@ namespace TestRunner
         // Holds information about one Solution that we're testing...
         private class SolutionInfo
         {
+            public override string ToString()
+            {
+                if(TestResult == null)
+                {
+                    return RelativePath;
+                }
+                else
+                {
+                    return String.Format("[{0}] - {1}", TestResult, RelativePath);
+                }
+            }
+
             public string Name { get; set; }            // e.g. 'SimpleHelloWorld' 
             public string SolutionName { get; set; }    // e.g. 'SimpleHelloWorld.sln' 
             public string RelativePath { get; set; }    // e.g. './VS2008/SimpleHelloWorld/SimpleHelloWorld.sln'
             public string FullPath { get; set; }        // e.g. 'd:/Tests/VS2008/SimpleHelloWorld/SimpleHelloWorld.sln'
             public string Folder { get; set; }          // e.g. './VS2008/SimpleHelloWorld'
             public string CygwinFolder { get; set; }    // e.g. '/cygdrive/d/Tests/VS2008/SimpleHelloWorld'
+            public string TestResult { get; set; }
         }
 
         // A collection of information about each solution we're testing...
