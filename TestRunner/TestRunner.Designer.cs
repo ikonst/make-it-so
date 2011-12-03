@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ctrlSolutions = new System.Windows.Forms.CheckedListBox();
+            this.ctrlSolutions = new ColoredCheckedListBox();
             this.cmdSelectAll = new System.Windows.Forms.Button();
             this.cmdUnselectAll = new System.Windows.Forms.Button();
             this.cmdRunTests = new System.Windows.Forms.Button();
@@ -43,7 +43,7 @@
             this.ctrlSolutions.FormattingEnabled = true;
             this.ctrlSolutions.Location = new System.Drawing.Point(12, 12);
             this.ctrlSolutions.Name = "ctrlSolutions";
-            this.ctrlSolutions.Size = new System.Drawing.Size(880, 259);
+            this.ctrlSolutions.Size = new System.Drawing.Size(696, 259);
             this.ctrlSolutions.TabIndex = 0;
             // 
             // cmdSelectAll
@@ -71,7 +71,7 @@
             // cmdRunTests
             // 
             this.cmdRunTests.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdRunTests.Location = new System.Drawing.Point(795, 277);
+            this.cmdRunTests.Location = new System.Drawing.Point(611, 277);
             this.cmdRunTests.Name = "cmdRunTests";
             this.cmdRunTests.Size = new System.Drawing.Size(97, 29);
             this.cmdRunTests.TabIndex = 3;
@@ -83,7 +83,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(904, 313);
+            this.ClientSize = new System.Drawing.Size(720, 313);
             this.Controls.Add(this.cmdRunTests);
             this.Controls.Add(this.cmdUnselectAll);
             this.Controls.Add(this.cmdSelectAll);
@@ -97,7 +97,7 @@
 
         #endregion
 
-        private System.Windows.Forms.CheckedListBox ctrlSolutions;
+        private ColoredCheckedListBox ctrlSolutions;
         private System.Windows.Forms.Button cmdSelectAll;
         private System.Windows.Forms.Button cmdUnselectAll;
         private System.Windows.Forms.Button cmdRunTests;

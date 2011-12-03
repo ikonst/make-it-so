@@ -93,12 +93,15 @@ namespace TestRunner
                 {
                     case TestResults.PassFail.PASSED:
                         solutionInfo.TestResult = "PASS";
+                        solutionInfo.BackgroundColor = Color.LightGreen;
                         break;
 
                     case TestResults.PassFail.FAILED:
                         solutionInfo.TestResult = String.Format("FAIL ({0})", results.Description);
+                        solutionInfo.BackgroundColor = Color.LightPink;
                         break;
                 }
+                Refresh();
             }
         }
 
@@ -197,8 +200,6 @@ namespace TestRunner
                 cygwinFolder = "/cygdrive/" + cygwinFolder;
                 solutionInfo.CygwinFolder = cygwinFolder;
 
-                m_solutionInfos.Add(solutionInfo);
-
                 // And show it in the list view...
                 ctrlSolutions.Items.Add(solutionInfo, true);
             }
@@ -213,7 +214,6 @@ namespace TestRunner
             {
                 // We convert, build, run and test each solution...
                 runTests();
-                Refresh();
             }
             catch (Exception ex)
             {
@@ -246,33 +246,6 @@ namespace TestRunner
         #endregion
 
         #region Private data
-
-        // Holds information about one Solution that we're testing...
-        private class SolutionInfo
-        {
-            public override string ToString()
-            {
-                if(TestResult == null)
-                {
-                    return RelativePath;
-                }
-                else
-                {
-                    return String.Format("[{0}] - {1}", TestResult, RelativePath);
-                }
-            }
-
-            public string Name { get; set; }            // e.g. 'SimpleHelloWorld' 
-            public string SolutionName { get; set; }    // e.g. 'SimpleHelloWorld.sln' 
-            public string RelativePath { get; set; }    // e.g. './VS2008/SimpleHelloWorld/SimpleHelloWorld.sln'
-            public string FullPath { get; set; }        // e.g. 'd:/Tests/VS2008/SimpleHelloWorld/SimpleHelloWorld.sln'
-            public string Folder { get; set; }          // e.g. './VS2008/SimpleHelloWorld'
-            public string CygwinFolder { get; set; }    // e.g. '/cygdrive/d/Tests/VS2008/SimpleHelloWorld'
-            public string TestResult { get; set; }
-        }
-
-        // A collection of information about each solution we're testing...
-        private List<SolutionInfo> m_solutionInfos = new List<SolutionInfo>();
 
         // The results from a test of solution...
         private class TestResults

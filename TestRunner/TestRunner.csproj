@@ -48,6 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColoredCheckedListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SolutionInfo.cs" />
     <Compile Include="TestRunner.cs">
       <SubType>Form</SubType>
     </Compile>
