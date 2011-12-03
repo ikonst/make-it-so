@@ -58,11 +58,30 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Adds a include-path to the collection to be added to the
+        /// configuration we're managing.
+        /// </summary>
+        public void addIncludePathToAdd(string includePath)
+        {
+            string absolutePath = Path.Combine(ProjectConfig.SolutionConfig.SolutionRootFolder, includePath);
+            absolutePath = Path.GetFullPath(absolutePath);
+            m_includePathsToAdd.Add(absolutePath);
+        }
+
+        /// <summary>
         /// Returns the collection of library paths to add to this configuration.
         /// </summary>
         public List<string> getLibraryPathsToAdd()
         {
             return m_libraryPathsToAdd.ToList();
+        }
+
+        /// <summary>
+        /// Returns the collection of include paths to add to this configuration.
+        /// </summary>
+        public List<string> getIncludePathsToAdd()
+        {
+            return m_includePathsToAdd.ToList();
         }
 
         /// <summary>
@@ -107,8 +126,11 @@ namespace MakeItSoLib
         // Libraries to be added to the configuration...
         private HashSet<string> m_librariesToAdd = new HashSet<string>();
 
-        // Library paths to add to the configuration...
+        // Library paths to add to the configuration (stored as full paths)...
         private HashSet<string> m_libraryPathsToAdd = new HashSet<string>();
+
+        // Include paths to add to the configuration (stored as full paths)...
+        private HashSet<string> m_includePathsToAdd = new HashSet<string>();
 
         // Preprocessor definitions to add to the configuration...
         private HashSet<string> m_preprocessorDefinitionsToAdd = new HashSet<string>();

@@ -39,6 +39,7 @@
             this.ctrlSolutions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.ctrlSolutions.CheckOnClick = true;
             this.ctrlSolutions.FormattingEnabled = true;
             this.ctrlSolutions.Location = new System.Drawing.Point(12, 12);
             this.ctrlSolutions.Name = "ctrlSolutions";

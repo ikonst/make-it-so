@@ -48,6 +48,7 @@ namespace MakeItSoLib
                 {
                     updateLibraries(configuration);
                     updateLibraryPaths(configuration);
+                    updateIncludePaths(configuration);
                     updatePreprocessorDefinitions(configuration);
                     updateCompilerFlags(configuration);
                 }
@@ -123,7 +124,7 @@ namespace MakeItSoLib
 
             // We check if any library paths should be removed...
             List<string> libraryPaths = new List<string>(configuration.getLibraryPaths());
-            foreach(string libraryPath in libraryPaths)
+            foreach (string libraryPath in libraryPaths)
             {
                 // We remove the library (and re-add it if we need to, but
                 // with the name changed)...
@@ -141,10 +142,39 @@ namespace MakeItSoLib
 
             // We add any new paths...
             List<string> pathsToAdd = projectSettings.getConfiguration(configuration.Name).getLibraryPathsToAdd();
-            foreach(string pathToAdd in pathsToAdd)
+            foreach (string pathToAdd in pathsToAdd)
             {
                 string relativePath = Utils.makeRelativePath(projectRootFolder, pathToAdd);
                 configuration.addLibraryPath(relativePath);
+            }
+        }
+
+        /// <summary>
+        /// Updates include paths from config settings.
+        /// </summary>
+        private void updateIncludePaths(ProjectConfiguration configuration)
+        {
+            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
+
+            string projectRootFolder = configuration.ParentProject.RootFolderAbsolute;
+
+            // We check if any include paths should be removed...
+            List<string> includePaths = new List<string>(configuration.getIncludePaths());
+            foreach (string includePath in includePaths)
+            {
+                string fullPath = Path.Combine(projectRootFolder, includePath);
+                if (projectSettings.includePathShouldBeRemoved(fullPath) == true)
+                {
+                    configuration.removeIncludePath(includePath);
+                }
+            }
+
+            // We add any new paths...
+            List<string> pathsToAdd = projectSettings.getConfiguration(configuration.Name).getIncludePathsToAdd();
+            foreach (string pathToAdd in pathsToAdd)
+            {
+                string relativePath = Utils.makeRelativePath(projectRootFolder, pathToAdd);
+                configuration.addIncludePath(relativePath);
             }
         }
 

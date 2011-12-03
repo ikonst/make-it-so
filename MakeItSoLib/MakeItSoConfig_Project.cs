@@ -53,6 +53,20 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Returns true if the include-path passed in is one that
+        /// needs to be removed from the project.
+        /// </summary>
+        public bool includePathShouldBeRemoved(string fullIncludePath)
+        {
+            // We make sure the path is formatted in the same way as the
+            // stored paths so that we can check if we've go it in the
+            // collection of libraries to remove...
+            fullIncludePath = Path.GetFullPath(fullIncludePath);
+            fullIncludePath = fullIncludePath.ToLower();
+            return m_includePathsToRemove.Contains(fullIncludePath);
+        }
+
+        /// <summary>
         /// Returns true if the preprocessor-definition passed in should
         /// be removed from the project.
         /// </summary>
@@ -87,66 +101,23 @@ namespace MakeItSoLib
         /// </summary>
         public void parseConfig(XmlNode configNode)
         {
-            // We find 'RemoveLibrary' nodes...
-            XmlNodeList removeLibraryNodes = configNode.SelectNodes("RemoveLibrary");
-            foreach (XmlNode removeLibraryNode in removeLibraryNodes)
-            {
-                XmlAttribute libraryAttribute = removeLibraryNode.Attributes["library"];
-                if (libraryAttribute == null) continue;
-                addLibraryToRemove(libraryAttribute.Value);
-            }
+            parseConfig_Libraries(configNode);
+            parseConfig_LibraryPaths(configNode);
+            parseConfig_IncludePaths(configNode);
+            parseConfig_PreprocessorDefinitions(configNode);
+            parseConfig_CompilerFlags(configNode);
+        }
 
-            // We find 'AddLibrary' nodes...
-            XmlNodeList addLibraryNodes = configNode.SelectNodes("AddLibrary");
-            foreach (XmlNode addLibraryNode in addLibraryNodes)
-            {
-                XmlAttribute configurationAttribute = addLibraryNode.Attributes["configuration"];
-                XmlAttribute libraryAttribute = addLibraryNode.Attributes["library"];
-                if (libraryAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addLibraryToAdd(libraryAttribute.Value);
-            }
+        #endregion
 
+        #region Private functions
 
-            // We find 'RemoveLibraryPath' nodes...
-            XmlNodeList removeLibraryPathNodes = configNode.SelectNodes("RemoveLibraryPath");
-            foreach (XmlNode removeLibraryPathNode in removeLibraryPathNodes)
-            {
-                XmlAttribute pathAttribute = removeLibraryPathNode.Attributes["path"];
-                if (pathAttribute == null) continue;
-                addLibraryPathToRemove(pathAttribute.Value);
-            }
-
-            // We find 'AddLibraryPath' nodes...
-            XmlNodeList addLibraryPathNodes = configNode.SelectNodes("AddLibraryPath");
-            foreach (XmlNode addLibraryPathNode in addLibraryPathNodes)
-            {
-                XmlAttribute configurationAttribute = addLibraryPathNode.Attributes["configuration"];
-                XmlAttribute pathAttribute = addLibraryPathNode.Attributes["path"];
-                if (pathAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addLibraryPathToAdd(pathAttribute.Value);
-            }
-
-
-            // We find 'RemovePreprocessorDefinition' nodes...
-            XmlNodeList removePreprocessorDefinitionNodes = configNode.SelectNodes("RemovePreprocessorDefinition");
-            foreach (XmlNode removePreprocessorDefinitionNode in removePreprocessorDefinitionNodes)
-            {
-                XmlAttribute definitionAttribute = removePreprocessorDefinitionNode.Attributes["definition"];
-                if (definitionAttribute == null) continue;
-                m_preprocessorDefinitionsToRemove.Add(definitionAttribute.Value);
-            }
-
-            // We find 'AddPreprocessorDefinition' nodes...
-            XmlNodeList addPreprocessorDefinitionNodes = configNode.SelectNodes("AddPreprocessorDefinition");
-            foreach (XmlNode addPreprocessorDefinitionNode in addPreprocessorDefinitionNodes)
-            {
-                XmlAttribute configurationAttribute = addPreprocessorDefinitionNode.Attributes["configuration"];
-                XmlAttribute definitionAttribute = addPreprocessorDefinitionNode.Attributes["definition"];
-                if (definitionAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addPreprocessorDefinitionToAdd(definitionAttribute.Value);
-            }
-
-            
+        /// <summary>
+        /// Parses the config file for compiler flags to be added or removed
+        /// for this project.
+        /// </summary>
+        private void parseConfig_CompilerFlags(XmlNode configNode)
+        {
             // We find 'RemoveCompilerFlag' nodes...
             XmlNodeList removeCompilerFlagNodes = configNode.SelectNodes("RemoveCompilerFlag");
             foreach (XmlNode removeCompilerFlagNode in removeCompilerFlagNodes)
@@ -167,9 +138,109 @@ namespace MakeItSoLib
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Parses the config file for preprocessor definitions to be added or removed
+        /// for this project.
+        /// </summary>
+        private void parseConfig_PreprocessorDefinitions(XmlNode configNode)
+        {
+            // We find 'RemovePreprocessorDefinition' nodes...
+            XmlNodeList removePreprocessorDefinitionNodes = configNode.SelectNodes("RemovePreprocessorDefinition");
+            foreach (XmlNode removePreprocessorDefinitionNode in removePreprocessorDefinitionNodes)
+            {
+                XmlAttribute definitionAttribute = removePreprocessorDefinitionNode.Attributes["definition"];
+                if (definitionAttribute == null) continue;
+                m_preprocessorDefinitionsToRemove.Add(definitionAttribute.Value);
+            }
 
-        #region Private functions
+            // We find 'AddPreprocessorDefinition' nodes...
+            XmlNodeList addPreprocessorDefinitionNodes = configNode.SelectNodes("AddPreprocessorDefinition");
+            foreach (XmlNode addPreprocessorDefinitionNode in addPreprocessorDefinitionNodes)
+            {
+                XmlAttribute configurationAttribute = addPreprocessorDefinitionNode.Attributes["configuration"];
+                XmlAttribute definitionAttribute = addPreprocessorDefinitionNode.Attributes["definition"];
+                if (definitionAttribute == null || configurationAttribute == null) continue;
+                getConfiguration(configurationAttribute.Value).addPreprocessorDefinitionToAdd(definitionAttribute.Value);
+            }
+        }
+
+        /// <summary>
+        /// Parses the config file for library paths to be added or removed
+        /// for this project.
+        /// </summary>
+        private void parseConfig_LibraryPaths(XmlNode configNode)
+        {
+            // We find 'RemoveLibraryPath' nodes...
+            XmlNodeList removeLibraryPathNodes = configNode.SelectNodes("RemoveLibraryPath");
+            foreach (XmlNode removeLibraryPathNode in removeLibraryPathNodes)
+            {
+                XmlAttribute pathAttribute = removeLibraryPathNode.Attributes["path"];
+                if (pathAttribute == null) continue;
+                addLibraryPathToRemove(pathAttribute.Value);
+            }
+
+            // We find 'AddLibraryPath' nodes...
+            XmlNodeList addLibraryPathNodes = configNode.SelectNodes("AddLibraryPath");
+            foreach (XmlNode addLibraryPathNode in addLibraryPathNodes)
+            {
+                XmlAttribute configurationAttribute = addLibraryPathNode.Attributes["configuration"];
+                XmlAttribute pathAttribute = addLibraryPathNode.Attributes["path"];
+                if (pathAttribute == null || configurationAttribute == null) continue;
+                getConfiguration(configurationAttribute.Value).addLibraryPathToAdd(pathAttribute.Value);
+            }
+        }
+
+        /// <summary>
+        /// Parses the config file for include paths to be added or removed
+        /// for this project.
+        /// </summary>
+        private void parseConfig_IncludePaths(XmlNode configNode)
+        {
+            // We find 'RemoveIncludePath' nodes...
+            XmlNodeList removeIncludePathNodes = configNode.SelectNodes("RemoveIncludePath");
+            foreach (XmlNode removeIncludePathNode in removeIncludePathNodes)
+            {
+                XmlAttribute pathAttribute = removeIncludePathNode.Attributes["path"];
+                if (pathAttribute == null) continue;
+                addIncludePathToRemove(pathAttribute.Value);
+            }
+
+            // We find 'AddIncludePath' nodes...
+            XmlNodeList addIncludePathNodes = configNode.SelectNodes("AddIncludePath");
+            foreach (XmlNode addIncludePathNode in addIncludePathNodes)
+            {
+                XmlAttribute configurationAttribute = addIncludePathNode.Attributes["configuration"];
+                XmlAttribute pathAttribute = addIncludePathNode.Attributes["path"];
+                if (pathAttribute == null || configurationAttribute == null) continue;
+                getConfiguration(configurationAttribute.Value).addIncludePathToAdd(pathAttribute.Value);
+            }
+        }
+
+        /// <summary>
+        /// Parses the config file for libraries to be added or removed
+        /// for this project.
+        /// </summary>
+        private void parseConfig_Libraries(XmlNode configNode)
+        {
+            // We find 'RemoveLibrary' nodes...
+            XmlNodeList removeLibraryNodes = configNode.SelectNodes("RemoveLibrary");
+            foreach (XmlNode removeLibraryNode in removeLibraryNodes)
+            {
+                XmlAttribute libraryAttribute = removeLibraryNode.Attributes["library"];
+                if (libraryAttribute == null) continue;
+                addLibraryToRemove(libraryAttribute.Value);
+            }
+
+            // We find 'AddLibrary' nodes...
+            XmlNodeList addLibraryNodes = configNode.SelectNodes("AddLibrary");
+            foreach (XmlNode addLibraryNode in addLibraryNodes)
+            {
+                XmlAttribute configurationAttribute = addLibraryNode.Attributes["configuration"];
+                XmlAttribute libraryAttribute = addLibraryNode.Attributes["library"];
+                if (libraryAttribute == null || configurationAttribute == null) continue;
+                getConfiguration(configurationAttribute.Value).addLibraryToAdd(libraryAttribute.Value);
+            }
+        }
 
         /// <summary>
         /// Adds the library passed in to the list to remove from the
@@ -187,12 +258,24 @@ namespace MakeItSoLib
         /// </summary>
         private void addLibraryPathToRemove(string libraryPath)
         {
-            // We store the absolute path. (This makes paths easier to
-            // compare later.)
+            // We store the absolute path. (This makes paths easier to compare later.)
             string absolutePath = Path.Combine(SolutionConfig.SolutionRootFolder, libraryPath);
             absolutePath = Path.GetFullPath(absolutePath);
             absolutePath = absolutePath.ToLower();
             m_libraryPathsToRemove.Add(absolutePath);
+        }
+
+        /// <summary>
+        /// Adds the include-path passed in to the list to remove from the
+        /// project we're holding config for.
+        /// </summary>
+        private void addIncludePathToRemove(string includePath)
+        {
+            // We store the absolute path. (This makes paths easier to compare later.)
+            string absolutePath = Path.Combine(SolutionConfig.SolutionRootFolder, includePath);
+            absolutePath = Path.GetFullPath(absolutePath);
+            absolutePath = absolutePath.ToLower();
+            m_includePathsToRemove.Add(absolutePath);
         }
 
         #endregion
@@ -205,8 +288,13 @@ namespace MakeItSoLib
         // Collection of libraries to remove...
         private HashSet<string> m_librariesToRemove = new HashSet<string>();
 
-        // Collection of library paths to remove...
+        // Collection of library paths to remove. These are stored as full
+        // paths and in lower-case, to make it easier to comapre them...
         private HashSet<string> m_libraryPathsToRemove = new HashSet<string>();
+
+        // Collection of include paths to remove. These are stored as full
+        // paths and in lower-case, to make it easier to comapre them...
+        private HashSet<string> m_includePathsToRemove = new HashSet<string>();
 
         // Collection of preprocessor-definitions to remove...
         private HashSet<string> m_preprocessorDefinitionsToRemove = new HashSet<string>();

@@ -94,6 +94,14 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Removes the include path from the collection we hold.
+        /// </summary>
+        public void removeIncludePath(string path)
+        {
+            m_includePaths.Remove(path);
+        }
+
+        /// <summary>
         /// Gets the collection of library paths, relative to the 
         /// project's root folder.
         /// </summary>
