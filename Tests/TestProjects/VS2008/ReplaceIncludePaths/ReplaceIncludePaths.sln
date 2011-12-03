@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcproj", "{414F8E8B-CA2D-4E0E-868C-F080E4ED9B08}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShowText_Hello", "ShowText_Hello", "{8E89745B-AA8F-4D3E-9D5F-20EAA6FC01A6}"
+	ProjectSection(SolutionItems) = preProject
+		ShowText_Hello\ShowText.h = ShowText_Hello\ShowText.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShowText_Goodbye", "ShowText_Goodbye", "{1B6BC13E-4BEA-4C2A-BC0B-365FCDB1959C}"
+	ProjectSection(SolutionItems) = preProject
+		ShowText_Goodbye\ShowText.h = ShowText_Goodbye\ShowText.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3015C27C-6AA7-4311-8DA7-B45FF01BBA89}"
+	ProjectSection(SolutionItems) = preProject
+		MakeItSo.config = MakeItSo.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShowText_Worm", "ShowText_Worm", "{90C59260-6A57-412F-B4E6-5998250A011E}"
+	ProjectSection(SolutionItems) = preProject
+		ShowText_Worm\ShowText.h = ShowText_Worm\ShowText.h
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{414F8E8B-CA2D-4E0E-868C-F080E4ED9B08}.Debug|Win32.ActiveCfg = Debug|Win32
+		{414F8E8B-CA2D-4E0E-868C-F080E4ED9B08}.Debug|Win32.Build.0 = Debug|Win32
+		{414F8E8B-CA2D-4E0E-868C-F080E4ED9B08}.Release|Win32.ActiveCfg = Release|Win32
+		{414F8E8B-CA2D-4E0E-868C-F080E4ED9B08}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
