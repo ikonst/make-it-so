@@ -147,7 +147,7 @@ namespace MakeItSo
             m_file.WriteLine("clean:");
             foreach (Project project in m_solution.getProjects())
             {
-                m_file.WriteLine("\tmake --directory={0} -f {1}.makefile clean", project.RootFolderRelative, project.Name);
+                m_file.WriteLine("\tmake --directory={0} --file={1}.makefile clean", project.RootFolderRelative, project.Name);
             }
             m_file.WriteLine("");
         }
@@ -172,7 +172,7 @@ namespace MakeItSo
             }
             m_file.WriteLine(dependencies);
 
-            m_file.WriteLine("\tmake --directory={0} -f {1}.makefile", project.RootFolderRelative, project.Name);
+            m_file.WriteLine("\tmake --directory={0} --file={1}.makefile", project.RootFolderRelative, project.Name);
             m_file.WriteLine("");
         }
 
