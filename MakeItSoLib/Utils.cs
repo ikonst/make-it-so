@@ -185,6 +185,22 @@ namespace MakeItSoLib
             return results;
         }
 
+        /// <summary>
+        /// Returns the input string surrounded by quotes.
+        /// </summary>
+        public static string quote(string input)
+        {
+            return String.Format("\"{0}\"", input);
+        }
+
+        /// <summary>
+        /// Returns the input string surrounded by quotes and with a trailing space.
+        /// </summary>
+        public static string quoteAndSpace(string input)
+        {
+            return String.Format("\"{0}\" ", input);
+        }
+
         #endregion
     }
 }

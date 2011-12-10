@@ -117,7 +117,7 @@ namespace MakeItSo
             string target = "all_projects: ";
             foreach (Project project in m_solution.getProjects())
             {
-                target += (project.Name + " ");
+                target += Utils.quoteAndSpace(project.Name);
             }
             m_file.WriteLine(target);
             m_file.WriteLine("");
@@ -147,7 +147,9 @@ namespace MakeItSo
             m_file.WriteLine("clean:");
             foreach (Project project in m_solution.getProjects())
             {
-                m_file.WriteLine("\tmake --directory={0} --file={1}.makefile clean", project.RootFolderRelative, project.Name);
+                string directory = Utils.quote(project.RootFolderRelative);
+                string makefile = Utils.quote(project.Name + ".makefile");
+                m_file.WriteLine("\tmake --directory={0} --file={1} clean", directory, makefile);
             }
             m_file.WriteLine("");
         }
@@ -163,16 +165,18 @@ namespace MakeItSo
             //       make --directory=[project-folder] -f [makefile-name]
 
             m_file.WriteLine("# Builds project '{0}'...", project.Name);
-            m_file.WriteLine(".PHONY: {0}", project.Name);
+            m_file.WriteLine(".PHONY: {0}", Utils.quote(project.Name));
 
-            string dependencies = String.Format("{0}: ", project.Name);
+            string dependencies = String.Format("{0}: ", Utils.quote(project.Name));
             foreach (Project requiredProject in project.getRequiredProjects())
             {
-                dependencies += (requiredProject.Name + " ");
+                dependencies += Utils.quoteAndSpace(requiredProject.Name);
             }
             m_file.WriteLine(dependencies);
 
-            m_file.WriteLine("\tmake --directory={0} --file={1}.makefile", project.RootFolderRelative, project.Name);
+            string directory = Utils.quote(project.RootFolderRelative);
+            string makefile = Utils.quote(project.Name + ".makefile");
+            m_file.WriteLine("\tmake --directory={0} --file={1}", directory, makefile);
             m_file.WriteLine("");
         }
 
