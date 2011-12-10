@@ -113,7 +113,7 @@ namespace TestRunner
         {
             Process makeItSoProcess = new Process();
             makeItSoProcess.StartInfo.FileName = "MakeItSo.exe";
-            makeItSoProcess.StartInfo.Arguments = String.Format("-file={0} -cygwin=true", solutionInfo.SolutionName);
+            makeItSoProcess.StartInfo.Arguments = String.Format("-file={0} -cygwin=true", Utils.quote(solutionInfo.SolutionName));
             makeItSoProcess.StartInfo.WorkingDirectory = solutionInfo.Folder;
             makeItSoProcess.StartInfo.UseShellExecute = false;
             makeItSoProcess.Start();

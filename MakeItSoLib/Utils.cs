@@ -201,6 +201,25 @@ namespace MakeItSoLib
             return String.Format("\"{0}\" ", input);
         }
 
+        /// <summary>
+        /// Removes spaces from the final-folder part of the path passed in.
+        /// </summary>
+        public static string removeSpacesFromFolder(string path)
+        {
+            int lastSlashIndex = path.LastIndexOf('/');
+
+            StringBuilder result = new StringBuilder();
+            for (int index=0; index<path.Length; ++index)
+            {
+                char currentCharacter = path[index];
+                if(index<lastSlashIndex || currentCharacter != ' ')
+                {
+                    result.Append(currentCharacter);
+                }
+            }
+            return result.ToString();
+        }
+
         #endregion
     }
 }

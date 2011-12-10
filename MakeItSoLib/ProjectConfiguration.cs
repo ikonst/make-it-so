@@ -25,11 +25,12 @@ namespace MakeItSoLib
 
         /// <summary>
         /// The configuration's name.
+        /// Note that we strip out any spaces in the configuration name.
         /// </summary>
         public string Name
         {
             get { return m_name; }
-            set { m_name = value; }
+            set { m_name = value.Replace(" ", ""); }
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace MakeItSoLib
         public string IntermediateFolder
         {
             get { return m_intermediateFolder; }
-            set { m_intermediateFolder = value; }
+            set { m_intermediateFolder = value.Replace(" ", ""); }
         }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace MakeItSoLib
         public string OutputFolder
         {
             get { return m_outputFolder; }
-            set { m_outputFolder = value; }
+            set { m_outputFolder = value.Replace(" ", ""); }
         }
 
         /// <summary>
@@ -115,6 +116,8 @@ namespace MakeItSoLib
         /// </summary>
         public void addLibraryPath(string path)
         {
+            path = Utils.removeSpacesFromFolder(path);
+
             // We add to the library-path if the path passed in is
             // not already part of it...
             if (m_libraryPaths.Contains(path) == false)
@@ -145,6 +148,7 @@ namespace MakeItSoLib
         /// </summary>
         public void addLibraryRawName(string rawName)
         {
+            rawName = rawName.Replace(" ", "");
             m_libraryRawNames.Add(rawName);
         }
 

@@ -148,11 +148,12 @@ namespace MakeItSoLib
 
         /// <summary>
         /// Gets or sets the project's name.
+        /// Note that we strip out spaces if the name contains them.
         /// </summary>
         public string Name
         {
             get { return m_name; }
-            set { m_name = value; }
+            set { m_name = value.Replace(" ", ""); }
         }
 
         /// <summary>

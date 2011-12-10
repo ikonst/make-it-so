@@ -6,9 +6,9 @@ make
 
 # Run the test and store the output...
 pushd gccDebug
-"./The App.exe" > testOutput.txt
+"./TheApp.exe" > testOutput.txt
 popd
 
 pushd gccRelease
-"./The App.exe" > testOutput.txt
+"./TheApp.exe" > testOutput.txt
 popd

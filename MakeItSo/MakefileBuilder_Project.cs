@@ -205,7 +205,7 @@ namespace MakeItSo
                 string includePath = "";
                 foreach (string path in configuration.getIncludePaths())
                 {
-                    includePath += String.Format("-I{0} ", path);
+                    includePath += String.Format("-I{0} ", Utils.quote(path));
                 }
 
                 // We write the variable...
