@@ -197,7 +197,7 @@ namespace SolutionParser_VS2008
             // We get the project config, so we can check if paths should be removed...
             MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_parsedProject.Name);
 
-            string[] additionalLibraryDirectories = strAdditionalLibraryDirectories.Split(';');
+            List<string> additionalLibraryDirectories = Utils.split(strAdditionalLibraryDirectories, ';');
             foreach (string additionalLibraryDirectory in additionalLibraryDirectories)
             {
                 // The string may be quoted. We need to remove the quotes...
@@ -229,7 +229,7 @@ namespace SolutionParser_VS2008
             // We get the project config, so we can check if libraries should be removed...
             MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_parsedProject.Name);
 
-            string[] additionalLibraries = strAdditionalLibraries.Split(' ');
+            List<string> additionalLibraries = Utils.split(strAdditionalLibraries, ' ');
             foreach(string additionalLibrary in additionalLibraries)
             {
                 // We add the library to the project...
@@ -319,7 +319,7 @@ namespace SolutionParser_VS2008
                 return;
             }
 
-            string[] additionalIncludeDirectories = strAdditionalIncludeDirectories.Split(';', ',');
+            List<string> additionalIncludeDirectories = Utils.split(strAdditionalIncludeDirectories, ';', ',');
             foreach (string additionalIncludeDirectory in additionalIncludeDirectories)
             {
                 // The string may be quoted. We need to remove the quotes...
@@ -341,7 +341,7 @@ namespace SolutionParser_VS2008
             // We read the delimited string of preprocessor definitions, and
             // split them...
             string strPreprocessorDefinitions = Utils.dteCall<string>(() => (compilerTool.PreprocessorDefinitions));
-            string[] preprocessorDefinitions = strPreprocessorDefinitions.Split(';');
+            List<string> preprocessorDefinitions = Utils.split(strPreprocessorDefinitions, ';');
 
             // We find project and configuration config to see if any 
             // definitions should be added or removed...

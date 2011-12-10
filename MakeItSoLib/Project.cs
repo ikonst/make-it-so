@@ -101,9 +101,18 @@ namespace MakeItSoLib
                             // We find the configuration for this info and add
                             // the library to it...
                             ProjectConfiguration configuration = getConfigurations().Find((cfg) => (cfg.Name == info.ConfigurationName));
-                            configuration.addLibraryRawName(info.LibraryRawName);
+                            if (configuration == null)
+                            {
+                                // We may fail to find the library to implicitly link
+                                // if the configuration names do not match. (For example
+                                // if our project has a Debug configuration, and the
+                                // library to link has a DebugStatic configuration...
+                                Log.log(String.Format("Project {0} could not implicitly link {1}. Could not find the {2} configuration.", Name, info.LibraryRawName, info.ConfigurationName));
+                                continue;
+                            }
 
-                            // We add the library path to it...
+                            // We add the library and the library path...
+                            configuration.addLibraryRawName(info.LibraryRawName);
                             string libraryPath = Utils.makeRelativePath(RootFolderAbsolute, info.OutputFolderAbsolute);
                             configuration.addLibraryPath(libraryPath);
                         }

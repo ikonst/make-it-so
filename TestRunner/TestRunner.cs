@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using MakeItSoLib;
 
 namespace TestRunner
 {
@@ -154,8 +155,8 @@ namespace TestRunner
             foreach (string line in lines)
             {
                 // We get the filename and expected result from the line...
-                string[] tokens = line.Split('=');
-                if (tokens.Length != 2)
+                List<string> tokens = Utils.split(line, '=');
+                if (tokens.Count != 2)
                 {
                     throw new Exception(String.Format("Lines should be in the format [output-file-name] = [expected-output]. File={0}", expectedResultsFilename) );
                 }

@@ -141,8 +141,8 @@ namespace MakeItSoLib
             foreach (string arg in args)
             {
                 // Does the arg look like we expect?
-                string[] tokens = arg.Split('=');
-                if (tokens.Length != 2)
+                List<string> tokens = Utils.split(arg, '=');
+                if (tokens.Count != 2)
                 {
                     continue;
                 }
