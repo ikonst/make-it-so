@@ -117,7 +117,7 @@ namespace MakeItSo
             string target = "all_projects: ";
             foreach (Project project in m_solution.getProjects())
             {
-                target += Utils.quoteAndSpace(project.Name);
+                target += (project.Name + " ");
             }
             m_file.WriteLine(target);
             m_file.WriteLine("");
@@ -148,7 +148,7 @@ namespace MakeItSo
             foreach (Project project in m_solution.getProjects())
             {
                 string directory = Utils.quote(project.RootFolderRelative);
-                string makefile = Utils.quote(project.Name + ".makefile");
+                string makefile = project.Name + ".makefile";
                 m_file.WriteLine("\tmake --directory={0} --file={1} clean", directory, makefile);
             }
             m_file.WriteLine("");
@@ -165,17 +165,17 @@ namespace MakeItSo
             //       make --directory=[project-folder] -f [makefile-name]
 
             m_file.WriteLine("# Builds project '{0}'...", project.Name);
-            m_file.WriteLine(".PHONY: {0}", Utils.quote(project.Name));
+            m_file.WriteLine(".PHONY: {0}", project.Name);
 
-            string dependencies = String.Format("{0}: ", Utils.quote(project.Name));
+            string dependencies = String.Format("{0}: ", project.Name);
             foreach (Project requiredProject in project.getRequiredProjects())
             {
-                dependencies += Utils.quoteAndSpace(requiredProject.Name);
+                dependencies += (requiredProject.Name + " ");
             }
             m_file.WriteLine(dependencies);
 
             string directory = Utils.quote(project.RootFolderRelative);
-            string makefile = Utils.quote(project.Name + ".makefile");
+            string makefile = project.Name + ".makefile";
             m_file.WriteLine("\tmake --directory={0} --file={1}", directory, makefile);
             m_file.WriteLine("");
         }
