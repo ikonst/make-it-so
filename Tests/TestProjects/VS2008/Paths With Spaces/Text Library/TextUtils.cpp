@@ -1,7 +1,8 @@
 #include "TextUtils.h"
+#include <Hello.h>
 
 std::string TextUtils::getText()
 {
-	return "Hello, World!";
+	return Hello::getHello() + ", World!";
 }
 
