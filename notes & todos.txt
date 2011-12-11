@@ -40,15 +40,6 @@ BUGS
 - OnDemandPriceLogger: fails with 'Value cannot be null'
 
 
-
-Paths with spaces
------------------
-These are very annoying!
-X Any configurations with spaces, we should remove the spaces. e.g. Debug Static => DebugStatic
-X Output and intermediate folders should have spaces removed as well.
-- Include paths need to be quoted
-X Project names should have spaces removed ??
-  X But we should stil keep the folder names the same?
-
-
-
+C# / Mono
+---------
+- Can we just get the csc command-line and reuse it with gmcs?

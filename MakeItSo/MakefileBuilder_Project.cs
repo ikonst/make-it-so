@@ -179,7 +179,7 @@ namespace MakeItSo
                 string objectFiles = "";
                 foreach (string objectFile in configuration.getImplicitlyLinkedObjectFiles())
                 {
-                    objectFiles += (objectFile + " ");
+                    objectFiles += Utils.quoteAndSpace(objectFile);
                 }
 
                 // We write the variable...
@@ -231,7 +231,7 @@ namespace MakeItSo
                 string libraryPath = "";
                 foreach (string path in configuration.getLibraryPaths())
                 {
-                    libraryPath += String.Format("-L{0} ", path);
+                    libraryPath += String.Format("-L{0} ", Utils.quote(path));
                 }
 
                 // We write the variable...
