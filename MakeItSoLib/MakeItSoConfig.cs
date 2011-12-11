@@ -134,6 +134,8 @@ namespace MakeItSoLib
         /// </summary>
         private void parseCommandLine(string[] args)
         {
+            bool showHelp = false;
+
             // We are expecting arguments to look like:
             // -[option]=[value]
 
@@ -144,12 +146,14 @@ namespace MakeItSoLib
                 List<string> tokens = Utils.split(arg, '=');
                 if (tokens.Count != 2)
                 {
+                    showHelp = true;
                     continue;
                 }
                 string option = tokens[0].ToLower();
                 string value = tokens[1].ToLower();
                 if (option.StartsWith("-") == false)
                 {
+                    showHelp = true;
                     continue;
                 }
 
@@ -163,7 +167,21 @@ namespace MakeItSoLib
                     case "-cygwin":
                         parseCommandLine_Cygwin(value);
                         break;
+
+                    default:
+                        showHelp = true;
+                        break;
                 }
+            }
+
+            if (showHelp == true)
+            {
+                Log.log("MakeItSo converts Visual Studio solutions to Linux gcc makefiles");
+                Log.log("See http://code.google.com/p/make-it-so/");
+                Log.log("Command-line:");
+                Log.log("  (empty command-line)   Converts the .sln file in the working folder, if there is one.");
+                Log.log("  -file=[solution-file]  Converts the solution specified.");
+                Log.log("  -cygwin=[True/False]   Creates a cygwin makefile if True. Defaults to False.");
             }
         }
 

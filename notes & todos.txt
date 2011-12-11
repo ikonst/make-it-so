@@ -29,6 +29,8 @@ Version 2.0
 WIKI
 ----
 - Notes on #ifdef stuff for dlls
+- Notes on the code
+  - Notes on cygwin install for testings
 
 
 QUESTIONS
@@ -43,3 +45,14 @@ BUGS
 C# / Mono
 ---------
 - Can we just get the csc command-line and reuse it with gmcs?
+  - Can't easily see how to do this
+- Release = /define:TRACE /optimize+
+- Debug = /define:DEBUG;TRACE /optimize- /debug+ /debug:full
+- DEBUG and TRACE are defined in the project / configuration
+- Optimize code is a configuration setting
+- /warn:4 
+- /nowarn:1701,1702 (seem to get these 'for free')
+- /filealign:512
+- /warnaserror+
+
+
