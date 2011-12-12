@@ -44,6 +44,7 @@
             this.ctrlSolutions.Location = new System.Drawing.Point(12, 12);
             this.ctrlSolutions.Name = "ctrlSolutions";
             this.ctrlSolutions.Size = new System.Drawing.Size(696, 259);
+            this.ctrlSolutions.Sorted = true;
             this.ctrlSolutions.TabIndex = 0;
             // 
             // cmdSelectAll

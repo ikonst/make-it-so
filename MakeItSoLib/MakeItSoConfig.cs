@@ -64,6 +64,14 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Gets whether we should convert the solution or not.
+        /// </summary>
+        public bool ConvertSolution
+        {
+            get { return m_convertSolution; }
+        }
+
+        /// <summary>
         /// Gets the root folder of the solution we are converting.
         /// </summary>
         public string SolutionRootFolder
@@ -176,12 +184,16 @@ namespace MakeItSoLib
 
             if (showHelp == true)
             {
+                // The command-line is in a format we don't recognize, so
+                // we show the help text, and set MakeItSo not to run...
                 Log.log("MakeItSo converts Visual Studio solutions to Linux gcc makefiles");
                 Log.log("See http://code.google.com/p/make-it-so/");
                 Log.log("Command-line:");
                 Log.log("  (empty command-line)   Converts the .sln file in the working folder, if there is one.");
                 Log.log("  -file=[solution-file]  Converts the solution specified.");
                 Log.log("  -cygwin=[True/False]   Creates a cygwin makefile if True. Defaults to False.");
+
+                m_convertSolution = false;
             }
         }
 
@@ -275,6 +287,9 @@ namespace MakeItSoLib
 
         // True if we are building for cygwin...
         private bool m_cygwinBuild = false;
+
+        // Will be set false if we can't parse the command-line...
+        private bool m_convertSolution = true;
 
         #endregion
     }

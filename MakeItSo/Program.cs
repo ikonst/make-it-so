@@ -24,6 +24,11 @@ namespace MakeItSo
                 // We parse the config file and the command-line...
                 MakeItSoConfig config = MakeItSoConfig.Instance;
                 config.initialize(args);
+                if(config.ConvertSolution == false)
+                {
+                    // Most likely because of a bad command-line, or /help request...
+                    return;
+                }
 
                 // We get the name of the .sln file to parse...
                 string solutionFilename = config.SolutionFile;
