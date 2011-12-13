@@ -29,13 +29,19 @@ namespace TestRunner
         // The string to show in the list box...
         public override string ToString()
         {
+            string pathToShow = RelativePath;
+            if(pathToShow.StartsWith(@".\TestProjects\"))
+            {
+                pathToShow = pathToShow.Substring(15);
+            }
+
             if (TestResult == null)
             {
-                return RelativePath;
+                return pathToShow;
             }
             else
             {
-                return String.Format("[{0}] - {1}", TestResult, RelativePath);
+                return String.Format("[{0}] - {1}", TestResult, pathToShow);
             }
         }
 

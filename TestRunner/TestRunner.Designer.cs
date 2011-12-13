@@ -43,7 +43,7 @@
             this.ctrlSolutions.FormattingEnabled = true;
             this.ctrlSolutions.Location = new System.Drawing.Point(12, 12);
             this.ctrlSolutions.Name = "ctrlSolutions";
-            this.ctrlSolutions.Size = new System.Drawing.Size(696, 259);
+            this.ctrlSolutions.Size = new System.Drawing.Size(654, 259);
             this.ctrlSolutions.Sorted = true;
             this.ctrlSolutions.TabIndex = 0;
             // 
@@ -72,7 +72,7 @@
             // cmdRunTests
             // 
             this.cmdRunTests.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdRunTests.Location = new System.Drawing.Point(611, 277);
+            this.cmdRunTests.Location = new System.Drawing.Point(569, 277);
             this.cmdRunTests.Name = "cmdRunTests";
             this.cmdRunTests.Size = new System.Drawing.Size(97, 29);
             this.cmdRunTests.TabIndex = 3;
@@ -84,7 +84,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(720, 313);
+            this.ClientSize = new System.Drawing.Size(678, 313);
             this.Controls.Add(this.cmdRunTests);
             this.Controls.Add(this.cmdUnselectAll);
             this.Controls.Add(this.cmdSelectAll);

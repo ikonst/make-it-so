@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1E0D259F-0132-4DDF-8E57-E493801DC7A6}</ProjectGuid>
+    <ProjectGuid>{A8D7AF20-A691-4AFB-9834-05CE4D2EF80A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MakeItSo</RootNamespace>
-    <AssemblyName>MakeItSo</AssemblyName>
+    <RootNamespace>SimpleHelloWorld</RootNamespace>
+    <AssemblyName>SimpleHelloWorld</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +29,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,23 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MakefileBuilder.cs" />
-    <Compile Include="MakefileBuilder_Project.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MakeItSoLib\MakeItSoLib.csproj">
-      <Project>{EF45162C-2901-49FE-A4DF-67223B44E61C}</Project>
-      <Name>MakeItSoLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolutionParser_VS2008\SolutionParser_VS2008.csproj">
-      <Project>{EE467C35-87D8-461D-A102-DFDDB45613B3}</Project>
-      <Name>SolutionParser_VS2008</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

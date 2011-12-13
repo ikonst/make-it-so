@@ -8,6 +8,7 @@ using System.IO;
 using Microsoft.VisualStudio.VCProjectEngine;
 using MakeItSoLib;
 using Solution = MakeItSoLib.Solution;
+using VSLangProj80;
 
 namespace SolutionParser_VS2008
 {
@@ -118,12 +119,25 @@ namespace SolutionParser_VS2008
             {
                 // It's a C++ project...
                 case ProjectType.CPP_PROJECT:
+                {
                     // We get the Visual Studio project, parse it and store the 
                     // parsed project in our collection of results...
                     VCProject vcProject = Utils.dteCall<VCProject>(() => (project.Object as VCProject));
-                    ProjectParser_CPP cppParser = new ProjectParser_CPP(vcProject, m_parsedSolution.RootFolderAbsolute);
-                    m_parsedSolution.addProject(projectName, cppParser.Project);
-                    break;
+                    ProjectParser_CPP parser = new ProjectParser_CPP(vcProject, m_parsedSolution.RootFolderAbsolute);
+                    m_parsedSolution.addProject(projectName, parser.Project);
+                }
+                break;
+
+                // It's a C# project...
+                case ProjectType.CSHARP_PROJECT:
+                {
+                    // We get the Visual Studio project, parse it and store the 
+                    // parsed project in our collection of results...
+                    VSProject2 vsProject = Utils.dteCall<VSProject2>(() => (project.Object as VSProject2));
+                    //ProjectParser_CSharp parser = new ProjectParser_CSharp(vcProject, m_parsedSolution.RootFolderAbsolute);
+                    //m_parsedSolution.addProject(projectName, parser.Project);
+                }
+                break;
             }
 
             // We parse the project's items, to check whether there are any nested
@@ -223,6 +237,10 @@ namespace SolutionParser_VS2008
                 case "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}":
                     result = ProjectType.CPP_PROJECT;
                     break;
+
+                case "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}":
+                    result = ProjectType.CSHARP_PROJECT;
+                    break;
             }
 
             return result;
@@ -243,7 +261,8 @@ namespace SolutionParser_VS2008
         private enum ProjectType
         {
             UNKNOWN,
-            CPP_PROJECT
+            CPP_PROJECT,
+            CSHARP_PROJECT
         }
 
         #endregion
