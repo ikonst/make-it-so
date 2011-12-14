@@ -31,7 +31,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Returns the parsed solution.
         /// </summary>
-        public Solution ParsedSolution
+        public SolutionInfo ParsedSolution
         {
             get { return m_parsedSolution; }
         }
@@ -42,9 +42,9 @@ namespace MakeItSoLib
         public void updateSolutionFromConfig()
         {
             // We check each configuration in each project...
-            foreach (Project project in m_parsedSolution.getProjects())
+            foreach (ProjectInfo_CPP project in m_parsedSolution.getProjects())
             {
-                foreach (ProjectConfiguration configuration in project.getConfigurations())
+                foreach (ProjectConfigurationInfo_CPP configuration in project.getConfigurations())
                 {
                     updateLibraries(configuration);
                     updateLibraryPaths(configuration);
@@ -62,7 +62,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Updates compiler flags from the config settings.
         /// </summary>
-        private void updateCompilerFlags(ProjectConfiguration configuration)
+        private void updateCompilerFlags(ProjectConfigurationInfo_CPP configuration)
         {
             MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
 
@@ -87,7 +87,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Updates preprocessor definitions from config settings.
         /// </summary>
-        private void updatePreprocessorDefinitions(ProjectConfiguration configuration)
+        private void updatePreprocessorDefinitions(ProjectConfigurationInfo_CPP configuration)
         {
             MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
 
@@ -116,7 +116,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Updates library paths from config settings.
         /// </summary>
-        private void updateLibraryPaths(ProjectConfiguration configuration)
+        private void updateLibraryPaths(ProjectConfigurationInfo_CPP configuration)
         {
             MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
 
@@ -152,7 +152,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Updates include paths from config settings.
         /// </summary>
-        private void updateIncludePaths(ProjectConfiguration configuration)
+        private void updateIncludePaths(ProjectConfigurationInfo_CPP configuration)
         {
             MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
 
@@ -181,7 +181,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Updates libraries from config settings.
         /// </summary>
-        private void updateLibraries(ProjectConfiguration configuration)
+        private void updateLibraries(ProjectConfigurationInfo_CPP configuration)
         {
             MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
 
@@ -210,7 +210,7 @@ namespace MakeItSoLib
 
         // Holds the parsed solution data, including the 
         // collection of projects in it...
-        protected Solution m_parsedSolution = new Solution();
+        protected SolutionInfo m_parsedSolution = new SolutionInfo();
 
         #endregion
     }

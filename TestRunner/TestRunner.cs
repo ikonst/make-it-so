@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using MakeItSoLib;
+using System.Threading;
 
 namespace TestRunner
 {
@@ -25,6 +26,13 @@ namespace TestRunner
     /// </summary>
     public partial class TestRunner : Form
     {
+        #region Events
+
+        // Raised when a test has been completed on a worker thread...
+        private event EventHandler<EventArgs> TestCompleted;
+
+        #endregion
+
         #region Public methods and properties
 
         public TestRunner()
@@ -43,6 +51,11 @@ namespace TestRunner
         {
             try
             {
+                // We will run a number of tests in parallel...
+                int cores = Environment.ProcessorCount;
+                ThreadPool.SetMaxThreads(cores, cores);
+                TestCompleted += onTestCompleted;
+
                 // Finds the solutions to convert and test...
                 findSolutions();
             }
@@ -53,21 +66,49 @@ namespace TestRunner
         }
 
         /// <summary>
+        /// Called when a test has been completed. (It s called back
+        /// on the UI thread, even though the event was raised by a 
+        /// worker thread.)
+        /// </summary>
+        private void onTestCompleted(object sender, EventArgs e)
+        {
+            try
+            {
+                // We update the screen...
+                Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "TestRunner");
+            }
+        }
+
+        /// <summary>
         /// Runs each test. 
         /// </summary>
         private void runTests()
         {
-            // We test each solution. For each one we:
-            // - Convert it with MakeItSo
-            // - Run a bash script with cygwin that builds and runs it
-            // - Check the output 
-
-            // We loop through the solutions by index. (These are
-            // the same indexes as the ones in the list view, which
-            // lets us color the rows.)
+            // We loop through the selected solutions...
             foreach(int index in ctrlSolutions.CheckedIndices)
             {
+                // We queue each test to run on a worker thread...
                 SolutionInfo solutionInfo = (SolutionInfo)ctrlSolutions.Items[index];
+                ThreadPool.QueueUserWorkItem(runTestOnWorkerThread, solutionInfo);
+            }
+        }
+
+        /// <summary>
+        /// Runs a test on a worker thread.
+        /// </summary>
+        private void runTestOnWorkerThread(object context)
+        {
+            try
+            {
+                // We test one solution:
+                // - Convert it with MakeItSo
+                // - Run a bash script with cygwin that builds and runs it
+                // - Check the output 
+                SolutionInfo solutionInfo = (SolutionInfo)context;
 
                 TestResults results;
                 try
@@ -102,7 +143,14 @@ namespace TestRunner
                         solutionInfo.BackgroundColor = Color.LightPink;
                         break;
                 }
-                Refresh();
+
+                // We notify the UI thread that the test has completed,
+                // and that it can update the screen...
+                Utils.raiseEvent(TestCompleted, this, null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "TestRunner");
             }
         }
 

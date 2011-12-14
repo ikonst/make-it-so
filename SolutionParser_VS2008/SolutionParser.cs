@@ -7,7 +7,7 @@ using EnvDTE;
 using System.IO;
 using Microsoft.VisualStudio.VCProjectEngine;
 using MakeItSoLib;
-using Solution = MakeItSoLib.Solution;
+using Solution = MakeItSoLib.SolutionInfo;
 using VSLangProj80;
 
 namespace SolutionParser_VS2008

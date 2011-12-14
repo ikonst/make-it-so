@@ -10,14 +10,14 @@ namespace MakeItSoLib
     /// Holds details about one configuration of a project,
     /// such as a release or debug build.
     /// </summary>
-    public class ProjectConfiguration
+    public class ProjectConfigurationInfo_CPP
     {
         #region Public methods and properties
 
         /// <summary>
         /// The project that holds this configuration.
         /// </summary>
-        public Project ParentProject
+        public ProjectInfo_CPP ParentProject
         {
             get { return m_parentProject; }
             set { m_parentProject = value; }
@@ -232,7 +232,7 @@ namespace MakeItSoLib
         private string m_name = "";
 
         // The project that this configuration is part of...
-        private Project m_parentProject = null;
+        private ProjectInfo_CPP m_parentProject = null;
 
         // The folder for intermediate objects, such as object files...
         private string m_intermediateFolder = "";

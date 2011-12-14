@@ -44,7 +44,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Gets the parsed project.
         /// </summary>
-        public Project Project 
+        public ProjectInfo_CPP Project 
         {
             get { return m_parsedProject; }
         }
@@ -85,7 +85,7 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseConfiguration(VCConfiguration vcConfiguration)
         {
-            ProjectConfiguration parsedConfiguration = new ProjectConfiguration();
+            ProjectConfigurationInfo_CPP parsedConfiguration = new ProjectConfigurationInfo_CPP();
             parsedConfiguration.ParentProject = m_parsedProject;
 
             // The configuration name...
@@ -118,7 +118,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// We parse the librarian settings, ie link options for libraries.
         /// </summary>
-        private void parseConfiguration_LibrarianSettings(VCConfiguration vcConfiguration, ProjectConfiguration parsedConfiguration)
+        private void parseConfiguration_LibrarianSettings(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // We get the librarian 'tool'...
             IVCCollection tools = Utils.dteCall<IVCCollection>(() => (vcConfiguration.Tools as IVCCollection));
@@ -138,7 +138,7 @@ namespace SolutionParser_VS2008
         /// Finds the linker settings, such as the collection of libraries to link,
         /// for the configuration passed in.
         /// </summary>
-        private void parseConfiguration_LinkerSettings(VCConfiguration vcConfiguration, ProjectConfiguration parsedConfiguration)
+        private void parseConfiguration_LinkerSettings(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // We get the linker-settings 'tool'...
             IVCCollection tools = Utils.dteCall<IVCCollection>(() => (vcConfiguration.Tools as IVCCollection));
@@ -158,7 +158,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Reads miscellaneous linker settings.
         /// </summary>
-        private void parseLinkerSettings_Misc(VCConfiguration vcConfiguration, VCLinkerTool linkerTool, ProjectConfiguration parsedConfiguration)
+        private void parseLinkerSettings_Misc(VCConfiguration vcConfiguration, VCLinkerTool linkerTool, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // Whether we implicitly link in libraries we depend on.
             // (We are assuming that all configurations of the project have the
@@ -178,7 +178,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Finds the library path for the configuration passed in.
         /// </summary>
-        private void parseLinkerSettings_LibraryPath(VCConfiguration vcConfiguration, VCLinkerTool linkerTool, ProjectConfiguration parsedConfiguration)
+        private void parseLinkerSettings_LibraryPath(VCConfiguration vcConfiguration, VCLinkerTool linkerTool, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // We:
             // 1. Read the additional library paths (which are in a semi-colon-delimited string)
@@ -216,7 +216,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Finds the collection of additional libraries to link into this project.
         /// </summary>
-        private void parseLinkerSettings_Libraries(VCConfiguration vcConfiguration, VCLinkerTool linkerTool, ProjectConfiguration parsedConfiguration)
+        private void parseLinkerSettings_Libraries(VCConfiguration vcConfiguration, VCLinkerTool linkerTool, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // The collection of libraries is stored in a space-delimited string...
             string strAdditionalLibraries = Utils.dteCall<string>(() => (linkerTool.AdditionalDependencies));
@@ -241,7 +241,7 @@ namespace SolutionParser_VS2008
         /// Finds compiler settings, such as the include path, for the configuration
         /// passed in.
         /// </summary>
-        private void parseConfiguration_CompilerSettings(VCConfiguration vcConfiguration, ProjectConfiguration parsedConfiguration)
+        private void parseConfiguration_CompilerSettings(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // We get the compiler-settings 'tool'...
             IVCCollection tools = Utils.dteCall<IVCCollection>(() => (vcConfiguration.Tools as IVCCollection));
@@ -256,7 +256,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Finds compiler flags.
         /// </summary>
-        private void parseCompilerSettings_CompilerFlags(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfiguration parsedConfiguration)
+        private void parseCompilerSettings_CompilerFlags(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // Warning level...
             warningLevelOption warningLevel = Utils.dteCall<warningLevelOption>(() => (compilerTool.WarningLevel));
@@ -303,7 +303,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Finds the collection of include paths for the configuration passed in.
         /// </summary>
-        private void parseCompilerSettings_IncludePath(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfiguration parsedConfiguration)
+        private void parseCompilerSettings_IncludePath(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // We:
             // 1. Read the additional include paths (which are in a semi-colon-delimited string)
@@ -335,7 +335,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Finds the collection of preprocessor definitions for the configuration passed in.
         /// </summary>
-        private void parseCompilerSettings_PreprocessorDefinitions(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfiguration parsedConfiguration)
+        private void parseCompilerSettings_PreprocessorDefinitions(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP parsedConfiguration)
         {
             // We read the delimited string of preprocessor definitions, and
             // split them...
@@ -358,9 +358,9 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Gets the configuration type.
         /// </summary>
-        private Project.ProjectTypeEnum parseConfiguration_Type(VCConfiguration vcConfiguration)
+        private ProjectInfo.ProjectTypeEnum parseConfiguration_Type(VCConfiguration vcConfiguration)
         {
-            Project.ProjectTypeEnum result = Project.ProjectTypeEnum.INVALID;
+            ProjectInfo.ProjectTypeEnum result = ProjectInfo.ProjectTypeEnum.INVALID;
 
             // We get the Visual Studio confiuration type...
             ConfigurationTypes configurationType = Utils.dteCall<ConfigurationTypes>(() => (vcConfiguration.ConfigurationType));
@@ -369,15 +369,15 @@ namespace SolutionParser_VS2008
             switch (configurationType)
             {
                 case ConfigurationTypes.typeApplication:
-                    result = Project.ProjectTypeEnum.CPP_EXECUTABLE;
+                    result = ProjectInfo.ProjectTypeEnum.CPP_EXECUTABLE;
                     break;
 
                 case ConfigurationTypes.typeStaticLibrary:
-                    result = Project.ProjectTypeEnum.CPP_STATIC_LIBRARY;
+                    result = ProjectInfo.ProjectTypeEnum.CPP_STATIC_LIBRARY;
                     break;
 
                 case ConfigurationTypes.typeDynamicLibrary:
-                    result = Project.ProjectTypeEnum.CPP_DLL;
+                    result = ProjectInfo.ProjectTypeEnum.CPP_DLL;
                     break;
             }
 
@@ -451,7 +451,7 @@ namespace SolutionParser_VS2008
         #region Private data
 
         // Holds the parsed project data...
-        private Project m_parsedProject = new Project();
+        private ProjectInfo_CPP m_parsedProject = new ProjectInfo_CPP();
 
         // The root folder of the solution that this project is part of...
         private string m_solutionRootFolder = "";

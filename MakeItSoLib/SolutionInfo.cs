@@ -6,10 +6,10 @@ using System.Text;
 namespace MakeItSoLib
 {
     /// <summary>
-    /// Holds data representing the Visual Studio solution we are converting,
-    /// and methods to help create a makefile for it.
+    /// Holds data representing the Visual Studio solution we are converting. The
+    /// data is parsed from the solution.
     /// </summary>
-    public class Solution
+    public class SolutionInfo
     {
         #region Public methods and properties
 
@@ -34,7 +34,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Adds a project to the collection in the solution.
         /// </summary>
-        public void addProject(string projectName, Project project)
+        public void addProject(string projectName, ProjectInfo_CPP project)
         {
             m_projects.Add(projectName, project);
         }
@@ -42,7 +42,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Gets the collection of projects in the solution.
         /// </summary>
-        public List<Project> getProjects()
+        public List<ProjectInfo_CPP> getProjects()
         {
             return m_projects.Values.ToList();
         }
@@ -54,7 +54,7 @@ namespace MakeItSoLib
         {
             // We find the two projects, and add the required-project
             // to the project...
-            Project project, requiredProject;
+            ProjectInfo_CPP project, requiredProject;
             if (m_projects.TryGetValue(projectName, out project) == false) return;
             if (m_projects.TryGetValue(requiredProjectName, out requiredProject) == false) return;
             project.addRequiredProject(requiredProject);
@@ -66,7 +66,7 @@ namespace MakeItSoLib
         /// </summary>
         public void setupImplicitLinking()
         {
-            foreach(Project project in m_projects.Values)
+            foreach(ProjectInfo_CPP project in m_projects.Values)
             {
                 project.setupImplicitLinking();
             }
@@ -84,7 +84,7 @@ namespace MakeItSoLib
 
         // The collection of projects in the solution, keyed by
         // the project name...
-        private Dictionary<string, Project> m_projects = new Dictionary<string, Project>();
+        private Dictionary<string, ProjectInfo_CPP> m_projects = new Dictionary<string, ProjectInfo_CPP>();
 
         #endregion
 

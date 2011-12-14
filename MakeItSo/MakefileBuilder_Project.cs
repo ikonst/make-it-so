@@ -43,7 +43,7 @@ namespace MakeItSo
         /// <summary>
         /// We create a makefile for the project passed in.
         /// </summary>
-        public static void createMakefile(Project project)
+        public static void createMakefile(ProjectInfo_CPP project)
         {
             new MakefileBuilder_Project(project);
         }
@@ -55,7 +55,7 @@ namespace MakeItSo
         /// <summary>
         /// Constructor
         /// </summary>
-        private MakefileBuilder_Project(Project project)
+        private MakefileBuilder_Project(ProjectInfo_CPP project)
         {
             m_project = project;
 
@@ -104,7 +104,7 @@ namespace MakeItSo
         {
             // We create an collection of compiler flags for each configuration...
             m_file.WriteLine("# Compiler flags...");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 // The variable name...
                 string variableName = getCompilerFlagsVariableName(configuration);
@@ -114,7 +114,7 @@ namespace MakeItSo
 
                 // If we are creating a DLL, we need the create-position-indepent-code flag
                 // (unless this is a cygwin build, which doesn't)...
-                if (configuration.ParentProject.ProjectType == Project.ProjectTypeEnum.CPP_DLL
+                if (configuration.ParentProject.ProjectType == ProjectInfo_CPP.ProjectTypeEnum.CPP_DLL
                     &&
                     MakeItSoConfig.Instance.IsCygwinBuild == false)
                 {
@@ -142,7 +142,7 @@ namespace MakeItSo
             // We create an collection of preprocessor-definitions
             // for each configuration...
             m_file.WriteLine("# Preprocessor definitions...");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 // The variable name...
                 string variableName = getPreprocessorDefinitionsVariableName(configuration);
@@ -170,7 +170,7 @@ namespace MakeItSo
             // We create an collection of implicitly linked object files
             // for each configuration...
             m_file.WriteLine("# Implictly linked object files...");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 // The variable name...
                 string variableName = getImplicitlyLinkedObjectsVariableName(configuration);
@@ -196,7 +196,7 @@ namespace MakeItSo
         {
             // We create an include path for each configuration...
             m_file.WriteLine("# Include paths...");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 // The variable name...
                 string variableName = getIncludePathVariableName(configuration);
@@ -222,7 +222,7 @@ namespace MakeItSo
         {
             // We create a library path for each configuration...
             m_file.WriteLine("# Library paths...");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 // The variable name...
                 string variableName = getLibraryPathVariableName(configuration);
@@ -249,7 +249,7 @@ namespace MakeItSo
         {
             // We create a library path for each configuration...
             m_file.WriteLine("# Additional libraries...");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 // The variable name...
                 string variableName = getLibrariesVariableName(configuration);
@@ -272,7 +272,7 @@ namespace MakeItSo
         /// Returns the implictly-linked-objects variable name for the configuration passed in.
         /// For example "Debug_Implicitly_Linked_Objects".
         /// </summary>
-        private string getImplicitlyLinkedObjectsVariableName(ProjectConfiguration configuration)
+        private string getImplicitlyLinkedObjectsVariableName(ProjectConfigurationInfo_CPP configuration)
         {
             return configuration.Name + "_Implicitly_Linked_Objects";
         }
@@ -281,7 +281,7 @@ namespace MakeItSo
         /// Returns the include-path variable name for the configuration passed in.
         /// For example "Debug_Include_Path".
         /// </summary>
-        private string getIncludePathVariableName(ProjectConfiguration configuration)
+        private string getIncludePathVariableName(ProjectConfigurationInfo_CPP configuration)
         {
             return configuration.Name + "_Include_Path";
         }
@@ -290,7 +290,7 @@ namespace MakeItSo
         /// Returns the library-path variable name for the configuration passed in.
         /// For example "Debug_Library_Path".
         /// </summary>
-        private string getLibraryPathVariableName(ProjectConfiguration configuration)
+        private string getLibraryPathVariableName(ProjectConfigurationInfo_CPP configuration)
         {
             return configuration.Name + "_Library_Path";
         }
@@ -299,7 +299,7 @@ namespace MakeItSo
         /// Returns the libraries variable name for the configuration passed in.
         /// For example "Debug_Libraries".
         /// </summary>
-        private string getLibrariesVariableName(ProjectConfiguration configuration)
+        private string getLibrariesVariableName(ProjectConfigurationInfo_CPP configuration)
         {
             return configuration.Name + "_Libraries";
         }
@@ -308,7 +308,7 @@ namespace MakeItSo
         /// Returns the preprocessor-definitions variable name for the configuration passed in.
         /// For example "Debug_Preprocessor_Definitions".
         /// </summary>
-        private string getPreprocessorDefinitionsVariableName(ProjectConfiguration configuration)
+        private string getPreprocessorDefinitionsVariableName(ProjectConfigurationInfo_CPP configuration)
         {
             return configuration.Name + "_Preprocessor_Definitions";
         }
@@ -317,7 +317,7 @@ namespace MakeItSo
         /// Returns the compiler-flags variable name for the configuration passed in.
         /// For example "Debug_Compiler_Flags".
         /// </summary>
-        private string getCompilerFlagsVariableName(ProjectConfiguration configuration)
+        private string getCompilerFlagsVariableName(ProjectConfigurationInfo_CPP configuration)
         {
             return configuration.Name + "_Compiler_Flags";
         }
@@ -329,7 +329,7 @@ namespace MakeItSo
         {
             // We create a list of the configuration names...
             string strConfigurations = "";
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 strConfigurations += (configuration.Name + " ");
             }
@@ -346,7 +346,7 @@ namespace MakeItSo
         /// </summary>
         private void createConfigurationTargets()
         {
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 // We create the configuration target...
                 createConfigurationTarget(configuration);
@@ -359,7 +359,7 @@ namespace MakeItSo
         /// <summary>
         /// Creates a configuration target.
         /// </summary>
-        private void createConfigurationTarget(ProjectConfiguration configuration)
+        private void createConfigurationTarget(ProjectConfigurationInfo_CPP configuration)
         {
             // For example:
             //
@@ -390,7 +390,7 @@ namespace MakeItSo
             switch (m_project.ProjectType)
             {
                 // Creates a C++ executable...
-                case Project.ProjectTypeEnum.CPP_EXECUTABLE:
+                case ProjectInfo_CPP.ProjectTypeEnum.CPP_EXECUTABLE:
                     string libraryPath = getLibraryPathVariableName(configuration);
                     string libraries = getLibrariesVariableName(configuration);
                     m_file.WriteLine("\tg++ {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe", objectFiles, libraryPath, libraries, outputFolder, m_project.Name);
@@ -398,13 +398,13 @@ namespace MakeItSo
 
 
                 // Creates a static library...
-                case Project.ProjectTypeEnum.CPP_STATIC_LIBRARY:
+                case ProjectInfo_CPP.ProjectTypeEnum.CPP_STATIC_LIBRARY:
                     m_file.WriteLine("\tar rcs {0}/lib{1}.a {2} {3}", outputFolder, m_project.Name, objectFiles, implicitlyLinkedObjectFiles);
                     break;
 
 
                 // Creates a DLL (shared-objects) library...
-                case Project.ProjectTypeEnum.CPP_DLL:
+                case ProjectInfo_CPP.ProjectTypeEnum.CPP_DLL:
                     string dllName, pic;
                     if(MakeItSoConfig.Instance.IsCygwinBuild == true)
                     {
@@ -427,7 +427,7 @@ namespace MakeItSo
         /// <summary>
         /// Creates targets to compile the files for the configuration passed in.
         /// </summary>
-        private void createFileTargets(ProjectConfiguration configuration)
+        private void createFileTargets(ProjectConfigurationInfo_CPP configuration)
         {
             // For example:
             //
@@ -469,7 +469,7 @@ namespace MakeItSo
             m_file.WriteLine("# Creates the intermediate and output folders for each configuration...");
             m_file.WriteLine(".PHONY: create_folders");
             m_file.WriteLine("create_folders:");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 string intermediateFolder = getIntermediateFolder(configuration);
                 string outputFolder = getOutputFolder(configuration);
@@ -490,7 +490,7 @@ namespace MakeItSo
             m_file.WriteLine("# Cleans intermediate and output files (objects, libraries, executables)...");
             m_file.WriteLine(".PHONY: clean");
             m_file.WriteLine("clean:");
-            foreach (ProjectConfiguration configuration in m_project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in m_project.getConfigurations())
             {
                 string intermediateFolder = getIntermediateFolder(configuration);
                 string outputFolder = getOutputFolder(configuration);
@@ -518,7 +518,7 @@ namespace MakeItSo
         /// <summary>
         /// Returns the folder to use for intermediate files, such as object files.
         /// </summary>
-        private string getIntermediateFolder(ProjectConfiguration configuration)
+        private string getIntermediateFolder(ProjectConfigurationInfo_CPP configuration)
         {
             return Utils.addPrefixToFolder(configuration.IntermediateFolder, "gcc");
         }
@@ -526,7 +526,7 @@ namespace MakeItSo
         /// <summary>
         /// Returns the folder to use for intermediate files.
         /// </summary>
-        private string getOutputFolder(ProjectConfiguration configuration)
+        private string getOutputFolder(ProjectConfigurationInfo_CPP configuration)
         {
             return Utils.addPrefixToFolder(configuration.OutputFolder, "gcc");
         }
@@ -536,7 +536,7 @@ namespace MakeItSo
         #region Private data
 
         // The parsed project data that we are creating the makefile from...
-        private Project m_project = null;
+        private ProjectInfo_CPP m_project = null;
 
         // The file we write to...
         private StreamWriter m_file = null;

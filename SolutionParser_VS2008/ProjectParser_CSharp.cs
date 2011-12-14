@@ -43,7 +43,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Gets the parsed project.
         /// </summary>
-        public Project Project 
+        public ProjectInfo_CPP Project 
         {
             get { return m_parsedProject; }
         }
@@ -53,7 +53,7 @@ namespace SolutionParser_VS2008
         #region Private data
 
         // Holds the parsed project data...
-        private Project m_parsedProject = new Project();
+        private ProjectInfo_CPP m_parsedProject = new ProjectInfo_CPP();
 
         // The root folder of the solution that this project is part of...
         private string m_solutionRootFolder = "";

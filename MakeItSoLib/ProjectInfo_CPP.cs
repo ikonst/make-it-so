@@ -7,39 +7,17 @@ using System.IO;
 namespace MakeItSoLib
 {
     /// <summary>
-    /// A base class for Project classes. 
-    /// 
-    /// These hold information about one Visual Studio project type, for
-    /// example C++ projects. They also know how to write makefiles that 
-    /// will build the project type.
-    /// 
-    /// This base class holds data that is common across all project types,
-    /// and helper functions across project types as well.
+    /// Holds information about C++ Visual Studio projects. This data is parsed 
+    /// from a project in a Visual Studio solution. 
     /// </summary>
-    public class Project
+    public class ProjectInfo_CPP : ProjectInfo
     {
-        #region Public types
-
-        /// <summary>
-        /// An enum for the various project types that we know how to
-        /// convert from Visual Studio projects to makefiles.
-        /// </summary>
-        public enum ProjectTypeEnum
-        {
-            INVALID,
-            CPP_EXECUTABLE,
-            CPP_STATIC_LIBRARY,
-            CPP_DLL
-        }
-
-        #endregion
-
         #region Public methods and properties
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public Project()
+        public ProjectInfo_CPP()
         {
         }
 
@@ -89,7 +67,7 @@ namespace MakeItSoLib
             // We want to link projects we depend on...
             switch (ProjectType)
             {
-                case Project.ProjectTypeEnum.CPP_EXECUTABLE:
+                case ProjectInfo.ProjectTypeEnum.CPP_EXECUTABLE:
                     {
                         // We find the libraries that this executable depends on...
                         List<ImplicitLinkInfo> infos = new List<ImplicitLinkInfo>();
@@ -100,7 +78,7 @@ namespace MakeItSoLib
                         {
                             // We find the configuration for this info and add
                             // the library to it...
-                            ProjectConfiguration configuration = getConfigurations().Find((cfg) => (cfg.Name == info.ConfigurationName));
+                            ProjectConfigurationInfo_CPP configuration = getConfigurations().Find((cfg) => (cfg.Name == info.ConfigurationName));
                             if (configuration == null)
                             {
                                 // We may fail to find the library to implicitly link
@@ -119,7 +97,7 @@ namespace MakeItSoLib
                     }
                     break;
 
-                case Project.ProjectTypeEnum.CPP_STATIC_LIBRARY:
+                case ProjectInfo_CPP.ProjectTypeEnum.CPP_STATIC_LIBRARY:
                     {
                         // We find the collection of object files used by any 
                         // libraries this library depends on...
@@ -130,7 +108,7 @@ namespace MakeItSoLib
                         foreach (ImplicitLinkInfo info in infos)
                         {
                             // We find the configuration for this info...
-                            ProjectConfiguration configuration = getConfigurations().Find((cfg) => (cfg.Name == info.ConfigurationName));
+                            ProjectConfigurationInfo_CPP configuration = getConfigurations().Find((cfg) => (cfg.Name == info.ConfigurationName));
 
                             // We add the collection of object files to the configuration...
                             string intermediateFolderAbsolute = Utils.addPrefixToFolder(info.IntermediateFolderAbsolute, "gcc");
@@ -147,64 +125,9 @@ namespace MakeItSoLib
         }
 
         /// <summary>
-        /// Gets or sets the project's name.
-        /// Note that we strip out spaces if the name contains them.
-        /// </summary>
-        public string Name
-        {
-            get { return m_name; }
-            set { m_name = value.Replace(" ", ""); }
-        }
-
-        /// <summary>
-        /// Gets or sets the project type.
-        /// </summary>
-        public ProjectTypeEnum ProjectType
-        {
-            get { return m_projectType; }
-            set { m_projectType = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the project's root folder relative to 
-        /// the solution folder.
-        /// </summary>
-        public string RootFolderRelative
-        {
-            get { return m_rootFolderRelative; }
-            set { m_rootFolderRelative = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the full path to the project's root folder.
-        /// </summary>
-        public string RootFolderAbsolute
-        {
-            get { return m_rootFolderAbsolute; }
-            set { m_rootFolderAbsolute = value; }
-        }
-
-        /// <summary>
-        /// Adds a source file to the project.
-        /// </summary>
-        public void addFile(string file)
-        {
-            m_files.Add(file);
-        }
-
-        /// <summary>
-        /// Gets the collection of files in the project. 
-        /// File paths are relative to the project's root folder.
-        /// </summary>
-        public HashSet<string> getFiles()
-        {
-            return m_files; 
-        }
-
-        /// <summary>
         /// Adds a configuration to the project.
         /// </summary>
-        public void addConfiguration(ProjectConfiguration configuration)
+        public void addConfiguration(ProjectConfigurationInfo_CPP configuration)
         {
             m_configurations.Add(configuration);
         }
@@ -212,25 +135,9 @@ namespace MakeItSoLib
         /// <summary>
         /// Gets or the collection of configurations (debug, release etc) for the project.
         /// </summary>
-        public List<ProjectConfiguration> getConfigurations()
+        public List<ProjectConfigurationInfo_CPP> getConfigurations()
         {
             return m_configurations;
-        }
-
-        /// <summary>
-        /// Adds a project to the collection that this project depends on.
-        /// </summary>
-        public void addRequiredProject(Project project)
-        {
-            m_requiredProjects.Add(project);
-        }
-
-        /// <summary>
-        /// Gets the collection of projects (in fact project names) that this project depends on.
-        /// </summary>
-        public HashSet<Project> getRequiredProjects()
-        {
-            return m_requiredProjects;
         }
 
         /// <summary>
@@ -254,7 +161,7 @@ namespace MakeItSoLib
         private void findImplicitlyLinkedLibraries(List<ImplicitLinkInfo> infos)
         {
             // We loop through the projects that this project depends on...
-            foreach (Project requiredProject in getRequiredProjects())
+            foreach (ProjectInfo_CPP requiredProject in getRequiredProjects())
             {
                 // Is the required project a static library?
                 if (requiredProject.ProjectType != ProjectTypeEnum.CPP_STATIC_LIBRARY
@@ -266,7 +173,7 @@ namespace MakeItSoLib
 
                 // We've found a library, so we add it to our collection 
                 // of items to link in...
-                foreach (ProjectConfiguration configuration in requiredProject.getConfigurations())
+                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurations())
                 {
                     ImplicitLinkInfo info = new ImplicitLinkInfo();
                     info.LibraryRawName = requiredProject.Name;
@@ -292,7 +199,7 @@ namespace MakeItSoLib
         private void findImplicitlyLinkedObjectFiles(List<ImplicitLinkInfo> infos)
         {
             // We loop through the projects that this project depends on...
-            foreach (Project requiredProject in getRequiredProjects())
+            foreach (ProjectInfo_CPP requiredProject in getRequiredProjects())
             {
                 // Is the required project a static library?
                 if (requiredProject.ProjectType != ProjectTypeEnum.CPP_STATIC_LIBRARY)
@@ -301,7 +208,7 @@ namespace MakeItSoLib
                 }
 
                 // We've found a library, so we add its object files to our collection...
-                foreach (ProjectConfiguration configuration in requiredProject.getConfigurations())
+                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurations())
                 {
                     ImplicitLinkInfo info = new ImplicitLinkInfo();
                     info.ConfigurationName = configuration.Name;
@@ -324,26 +231,8 @@ namespace MakeItSoLib
 
         #region Private data
 
-        // The project's name...
-        private string m_name = "";
-
-        // The project's root folder, relative to the solution root...
-        private string m_rootFolderRelative = "";
-
-        // The absolute path to the project root folder...
-        private string m_rootFolderAbsolute = "";
-
-        // The project type, e.g exe, library etc...
-        private ProjectTypeEnum m_projectType = ProjectTypeEnum.INVALID;
-
-        // The collection of source files in the project...
-        private HashSet<string> m_files = new HashSet<string>();
-
         // The collection of configurations (debug, release)...
-        private List<ProjectConfiguration> m_configurations = new List<ProjectConfiguration>();
-
-        // The collection of projects that this project depends on...
-        private HashSet<Project> m_requiredProjects = new HashSet<Project>();
+        private List<ProjectConfigurationInfo_CPP> m_configurations = new List<ProjectConfigurationInfo_CPP>();
 
         // True if we need to implicitly link libraries we depend on...
         private bool m_linkLibraryDependencies = false;

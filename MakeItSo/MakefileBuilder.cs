@@ -37,7 +37,7 @@ namespace MakeItSo
         /// <summary>
         /// Creates a makefile for the solution passed in.
         /// </summary>
-        public static void createMakefile(Solution solution)
+        public static void createMakefile(SolutionInfo solution)
         {
             new MakefileBuilder(solution);
         }
@@ -49,7 +49,7 @@ namespace MakeItSo
         /// <summary>
         /// Constructor.
         /// </summary>
-        private MakefileBuilder(Solution solution)
+        private MakefileBuilder(SolutionInfo solution)
         {
             m_solution = solution;
 
@@ -96,7 +96,7 @@ namespace MakeItSo
         /// </summary>
         private void createProjectMakefiles()
         {
-            foreach (Project project in m_solution.getProjects())
+            foreach (ProjectInfo_CPP project in m_solution.getProjects())
             {
                 MakefileBuilder_Project.createMakefile(project);
             }
@@ -115,7 +115,7 @@ namespace MakeItSo
             m_file.WriteLine(".PHONY: all_projects");
 
             string target = "all_projects: ";
-            foreach (Project project in m_solution.getProjects())
+            foreach (ProjectInfo_CPP project in m_solution.getProjects())
             {
                 target += (project.Name + " ");
             }
@@ -131,7 +131,7 @@ namespace MakeItSo
         private void createProjectTargets()
         {
             // We write a section for each project in the solution...
-            foreach (Project project in m_solution.getProjects())
+            foreach (ProjectInfo_CPP project in m_solution.getProjects())
             {
                 writeProjectSection(project);
             }
@@ -145,7 +145,7 @@ namespace MakeItSo
             m_file.WriteLine("# Cleans all projects...");
             m_file.WriteLine(".PHONY: clean");
             m_file.WriteLine("clean:");
-            foreach (Project project in m_solution.getProjects())
+            foreach (ProjectInfo_CPP project in m_solution.getProjects())
             {
                 string directory = Utils.quote(project.RootFolderRelative);
                 string makefile = project.Name + ".makefile";
@@ -157,7 +157,7 @@ namespace MakeItSo
         /// <summary>
         /// Writes a section of the master Makefile for the project passed in.
         /// </summary>
-        private void writeProjectSection(Project project)
+        private void writeProjectSection(ProjectInfo_CPP project)
         {
             // We create a target like:
             //   .PHONY: [project-name]
@@ -168,7 +168,7 @@ namespace MakeItSo
             m_file.WriteLine(".PHONY: {0}", project.Name);
 
             string dependencies = String.Format("{0}: ", project.Name);
-            foreach (Project requiredProject in project.getRequiredProjects())
+            foreach (ProjectInfo_CPP requiredProject in project.getRequiredProjects())
             {
                 dependencies += (requiredProject.Name + " ");
             }
@@ -185,7 +185,7 @@ namespace MakeItSo
         #region Private data
 
         // The parsed solution data...
-        private Solution m_solution = null;
+        private SolutionInfo m_solution = null;
 
         // The file for the 'master' makefile...
         private StreamWriter m_file = null;

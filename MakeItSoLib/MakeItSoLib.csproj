@@ -48,15 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProjectInfo.cs" />
     <Compile Include="SolutionParserBase.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MakeItSoConfig.cs" />
     <Compile Include="MakeItSoConfig_Configuration.cs" />
     <Compile Include="MakeItSoConfig_Project.cs" />
-    <Compile Include="Project.cs" />
-    <Compile Include="ProjectConfiguration.cs" />
+    <Compile Include="ProjectInfo_CPP.cs" />
+    <Compile Include="ProjectConfigurationInfo_CPP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Solution.cs" />
+    <Compile Include="SolutionInfo.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
