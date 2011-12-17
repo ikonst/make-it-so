@@ -1,7 +1,3 @@
-Version 1.0
------------
-
-  
 Version 1.1
 -----------  
 - VS2010 parser
@@ -44,15 +40,18 @@ BUGS
 
 C# / Mono
 ---------
-- Can we just get the csc command-line and reuse it with gmcs?
-  - Can't easily see how to do this
-- Release = /define:TRACE /optimize+
-- Debug = /define:DEBUG;TRACE /optimize- /debug+ /debug:full
-- DEBUG and TRACE are defined in the project / configuration
-- Optimize code is a configuration setting
-- /warn:4 
-- /nowarn:1701,1702 (seem to get these 'for free')
-- /filealign:512
-- /warnaserror+
-
-
+Things we need for C# makefiles:
+- List of .cs files
+- List of references
+  - List of library paths (do we need these if we have complete paths to references?)
+  - Note: they may be different for Release and Debug configurations
+- Debug and release flags
+  - Debug_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -debug+ -debug:full -filealign:512 -pkg:dotnet -define:DEBUG -define:TRACE -optimize-   
+  - Release_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -filealign:512 -pkg:dotnet -define:TRACE -optimize+ 
+  - Parse project for:
+    - Warning level
+    - Ignore warnings
+    - Treat warnings as errors
+    - Defines(?)
+- Output path
+- Project type (library, exe, winexe)    
