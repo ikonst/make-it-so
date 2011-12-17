@@ -48,7 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MakefileBuilder.cs" />
-    <Compile Include="MakefileBuilder_Project.cs" />
+    <Compile Include="MakefileBuilder_Project_CPP.cs" />
+    <Compile Include="MakefileBuilder_Project_CSharp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

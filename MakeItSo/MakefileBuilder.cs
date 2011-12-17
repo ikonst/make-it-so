@@ -96,9 +96,18 @@ namespace MakeItSo
         /// </summary>
         private void createProjectMakefiles()
         {
-            foreach (ProjectInfo_CPP project in m_solution.getProjects())
+            foreach (ProjectInfo project in m_solution.getProjectInfos())
             {
-                MakefileBuilder_Project.createMakefile(project);
+                // We build a different makefile, depending on the
+                // project type...
+                if (project is ProjectInfo_CPP)
+                {
+                    MakefileBuilder_Project_CPP.createMakefile(project as ProjectInfo_CPP);
+                }
+                if (project is ProjectInfo_CSharp)
+                {
+                    MakefileBuilder_Project_CSharp.createMakefile(project as ProjectInfo_CSharp);
+                }
             }
         }
 
@@ -115,7 +124,7 @@ namespace MakeItSo
             m_file.WriteLine(".PHONY: all_projects");
 
             string target = "all_projects: ";
-            foreach (ProjectInfo_CPP project in m_solution.getProjects())
+            foreach (ProjectInfo project in m_solution.getProjectInfos())
             {
                 target += (project.Name + " ");
             }
@@ -131,7 +140,7 @@ namespace MakeItSo
         private void createProjectTargets()
         {
             // We write a section for each project in the solution...
-            foreach (ProjectInfo_CPP project in m_solution.getProjects())
+            foreach (ProjectInfo project in m_solution.getProjectInfos())
             {
                 writeProjectSection(project);
             }
@@ -145,7 +154,7 @@ namespace MakeItSo
             m_file.WriteLine("# Cleans all projects...");
             m_file.WriteLine(".PHONY: clean");
             m_file.WriteLine("clean:");
-            foreach (ProjectInfo_CPP project in m_solution.getProjects())
+            foreach (ProjectInfo project in m_solution.getProjectInfos())
             {
                 string directory = Utils.quote(project.RootFolderRelative);
                 string makefile = project.Name + ".makefile";
@@ -157,7 +166,7 @@ namespace MakeItSo
         /// <summary>
         /// Writes a section of the master Makefile for the project passed in.
         /// </summary>
-        private void writeProjectSection(ProjectInfo_CPP project)
+        private void writeProjectSection(ProjectInfo project)
         {
             // We create a target like:
             //   .PHONY: [project-name]
@@ -168,7 +177,7 @@ namespace MakeItSo
             m_file.WriteLine(".PHONY: {0}", project.Name);
 
             string dependencies = String.Format("{0}: ", project.Name);
-            foreach (ProjectInfo_CPP requiredProject in project.getRequiredProjects())
+            foreach (ProjectInfo requiredProject in project.getRequiredProjects())
             {
                 dependencies += (requiredProject.Name + " ");
             }

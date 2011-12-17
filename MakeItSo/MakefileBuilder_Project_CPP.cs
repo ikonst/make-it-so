@@ -8,7 +8,7 @@ using MakeItSoLib;
 namespace MakeItSo
 {
     /// <summary>
-    /// Creates a makefile for one project in the solution.
+    /// Creates a makefile for one C++ project in the solution.
     /// </summary><remarks>
     /// Project makefiles have the name [project-name].makefile. They will
     /// mostly be invoked from the 'master' makefile at the solution root.
@@ -36,7 +36,7 @@ namespace MakeItSo
     ///       g++ -MM main.cpp > debug/main.d
     /// 
     /// </remarks>
-    class MakefileBuilder_Project
+    class MakefileBuilder_Project_CPP
     {
         #region Public methods and properties
 
@@ -45,7 +45,7 @@ namespace MakeItSo
         /// </summary>
         public static void createMakefile(ProjectInfo_CPP project)
         {
-            new MakefileBuilder_Project(project);
+            new MakefileBuilder_Project_CPP(project);
         }
 
         #endregion
@@ -55,10 +55,9 @@ namespace MakeItSo
         /// <summary>
         /// Constructor
         /// </summary>
-        private MakefileBuilder_Project(ProjectInfo_CPP project)
+        private MakefileBuilder_Project_CPP(ProjectInfo_CPP project)
         {
             m_project = project;
-
             try
             {
                 // We create the file '[project-name].makefile', and set it to 

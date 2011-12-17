@@ -95,7 +95,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Adds a project to the collection that this project depends on.
         /// </summary>
-        public void addRequiredProject(ProjectInfo_CPP project)
+        public void addRequiredProject(ProjectInfo project)
         {
             m_requiredProjects.Add(project);
         }
@@ -103,7 +103,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Gets the collection of projects (in fact project names) that this project depends on.
         /// </summary>
-        public HashSet<ProjectInfo_CPP> getRequiredProjects()
+        public HashSet<ProjectInfo> getRequiredProjects()
         {
             return m_requiredProjects;
         }
@@ -128,7 +128,7 @@ namespace MakeItSoLib
         protected HashSet<string> m_files = new HashSet<string>();
 
         // The collection of projects that this project depends on...
-        protected HashSet<ProjectInfo_CPP> m_requiredProjects = new HashSet<ProjectInfo_CPP>();
+        protected HashSet<ProjectInfo> m_requiredProjects = new HashSet<ProjectInfo>();
 
         #endregion
     }

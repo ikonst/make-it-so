@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MakeItSoLib;
 using Microsoft.VisualStudio.VCProjectEngine;
+using VSLangProj80;
 
 namespace SolutionParser_VS2008
 {
@@ -19,15 +20,16 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Constructor
         /// </summary>
-        public ProjectParser_CSharp(VCProject vcProject, string solutionRootFolder)
+        public ProjectParser_CSharp(VSProject2 vsProject, string solutionRootFolder)
         {
             try
             {
-                m_vcProject = vcProject;
+                m_vsProject = vsProject;
                 m_solutionRootFolder = solutionRootFolder;
+                m_dteProject = Utils.dteCall<EnvDTE.Project>(() => vsProject.Project);
 
                 // We get the project name...
-                m_parsedProject.Name = Utils.dteCall<string>(() => (m_vcProject.Name));
+                m_parsedProject.Name = Utils.dteCall<string>(() => (m_dteProject.Name));
                 Log.log("- parsing project " + m_parsedProject.Name);
 
                 // and parse the project...
@@ -43,7 +45,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Gets the parsed project.
         /// </summary>
-        public ProjectInfo_CPP Project 
+        public ProjectInfo_CSharp Project 
         {
             get { return m_parsedProject; }
         }
@@ -53,13 +55,16 @@ namespace SolutionParser_VS2008
         #region Private data
 
         // Holds the parsed project data...
-        private ProjectInfo_CPP m_parsedProject = new ProjectInfo_CPP();
+        private ProjectInfo_CSharp m_parsedProject = new ProjectInfo_CSharp();
 
         // The root folder of the solution that this project is part of...
         private string m_solutionRootFolder = "";
 
-        // The Visual Studio project object...
-        private VCProject m_vcProject = null;
+        // The Visual Studio project objects. We need two of these: the
+        // EnvDte project which as overall project info, and the VSProject2
+        // which has C#-specific info...
+        private EnvDTE.Project m_dteProject = null;
+        private VSProject2 m_vsProject = null;
 
         #endregion
     }

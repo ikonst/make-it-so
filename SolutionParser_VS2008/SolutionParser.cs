@@ -124,7 +124,7 @@ namespace SolutionParser_VS2008
                     // parsed project in our collection of results...
                     VCProject vcProject = Utils.dteCall<VCProject>(() => (project.Object as VCProject));
                     ProjectParser_CPP parser = new ProjectParser_CPP(vcProject, m_parsedSolution.RootFolderAbsolute);
-                    m_parsedSolution.addProject(projectName, parser.Project);
+                    m_parsedSolution.addProjectInfo(projectName, parser.Project);
                 }
                 break;
 
@@ -134,8 +134,8 @@ namespace SolutionParser_VS2008
                     // We get the Visual Studio project, parse it and store the 
                     // parsed project in our collection of results...
                     VSProject2 vsProject = Utils.dteCall<VSProject2>(() => (project.Object as VSProject2));
-                    //ProjectParser_CSharp parser = new ProjectParser_CSharp(vcProject, m_parsedSolution.RootFolderAbsolute);
-                    //m_parsedSolution.addProject(projectName, parser.Project);
+                    ProjectParser_CSharp parser = new ProjectParser_CSharp(vsProject, m_parsedSolution.RootFolderAbsolute);
+                    m_parsedSolution.addProjectInfo(projectName, parser.Project);
                 }
                 break;
             }

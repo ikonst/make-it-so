@@ -34,7 +34,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Adds a project to the collection in the solution.
         /// </summary>
-        public void addProject(string projectName, ProjectInfo_CPP project)
+        public void addProjectInfo(string projectName, ProjectInfo project)
         {
             m_projects.Add(projectName, project);
         }
@@ -42,7 +42,7 @@ namespace MakeItSoLib
         /// <summary>
         /// Gets the collection of projects in the solution.
         /// </summary>
-        public List<ProjectInfo_CPP> getProjects()
+        public List<ProjectInfo> getProjectInfos()
         {
             return m_projects.Values.ToList();
         }
@@ -54,7 +54,7 @@ namespace MakeItSoLib
         {
             // We find the two projects, and add the required-project
             // to the project...
-            ProjectInfo_CPP project, requiredProject;
+            ProjectInfo project, requiredProject;
             if (m_projects.TryGetValue(projectName, out project) == false) return;
             if (m_projects.TryGetValue(requiredProjectName, out requiredProject) == false) return;
             project.addRequiredProject(requiredProject);
@@ -66,9 +66,14 @@ namespace MakeItSoLib
         /// </summary>
         public void setupImplicitLinking()
         {
-            foreach(ProjectInfo_CPP project in m_projects.Values)
+            foreach(ProjectInfo project in m_projects.Values)
             {
-                project.setupImplicitLinking();
+                // We only need to set up implicit linking for C++ projects...
+                ProjectInfo_CPP cppProject = project as ProjectInfo_CPP;
+                if (cppProject != null)
+                {
+                    cppProject.setupImplicitLinking();
+                }
             }
         }
 
@@ -84,7 +89,7 @@ namespace MakeItSoLib
 
         // The collection of projects in the solution, keyed by
         // the project name...
-        private Dictionary<string, ProjectInfo_CPP> m_projects = new Dictionary<string, ProjectInfo_CPP>();
+        private Dictionary<string, ProjectInfo> m_projects = new Dictionary<string, ProjectInfo>();
 
         #endregion
 

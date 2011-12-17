@@ -42,15 +42,11 @@ namespace MakeItSoLib
         public void updateSolutionFromConfig()
         {
             // We check each configuration in each project...
-            foreach (ProjectInfo_CPP project in m_parsedSolution.getProjects())
+            foreach (ProjectInfo projectInfo in m_parsedSolution.getProjectInfos())
             {
-                foreach (ProjectConfigurationInfo_CPP configuration in project.getConfigurations())
+                if (projectInfo is ProjectInfo_CPP)
                 {
-                    updateLibraries(configuration);
-                    updateLibraryPaths(configuration);
-                    updateIncludePaths(configuration);
-                    updatePreprocessorDefinitions(configuration);
-                    updateCompilerFlags(configuration);
+                    updateProjectFromConfig_CPP(projectInfo as ProjectInfo_CPP);
                 }
             }
         }
@@ -58,6 +54,21 @@ namespace MakeItSoLib
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Updates the C++ project passed in with data from the MakeItSo.config file.
+        /// </summary>
+        private void updateProjectFromConfig_CPP(ProjectInfo_CPP project)
+        {
+            foreach (ProjectConfigurationInfo_CPP configuration in project.getConfigurations())
+            {
+                updateLibraries(configuration);
+                updateLibraryPaths(configuration);
+                updateIncludePaths(configuration);
+                updatePreprocessorDefinitions(configuration);
+                updateCompilerFlags(configuration);
+            }
+        }
 
         /// <summary>
         /// Updates compiler flags from the config settings.
