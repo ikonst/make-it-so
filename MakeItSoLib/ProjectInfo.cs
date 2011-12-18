@@ -76,23 +76,6 @@ namespace MakeItSoLib
         }
 
         /// <summary>
-        /// Adds a source file to the project.
-        /// </summary>
-        public void addFile(string file)
-        {
-            m_files.Add(file);
-        }
-
-        /// <summary>
-        /// Gets the collection of files in the project. 
-        /// File paths are relative to the project's root folder.
-        /// </summary>
-        public HashSet<string> getFiles()
-        {
-            return m_files;
-        }
-
-        /// <summary>
         /// Adds a project to the collection that this project depends on.
         /// </summary>
         public void addRequiredProject(ProjectInfo project)
@@ -123,9 +106,6 @@ namespace MakeItSoLib
 
         // The project type, e.g exe, library etc...
         protected ProjectTypeEnum m_projectType = ProjectTypeEnum.INVALID;
-
-        // The collection of source files in the project...
-        protected HashSet<string> m_files = new HashSet<string>();
 
         // The collection of projects that this project depends on...
         protected HashSet<ProjectInfo> m_requiredProjects = new HashSet<ProjectInfo>();

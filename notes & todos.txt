@@ -41,7 +41,7 @@ BUGS
 C# / Mono
 ---------
 Things we need for C# makefiles:
-- List of .cs files
+Y - List of .cs files
 - List of references
   - List of library paths (do we need these if we have complete paths to references?)
   - Note: they may be different for Release and Debug configurations

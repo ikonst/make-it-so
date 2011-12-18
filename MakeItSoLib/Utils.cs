@@ -18,7 +18,7 @@ namespace MakeItSoLib
         #region Public methods
 
         /// <summary>
-        /// Calls a DTE function, retrying if necessary.
+        /// Calls a function, retrying if necessary.
         /// </summary><remarks>
         /// DTE functions call into an instance of Visual Studio running in
         /// a separate process using COM interop. These calls can fail if 
@@ -36,7 +36,7 @@ namespace MakeItSoLib
         /// (Note: replace the [] above with angle-brackets to specify the 
         ///        return type.)
         /// </remarks>
-        public static T dteCall<T>(Func<T> fn)
+        public static T call<T>(Func<T> fn)
         {
             // We will try to call the function up to 100 times...
             for (int i=0; i<100; ++i)
@@ -55,7 +55,7 @@ namespace MakeItSoLib
                 }
             }
 
-            throw new Exception("dteCall failed to call function after 100 tries.");
+            throw new Exception("'call' failed to call function after 100 tries.");
         }
 
         /// <summary>

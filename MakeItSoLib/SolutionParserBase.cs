@@ -60,7 +60,7 @@ namespace MakeItSoLib
         /// </summary>
         private void updateProjectFromConfig_CPP(ProjectInfo_CPP project)
         {
-            foreach (ProjectConfigurationInfo_CPP configuration in project.getConfigurations())
+            foreach (ProjectConfigurationInfo_CPP configuration in project.getConfigurationInfos())
             {
                 updateLibraries(configuration);
                 updateLibraryPaths(configuration);
@@ -75,7 +75,7 @@ namespace MakeItSoLib
         /// </summary>
         private void updateCompilerFlags(ProjectConfigurationInfo_CPP configuration)
         {
-            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
+            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProjectInfo.Name);
 
             // We check if any definitions should be removed...
             List<string> flags = new List<string>(configuration.getCompilerFlags());
@@ -100,7 +100,7 @@ namespace MakeItSoLib
         /// </summary>
         private void updatePreprocessorDefinitions(ProjectConfigurationInfo_CPP configuration)
         {
-            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
+            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProjectInfo.Name);
 
             // By default we replace WIN32 with GCC_BUILD...
             configuration.removePreprocessorDefinition("WIN32");
@@ -129,9 +129,9 @@ namespace MakeItSoLib
         /// </summary>
         private void updateLibraryPaths(ProjectConfigurationInfo_CPP configuration)
         {
-            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
+            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProjectInfo.Name);
 
-            string projectRootFolder = configuration.ParentProject.RootFolderAbsolute;
+            string projectRootFolder = configuration.ParentProjectInfo.RootFolderAbsolute;
 
             // We check if any library paths should be removed...
             List<string> libraryPaths = new List<string>(configuration.getLibraryPaths());
@@ -165,9 +165,9 @@ namespace MakeItSoLib
         /// </summary>
         private void updateIncludePaths(ProjectConfigurationInfo_CPP configuration)
         {
-            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
+            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProjectInfo.Name);
 
-            string projectRootFolder = configuration.ParentProject.RootFolderAbsolute;
+            string projectRootFolder = configuration.ParentProjectInfo.RootFolderAbsolute;
 
             // We check if any include paths should be removed...
             List<string> includePaths = new List<string>(configuration.getIncludePaths());
@@ -194,7 +194,7 @@ namespace MakeItSoLib
         /// </summary>
         private void updateLibraries(ProjectConfigurationInfo_CPP configuration)
         {
-            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProject.Name);
+            MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProjectInfo.Name);
 
             // We check if any of the libraries in the configuration should be removed...
             HashSet<string> libraries = new HashSet<string>(configuration.getLibraryRawNames());

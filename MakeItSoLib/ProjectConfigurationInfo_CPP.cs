@@ -17,10 +17,10 @@ namespace MakeItSoLib
         /// <summary>
         /// The project that holds this configuration.
         /// </summary>
-        public ProjectInfo_CPP ParentProject
+        public ProjectInfo_CPP ParentProjectInfo
         {
-            get { return m_parentProject; }
-            set { m_parentProject = value; }
+            get { return m_parentProjectInfo; }
+            set { m_parentProjectInfo = value; }
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace MakeItSoLib
         /// </summary>
         public string IntermediateFolderAbsolute
         {
-            get { return Path.Combine(ParentProject.RootFolderAbsolute, IntermediateFolder); }
+            get { return Path.Combine(ParentProjectInfo.RootFolderAbsolute, IntermediateFolder); }
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace MakeItSoLib
         /// </summary>
         public string OutputFolderAbsolute
         {
-            get { return Path.Combine(ParentProject.RootFolderAbsolute, OutputFolder); }
+            get { return Path.Combine(ParentProjectInfo.RootFolderAbsolute, OutputFolder); }
         }
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace MakeItSoLib
         private string m_name = "";
 
         // The project that this configuration is part of...
-        private ProjectInfo_CPP m_parentProject = null;
+        private ProjectInfo_CPP m_parentProjectInfo = null;
 
         // The folder for intermediate objects, such as object files...
         private string m_intermediateFolder = "";

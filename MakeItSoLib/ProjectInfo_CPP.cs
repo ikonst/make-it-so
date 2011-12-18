@@ -22,6 +22,23 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Adds a source file to the project.
+        /// </summary>
+        public void addFile(string file)
+        {
+            m_files.Add(file);
+        }
+
+        /// <summary>
+        /// Gets the collection of files in the project. 
+        /// File paths are relative to the project's root folder.
+        /// </summary>
+        public HashSet<string> getFiles()
+        {
+            return m_files;
+        }
+
+        /// <summary>
         /// Sets up implicit linking for this project.
         /// </summary>
         public void setupImplicitLinking()
@@ -78,7 +95,7 @@ namespace MakeItSoLib
                         {
                             // We find the configuration for this info and add
                             // the library to it...
-                            ProjectConfigurationInfo_CPP configuration = getConfigurations().Find((cfg) => (cfg.Name == info.ConfigurationName));
+                            ProjectConfigurationInfo_CPP configuration = getConfigurationInfos().Find((cfg) => (cfg.Name == info.ConfigurationName));
                             if (configuration == null)
                             {
                                 // We may fail to find the library to implicitly link
@@ -108,7 +125,7 @@ namespace MakeItSoLib
                         foreach (ImplicitLinkInfo info in infos)
                         {
                             // We find the configuration for this info...
-                            ProjectConfigurationInfo_CPP configuration = getConfigurations().Find((cfg) => (cfg.Name == info.ConfigurationName));
+                            ProjectConfigurationInfo_CPP configuration = getConfigurationInfos().Find((cfg) => (cfg.Name == info.ConfigurationName));
 
                             // We add the collection of object files to the configuration...
                             string intermediateFolderAbsolute = Utils.addPrefixToFolder(info.IntermediateFolderAbsolute, "gcc");
@@ -127,17 +144,17 @@ namespace MakeItSoLib
         /// <summary>
         /// Adds a configuration to the project.
         /// </summary>
-        public void addConfiguration(ProjectConfigurationInfo_CPP configuration)
+        public void addConfigurationInfo(ProjectConfigurationInfo_CPP configurationInfo)
         {
-            m_configurations.Add(configuration);
+            m_configurationInfos.Add(configurationInfo);
         }
 
         /// <summary>
         /// Gets or the collection of configurations (debug, release etc) for the project.
         /// </summary>
-        public List<ProjectConfigurationInfo_CPP> getConfigurations()
+        public List<ProjectConfigurationInfo_CPP> getConfigurationInfos()
         {
-            return m_configurations;
+            return m_configurationInfos;
         }
 
         /// <summary>
@@ -173,7 +190,7 @@ namespace MakeItSoLib
 
                 // We've found a library, so we add it to our collection 
                 // of items to link in...
-                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurations())
+                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurationInfos())
                 {
                     ImplicitLinkInfo info = new ImplicitLinkInfo();
                     info.LibraryRawName = requiredProject.Name;
@@ -208,7 +225,7 @@ namespace MakeItSoLib
                 }
 
                 // We've found a library, so we add its object files to our collection...
-                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurations())
+                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurationInfos())
                 {
                     ImplicitLinkInfo info = new ImplicitLinkInfo();
                     info.ConfigurationName = configuration.Name;
@@ -231,8 +248,11 @@ namespace MakeItSoLib
 
         #region Private data
 
+        // The collection of source files in the project...
+        protected HashSet<string> m_files = new HashSet<string>();
+
         // The collection of configurations (debug, release)...
-        private List<ProjectConfigurationInfo_CPP> m_configurations = new List<ProjectConfigurationInfo_CPP>();
+        private List<ProjectConfigurationInfo_CPP> m_configurationInfos = new List<ProjectConfigurationInfo_CPP>();
 
         // True if we need to implicitly link libraries we depend on...
         private bool m_linkLibraryDependencies = false;
