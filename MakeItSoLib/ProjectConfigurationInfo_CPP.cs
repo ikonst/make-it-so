@@ -55,8 +55,7 @@ namespace MakeItSoLib
         }
 
         /// <summary>
-        /// Gets or sets the output folder, relative to the project's root
-        /// folder.
+        /// Gets or sets the output folder, relative to the project's root folder.
         /// </summary>
         public string OutputFolder
         {

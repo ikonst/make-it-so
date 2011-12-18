@@ -55,3 +55,20 @@ Y - List of .cs files
     - Defines(?)
 - Output path
 - Project type (library, exe, winexe)    
+
+- Properties
+
+  Name								Value
+  ----                              -----
+Y  "Optimize"						true/false
+Y  "OutputPath"						"bin\Debug"
+Y  "TreatWarningsAsErrors"			true/false
+Y  "DefineConstants"					"DEBUG;TRACE"
+Y  "DebugSymbols"					true/false
+  "NoWarn"							"" (format?)
+  "TreatSpecificWarningsAsErrors"	"" (format?)
+  "DebugInfo"						"full"
+  "FileAlignment"					512
+  "WarningLevel"					4
+  
+  

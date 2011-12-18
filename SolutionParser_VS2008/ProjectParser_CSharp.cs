@@ -88,8 +88,61 @@ namespace SolutionParser_VS2008
             configurationInfo.ParentProjectInfo = m_projectInfo;
             configurationInfo.Name = Utils.call<string>(() => dteConfiguration.ConfigurationName);
 
+            // We parse the configuration's properties, and set configuration
+            // seetings from them...
+            Dictionary<string, object> properties = getConfigurationProperties(dteConfiguration);
+            configurationInfo.Optimize = getBoolProperty(properties, "Optimize");
+            configurationInfo.OutputFolder = getStringProperty(properties, "OutputPath");
+            configurationInfo.ThreatWarningsAsErrors = getBoolProperty(properties, "TreatWarningsAsErrors");
+            string definedConstants = getStringProperty(properties, "DefineConstants");
+            foreach (string definedConstant in Utils.split(definedConstants, ';'))
+            {
+                configurationInfo.addDefinedConstant(definedConstant);
+            }
+            configurationInfo.Debug = getBoolProperty(properties, "DebugSymbols");
+            string noWarn = getStringProperty(properties, "NoWarn");
+
             // We add the configuration-info to the project-info...
             m_projectInfo.addConfigurationInfo(configurationInfo);
+        }
+
+        /// <summary>
+        /// Gets a bool property from the collection of properties passed in.
+        /// Returns false if the property is not in the collection.
+        /// </summary>
+        private bool getBoolProperty(Dictionary<string, object> properties, string name)
+        {
+            return (properties.ContainsKey(name) == true) ? (bool)properties[name] : false;
+        }
+
+        /// <summary>
+        /// Gets a string property from the collection of properties passed in.
+        /// Returns "" if the property is not in the collection.
+        /// </summary>
+        private string getStringProperty(Dictionary<string, object> properties, string name)
+        {
+            return (properties.ContainsKey(name) == true) ? (string)properties[name] : "";
+        }
+
+        /// <summary>
+        /// Converts the collection of properties for the configuration passed in,
+        /// into a map of string -> object.
+        /// </summary>
+        private Dictionary<string, object> getConfigurationProperties(EnvDTE.Configuration dteConfiguration)
+        {
+            Dictionary<string, object> results = new Dictionary<string, object>();
+
+            EnvDTE.Properties dteProperties = Utils.call<EnvDTE.Properties>(() => (dteConfiguration.Properties));
+            int numProperties = Utils.call<int>(() => (dteProperties.Count));
+            for (int i = 1; i <= numProperties; ++i)
+            {
+                EnvDTE.Property dteProperty = Utils.call<EnvDTE.Property>(() => (dteProperties.Item(i)));
+                string propertyName = Utils.call<string>(() => (dteProperty.Name));
+                object propertyValue = Utils.call<object>(() => (dteProperty.Value));
+                results[propertyName] = propertyValue;
+            }
+
+            return results;
         }
 
         /// <summary>
