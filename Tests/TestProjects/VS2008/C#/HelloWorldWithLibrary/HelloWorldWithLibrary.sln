@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextLib", "TextLib\TextLib.csproj", "{A4CF9F75-1787-4D0F-897A-CA6EF8083CFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{1AAB8D46-08BF-4CC1-858C-49D566CA78F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A4CF9F75-1787-4D0F-897A-CA6EF8083CFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4CF9F75-1787-4D0F-897A-CA6EF8083CFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4CF9F75-1787-4D0F-897A-CA6EF8083CFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4CF9F75-1787-4D0F-897A-CA6EF8083CFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AAB8D46-08BF-4CC1-858C-49D566CA78F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AAB8D46-08BF-4CC1-858C-49D566CA78F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AAB8D46-08BF-4CC1-858C-49D566CA78F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AAB8D46-08BF-4CC1-858C-49D566CA78F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
