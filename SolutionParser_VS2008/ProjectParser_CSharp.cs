@@ -91,16 +91,32 @@ namespace SolutionParser_VS2008
             // We parse the configuration's properties, and set configuration
             // seetings from them...
             Dictionary<string, object> properties = getConfigurationProperties(dteConfiguration);
+
+            // Whether to optimize...
             configurationInfo.Optimize = getBoolProperty(properties, "Optimize");
+
+            // The output path...
             configurationInfo.OutputFolder = getStringProperty(properties, "OutputPath");
+
+            // Whether to treat warnings as errors...
             configurationInfo.ThreatWarningsAsErrors = getBoolProperty(properties, "TreatWarningsAsErrors");
+
+            // Defined constants (DEBUG, TRACE etc)...
             string definedConstants = getStringProperty(properties, "DefineConstants");
             foreach (string definedConstant in Utils.split(definedConstants, ';'))
             {
                 configurationInfo.addDefinedConstant(definedConstant);
             }
+
+            // Whether to add debug symbols to the output...
             configurationInfo.Debug = getBoolProperty(properties, "DebugSymbols");
-            string noWarn = getStringProperty(properties, "NoWarn");
+
+            // Comma separated list of warnings to ignore...
+            string warningsToIgnore = getStringProperty(properties, "NoWarn");
+            foreach (string warningToIgnore in Utils.split(warningsToIgnore, ','))
+            {
+                configurationInfo.addWarningToIgnore(warningToIgnore);
+            }
 
             // We add the configuration-info to the project-info...
             m_projectInfo.addConfigurationInfo(configurationInfo);

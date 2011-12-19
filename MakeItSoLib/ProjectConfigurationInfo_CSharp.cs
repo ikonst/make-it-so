@@ -14,6 +14,16 @@ namespace MakeItSoLib
         #region Public methods and properties
 
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        public ProjectConfigurationInfo_CSharp()
+        {
+            // By default, we ignore these warnings...
+            m_warningsToIgnore.Add("1701");
+            m_warningsToIgnore.Add("1702");
+        }
+
+        /// <summary>
         /// The project that holds this configuration.
         /// </summary>
         public ProjectInfo_CSharp ParentProjectInfo
@@ -84,6 +94,22 @@ namespace MakeItSoLib
             set { m_debug = value; }
         }
 
+        /// <summary>
+        /// Adds a warning number (as a string) to ignore.
+        /// </summary>
+        public void addWarningToIgnore(string warningToIgnore)
+        {
+            m_warningsToIgnore.Add(warningToIgnore);
+        }
+
+        /// <summary>
+        /// Returns the collection of warnings to ignore.
+        /// </summary>
+        public List<string> getWarningsToIgnore()
+        {
+            return m_warningsToIgnore.ToList();
+        }
+
         #endregion
 
         #region Private data
@@ -105,6 +131,9 @@ namespace MakeItSoLib
 
         // Whether we generate debug symbols...
         private bool m_debug = false;
+
+        // The collections of warnings to ignore...
+        private HashSet<string> m_warningsToIgnore = new HashSet<string>();
 
         // The parent project...
         private ProjectInfo_CSharp m_parentProjectInfo = null;
