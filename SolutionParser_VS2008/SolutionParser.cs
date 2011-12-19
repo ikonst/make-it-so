@@ -41,7 +41,7 @@ namespace SolutionParser_VS2008
                 openSolution();
 
                 // We get the root collection of projects and parse them.
-                EnvDTE.Projects rootProjects = Utils.call<EnvDTE.Projects>(() => (m_dteSolution.Projects));
+                EnvDTE.Projects rootProjects = Utils.call(() => (m_dteSolution.Projects));
                 parseProjects(rootProjects);
 
                 // We find the dependencies between projects...
@@ -96,10 +96,10 @@ namespace SolutionParser_VS2008
             // We parse each project in the collection.
             // Note that this may end up recursing back into this function, 
             // as there may be projects nested in other projects...
-            int numProjects = Utils.call<int>(() => (projects.Count));
+            int numProjects = Utils.call(() => (projects.Count));
             for (int i = 1; i <= numProjects; ++i)
             {
-                EnvDTE.Project project = Utils.call<EnvDTE.Project>(() => (projects.Item(i)));
+                EnvDTE.Project project = Utils.call(() => (projects.Item(i)));
                 parseProject(project);
             }
         }
@@ -110,10 +110,10 @@ namespace SolutionParser_VS2008
         private void parseProject(EnvDTE.Project project)
         {
             // We get the project name...
-            string projectName = Utils.call<string>(() => (project.Name));
+            string projectName = Utils.call(() => (project.Name));
 
             // We check if this project is a kind we know how to convert...
-            string strProjectType = Utils.call<string>(() => (project.Kind));
+            string strProjectType = Utils.call(() => (project.Kind));
             ProjectType eProjectType = convertProjectTypeToEnum(strProjectType);
             switch (eProjectType)
             {
@@ -122,7 +122,7 @@ namespace SolutionParser_VS2008
                 {
                     // We get the Visual Studio project, parse it and store the 
                     // parsed project in our collection of results...
-                    VCProject vcProject = Utils.call<VCProject>(() => (project.Object as VCProject));
+                    VCProject vcProject = Utils.call(() => (project.Object as VCProject));
                     ProjectParser_CPP parser = new ProjectParser_CPP(vcProject, m_parsedSolution.RootFolderAbsolute);
                     m_parsedSolution.addProjectInfo(projectName, parser.Project);
                 }
@@ -133,7 +133,7 @@ namespace SolutionParser_VS2008
                 {
                     // We get the Visual Studio project, parse it and store the 
                     // parsed project in our collection of results...
-                    VSProject2 vsProject = Utils.call<VSProject2>(() => (project.Object as VSProject2));
+                    VSProject2 vsProject = Utils.call(() => (project.Object as VSProject2));
                     ProjectParser_CSharp parser = new ProjectParser_CSharp(vsProject, m_parsedSolution.RootFolderAbsolute);
                     m_parsedSolution.addProjectInfo(projectName, parser.Project);
                 }
@@ -142,7 +142,7 @@ namespace SolutionParser_VS2008
 
             // We parse the project's items, to check whether there are any nested
             // projects...
-            EnvDTE.ProjectItems projectItems = Utils.call<EnvDTE.ProjectItems>(() => (project.ProjectItems));
+            EnvDTE.ProjectItems projectItems = Utils.call(() => (project.ProjectItems));
             parseProjectItems(projectItems);
         }
 
@@ -156,20 +156,20 @@ namespace SolutionParser_VS2008
         private void parseProjectItems(EnvDTE.ProjectItems projectItems)
         {
             // We look through the items...
-            int numProjectItems = Utils.call<int>(() => (projectItems.Count));
+            int numProjectItems = Utils.call(() => (projectItems.Count));
             for (int i = 1; i <= numProjectItems; ++i)
             {
-                EnvDTE.ProjectItem projectItem = Utils.call<EnvDTE.ProjectItem>(() => (projectItems.Item(i)));
+                EnvDTE.ProjectItem projectItem = Utils.call(() => (projectItems.Item(i)));
 
                 // We see if the item itself has sub-items...
-                EnvDTE.ProjectItems subItems = Utils.call<EnvDTE.ProjectItems>(() => (projectItem.ProjectItems));
+                EnvDTE.ProjectItems subItems = Utils.call(() => (projectItem.ProjectItems));
                 if (subItems != null)
                 {
                     parseProjectItems(subItems);
                 }
 
                 // We see if this item has a sub-project...
-                EnvDTE.Project subProject = Utils.call<EnvDTE.Project>(() => (projectItem.SubProject));
+                EnvDTE.Project subProject = Utils.call(() => (projectItem.SubProject));
                 if (subProject != null)
                 {
                     parseProject(subProject);
@@ -191,27 +191,27 @@ namespace SolutionParser_VS2008
             // that it depends on (called 'required projects').
 
             // We get the Solution.SolutionBuild.BuildDependencies object...
-            SolutionBuild solutionBuild = Utils.call<SolutionBuild>(() => (m_dteSolution.SolutionBuild));
-            BuildDependencies buildDependencies = Utils.call<BuildDependencies>(() => (solutionBuild.BuildDependencies));
+            SolutionBuild solutionBuild = Utils.call(() => (m_dteSolution.SolutionBuild));
+            BuildDependencies buildDependencies = Utils.call(() => (solutionBuild.BuildDependencies));
 
             // We loop through the 'BuildDependencies'. Each one of these holds dependency 
             // information for one project...
-            int numBuildDependencies = Utils.call<int>(() => (buildDependencies.Count));
+            int numBuildDependencies = Utils.call(() => (buildDependencies.Count));
             for (int i = 1; i <= numBuildDependencies; ++i)
             {
-                BuildDependency buildDependency = Utils.call<BuildDependency>(() => (buildDependencies.Item(i)));
+                BuildDependency buildDependency = Utils.call(() => (buildDependencies.Item(i)));
 
                 // We get the project's name...
-                EnvDTE.Project project = Utils.call<EnvDTE.Project>(() => (buildDependency.Project));
-                string projectName = Utils.call<string>(() => (project.Name));
+                EnvDTE.Project project = Utils.call(() => (buildDependency.Project));
+                string projectName = Utils.call(() => (project.Name));
 
                 // We loop through the required-projects, getting the name of each one...
-                object[] requiredProjects = Utils.call<object[]>(() => (buildDependency.RequiredProjects as object[]));
+                object[] requiredProjects = Utils.call(() => (buildDependency.RequiredProjects as object[]));
                 int numRequiredProjects = requiredProjects.Length;
                 for (int j = 0; j < numRequiredProjects; ++j)
                 {
                     EnvDTE.Project requiredProject = requiredProjects[j] as EnvDTE.Project;
-                    string requiredProjectName = Utils.call<string>(() => (requiredProject.Name));
+                    string requiredProjectName = Utils.call(() => (requiredProject.Name));
 
                     // We store the dependency with the parsed project...
                     m_parsedSolution.addRequiredProjectToProject(projectName, requiredProjectName);

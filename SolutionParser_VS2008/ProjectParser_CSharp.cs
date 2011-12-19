@@ -26,10 +26,10 @@ namespace SolutionParser_VS2008
             {
                 m_vsProject = vsProject;
                 m_solutionRootFolder = solutionRootFolder;
-                m_dteProject = Utils.call<EnvDTE.Project>(() => vsProject.Project);
+                m_dteProject = Utils.call(() => vsProject.Project);
 
                 // We get the project name...
-                m_projectInfo.Name = Utils.call<string>(() => (m_dteProject.Name));
+                m_projectInfo.Name = Utils.call(() => (m_dteProject.Name));
                 Log.log("- parsing project " + m_projectInfo.Name);
 
                 // and parse the project...
@@ -69,11 +69,11 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseConfigurations()
         {
-            EnvDTE.ConfigurationManager configurationManager = Utils.call<EnvDTE.ConfigurationManager>(() => (m_dteProject.ConfigurationManager));
-            int numConfigurations = Utils.call<int>(() => (configurationManager.Count));
+            EnvDTE.ConfigurationManager configurationManager = Utils.call(() => (m_dteProject.ConfigurationManager));
+            int numConfigurations = Utils.call(() => (configurationManager.Count));
             for (int i = 1; i <= numConfigurations; ++i)
             {
-                EnvDTE.Configuration dteConfiguration = Utils.call<EnvDTE.Configuration>(() => (configurationManager.Item(i, "") as EnvDTE.Configuration));
+                EnvDTE.Configuration dteConfiguration = Utils.call(() => (configurationManager.Item(i, "") as EnvDTE.Configuration));
                 parseConfiguration(dteConfiguration);
             }
         }
@@ -86,7 +86,7 @@ namespace SolutionParser_VS2008
             // We create a new configuration-info object and fill it in...
             ProjectConfigurationInfo_CSharp configurationInfo = new ProjectConfigurationInfo_CSharp();
             configurationInfo.ParentProjectInfo = m_projectInfo;
-            configurationInfo.Name = Utils.call<string>(() => dteConfiguration.ConfigurationName);
+            configurationInfo.Name = Utils.call(() => dteConfiguration.ConfigurationName);
 
             // We parse the configuration's properties, and set configuration
             // seetings from them...
@@ -132,13 +132,13 @@ namespace SolutionParser_VS2008
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
-            EnvDTE.Properties dteProperties = Utils.call<EnvDTE.Properties>(() => (dteConfiguration.Properties));
-            int numProperties = Utils.call<int>(() => (dteProperties.Count));
+            EnvDTE.Properties dteProperties = Utils.call(() => (dteConfiguration.Properties));
+            int numProperties = Utils.call(() => (dteProperties.Count));
             for (int i = 1; i <= numProperties; ++i)
             {
-                EnvDTE.Property dteProperty = Utils.call<EnvDTE.Property>(() => (dteProperties.Item(i)));
-                string propertyName = Utils.call<string>(() => (dteProperty.Name));
-                object propertyValue = Utils.call<object>(() => (dteProperty.Value));
+                EnvDTE.Property dteProperty = Utils.call(() => (dteProperties.Item(i)));
+                string propertyName = Utils.call(() => (dteProperty.Name));
+                object propertyValue = Utils.call(() => (dteProperty.Value));
                 results[propertyName] = propertyValue;
             }
 
@@ -152,7 +152,7 @@ namespace SolutionParser_VS2008
         {
             // We find the collection of files...
             List<string> files = new List<string>();
-            EnvDTE.ProjectItems projectItems = Utils.call<EnvDTE.ProjectItems>(() => (m_dteProject.ProjectItems));
+            EnvDTE.ProjectItems projectItems = Utils.call(() => (m_dteProject.ProjectItems));
             findFiles(projectItems, files, "");
 
             // We add the files to the project info...
@@ -169,11 +169,11 @@ namespace SolutionParser_VS2008
         private void findFiles(EnvDTE.ProjectItems projectItems, List<string> files, string path)
         {
             // We look through the items...
-            int numProjectItems = Utils.call<int>(() => (projectItems.Count));
+            int numProjectItems = Utils.call(() => (projectItems.Count));
             for (int i = 1; i <= numProjectItems; ++i)
             {
-                EnvDTE.ProjectItem projectItem = Utils.call<EnvDTE.ProjectItem>(() => (projectItems.Item(i)));
-                string itemName = Utils.call<string>(() => projectItem.Name);
+                EnvDTE.ProjectItem projectItem = Utils.call(() => (projectItems.Item(i)));
+                string itemName = Utils.call(() => projectItem.Name);
                 if (itemName.EndsWith(".cs") == true)
                 {
                     string filePath = path + itemName;
@@ -181,7 +181,7 @@ namespace SolutionParser_VS2008
                 }
 
                 // We see if the item itself has sub-items...
-                EnvDTE.ProjectItems subItems = Utils.call<EnvDTE.ProjectItems>(() => (projectItem.ProjectItems));
+                EnvDTE.ProjectItems subItems = Utils.call(() => (projectItem.ProjectItems));
                 if (subItems != null)
                 {
                     string newPath = path + itemName + "/";
@@ -189,10 +189,10 @@ namespace SolutionParser_VS2008
                 }
 
                 // We see if this item has a sub-project...
-                EnvDTE.Project subProject = Utils.call<EnvDTE.Project>(() => (projectItem.SubProject));
+                EnvDTE.Project subProject = Utils.call(() => (projectItem.SubProject));
                 if (subProject != null)
                 {
-                    EnvDTE.ProjectItems subProjectItems = Utils.call<EnvDTE.ProjectItems>(() => (subProject.ProjectItems));
+                    EnvDTE.ProjectItems subProjectItems = Utils.call(() => (subProject.ProjectItems));
                     string newPath = path + itemName + "/";
                     findFiles(subProjectItems, files, newPath);
                 }

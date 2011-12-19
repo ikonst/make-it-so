@@ -28,7 +28,7 @@ namespace SolutionParser_VS2008
                 m_solutionRootFolder = solutionRootFolder;
 
                 // We get the project name...
-                m_projectInfo.Name = Utils.call<string>(() => (m_vcProject.Name));
+                m_projectInfo.Name = Utils.call(() => (m_vcProject.Name));
                 Log.log("- parsing project " + m_projectInfo.Name);
 
                 // and parse the project...
@@ -69,13 +69,13 @@ namespace SolutionParser_VS2008
         private void parseProject_Configurations()
         {
             // We loop through the collection of configurations for the project...
-            IVCCollection configurations = Utils.call<IVCCollection>(() => (m_vcProject.Configurations as IVCCollection));
-            int numConfigurations = Utils.call<int>(() => (configurations.Count));
+            IVCCollection configurations = Utils.call(() => (m_vcProject.Configurations as IVCCollection));
+            int numConfigurations = Utils.call(() => (configurations.Count));
             for (int i = 1; i <= numConfigurations; ++i)
             {
                 // We parse this configuration, and add the parsed data to the collection
                 // for this project...
-                VCConfiguration vcConfiguration = Utils.call<VCConfiguration>(() => (configurations.Item(i) as VCConfiguration));
+                VCConfiguration vcConfiguration = Utils.call(() => (configurations.Item(i) as VCConfiguration));
                 parseConfiguration(vcConfiguration);
             }
         }
@@ -89,7 +89,7 @@ namespace SolutionParser_VS2008
             configurationInfo.ParentProjectInfo = m_projectInfo;
 
             // The configuration name...
-            configurationInfo.Name = Utils.call<string>(() => (vcConfiguration.ConfigurationName));
+            configurationInfo.Name = Utils.call(() => (vcConfiguration.ConfigurationName));
 
             // The project type. 
             // Note: we are assuming that all the configurations for the project build the
@@ -120,8 +120,8 @@ namespace SolutionParser_VS2008
         private void parseConfiguration_LibrarianSettings(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP configurationInfo)
         {
             // We get the librarian 'tool'...
-            IVCCollection tools = Utils.call<IVCCollection>(() => (vcConfiguration.Tools as IVCCollection));
-            VCLibrarianTool librarianTool = Utils.call<VCLibrarianTool>(() => (tools.Item("VCLibrarianTool") as VCLibrarianTool));
+            IVCCollection tools = Utils.call(() => (vcConfiguration.Tools as IVCCollection));
+            VCLibrarianTool librarianTool = Utils.call(() => (tools.Item("VCLibrarianTool") as VCLibrarianTool));
             if (librarianTool == null)
             {
                 // Not all projects have a librarian tool...
@@ -130,7 +130,7 @@ namespace SolutionParser_VS2008
 
             // We find if this library is set to link together other libraries it depends on...
             // (We are assuming that all configurations of the project have the same link-library-dependencies setting.)
-            m_projectInfo.LinkLibraryDependencies = Utils.call<bool>(() => (librarianTool.LinkLibraryDependencies));
+            m_projectInfo.LinkLibraryDependencies = Utils.call(() => (librarianTool.LinkLibraryDependencies));
         }
 
         /// <summary>
@@ -140,8 +140,8 @@ namespace SolutionParser_VS2008
         private void parseConfiguration_LinkerSettings(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP configurationInfo)
         {
             // We get the linker-settings 'tool'...
-            IVCCollection tools = Utils.call<IVCCollection>(() => (vcConfiguration.Tools as IVCCollection));
-            VCLinkerTool linkerTool = Utils.call<VCLinkerTool>(() => (tools.Item("VCLinkerTool") as VCLinkerTool));
+            IVCCollection tools = Utils.call(() => (vcConfiguration.Tools as IVCCollection));
+            VCLinkerTool linkerTool = Utils.call(() => (tools.Item("VCLinkerTool") as VCLinkerTool));
             if (linkerTool == null)
             {
                 // Not all projects have a linker tools...
@@ -162,10 +162,10 @@ namespace SolutionParser_VS2008
             // Whether we implicitly link in libraries we depend on.
             // (We are assuming that all configurations of the project have the
             // same link-library-dependencies setting.)
-            m_projectInfo.LinkLibraryDependencies = Utils.call<bool>(() => (linkerTool.LinkLibraryDependencies));
+            m_projectInfo.LinkLibraryDependencies = Utils.call(() => (linkerTool.LinkLibraryDependencies));
 
             // Generate debug info...
-            bool debugInfo = Utils.call<bool>(() => (linkerTool.GenerateDebugInformation));
+            bool debugInfo = Utils.call(() => (linkerTool.GenerateDebugInformation));
             if (debugInfo == true 
                 && 
                 configurationInfo.getPreprocessorDefinitions().Contains("NDEBUG") == false)
@@ -186,7 +186,7 @@ namespace SolutionParser_VS2008
             // 4. Make sure all paths are relative to the project root folder
 
             // 1 & 2...
-            string strAdditionalLibraryDirectories = Utils.call<string>(() => (linkerTool.AdditionalLibraryDirectories));
+            string strAdditionalLibraryDirectories = Utils.call(() => (linkerTool.AdditionalLibraryDirectories));
             if (strAdditionalLibraryDirectories == null)
             {
                 return;
@@ -206,7 +206,7 @@ namespace SolutionParser_VS2008
                 }
 
                 // 3 & 4...
-                string resolvedPath = Utils.call<string>(() => (vcConfiguration.Evaluate(unquotedLibraryDirectory)));
+                string resolvedPath = Utils.call(() => (vcConfiguration.Evaluate(unquotedLibraryDirectory)));
                 string relativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, resolvedPath);
                 configurationInfo.addLibraryPath(relativePath);
             }
@@ -218,7 +218,7 @@ namespace SolutionParser_VS2008
         private void parseLinkerSettings_Libraries(VCConfiguration vcConfiguration, VCLinkerTool linkerTool, ProjectConfigurationInfo_CPP configurationInfo)
         {
             // The collection of libraries is stored in a space-delimited string...
-            string strAdditionalLibraries = Utils.call<string>(() => (linkerTool.AdditionalDependencies));
+            string strAdditionalLibraries = Utils.call(() => (linkerTool.AdditionalDependencies));
             if (strAdditionalLibraries == null)
             {
                 return;
@@ -243,8 +243,8 @@ namespace SolutionParser_VS2008
         private void parseConfiguration_CompilerSettings(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP configurationInfo)
         {
             // We get the compiler-settings 'tool'...
-            IVCCollection tools = Utils.call<IVCCollection>(() => (vcConfiguration.Tools as IVCCollection));
-            VCCLCompilerTool compilerTool = Utils.call<VCCLCompilerTool>(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
+            IVCCollection tools = Utils.call(() => (vcConfiguration.Tools as IVCCollection));
+            VCCLCompilerTool compilerTool = Utils.call(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
 
             // And extract various details from it...
             parseCompilerSettings_IncludePath(vcConfiguration, compilerTool, configurationInfo);
@@ -258,7 +258,7 @@ namespace SolutionParser_VS2008
         private void parseCompilerSettings_CompilerFlags(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP configurationInfo)
         {
             // Warning level...
-            warningLevelOption warningLevel = Utils.call<warningLevelOption>(() => (compilerTool.WarningLevel));
+            warningLevelOption warningLevel = Utils.call(() => (compilerTool.WarningLevel));
             switch (warningLevel)
             {
                 case warningLevelOption.warningLevel_0:
@@ -271,14 +271,14 @@ namespace SolutionParser_VS2008
             }
 
             // Warnings as errors...
-            bool warningsAsErrors = Utils.call<bool>(() => (compilerTool.WarnAsError));
+            bool warningsAsErrors = Utils.call(() => (compilerTool.WarnAsError));
             if (warningsAsErrors == true)
             {
                 configurationInfo.addCompilerFlag("-Werror");
             }
 
             // Optimization...
-            optimizeOption optimization = Utils.call<optimizeOption>(() => (compilerTool.Optimization));
+            optimizeOption optimization = Utils.call(() => (compilerTool.Optimization));
             switch (optimization)
             {
                 case optimizeOption.optimizeDisabled:
@@ -311,7 +311,7 @@ namespace SolutionParser_VS2008
             // 4. Make sure all paths are relative to the project root folder
 
             // 1 & 2...
-            string strAdditionalIncludeDirectories = Utils.call<string>(() => (compilerTool.AdditionalIncludeDirectories));
+            string strAdditionalIncludeDirectories = Utils.call(() => (compilerTool.AdditionalIncludeDirectories));
             if (strAdditionalIncludeDirectories == null)
             {
                 return;
@@ -324,7 +324,7 @@ namespace SolutionParser_VS2008
                 string unquotedIncludeDirectory = additionalIncludeDirectory.Trim('"');
 
                 // 3 & 4...
-                string resolvedPath = Utils.call<string>(() => (vcConfiguration.Evaluate(unquotedIncludeDirectory)));
+                string resolvedPath = Utils.call(() => (vcConfiguration.Evaluate(unquotedIncludeDirectory)));
                 string relativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, resolvedPath);
 
                 configurationInfo.addIncludePath(relativePath);
@@ -338,7 +338,7 @@ namespace SolutionParser_VS2008
         {
             // We read the delimited string of preprocessor definitions, and
             // split them...
-            string strPreprocessorDefinitions = Utils.call<string>(() => (compilerTool.PreprocessorDefinitions));
+            string strPreprocessorDefinitions = Utils.call(() => (compilerTool.PreprocessorDefinitions));
             List<string> preprocessorDefinitions = Utils.split(strPreprocessorDefinitions, ';');
 
             // We find project and configuration config to see if any 
@@ -362,7 +362,7 @@ namespace SolutionParser_VS2008
             ProjectInfo.ProjectTypeEnum result = ProjectInfo.ProjectTypeEnum.INVALID;
 
             // We get the Visual Studio confiuration type...
-            ConfigurationTypes configurationType = Utils.call<ConfigurationTypes>(() => (vcConfiguration.ConfigurationType));
+            ConfigurationTypes configurationType = Utils.call(() => (vcConfiguration.ConfigurationType));
 
             // And convert it to our enum type...
             switch (configurationType)
@@ -390,10 +390,10 @@ namespace SolutionParser_VS2008
         private string parseConfiguration_Folder(VCConfiguration vcConfiguration, Func<string> folderFn)
         {
             // We get the folder name, which may contain symbols e.g. £(ConfgurationName)...
-            string pathWithSymbols = Utils.call<string>(folderFn);
+            string pathWithSymbols = Utils.call(folderFn);
 
             // We resolve the symbols...
-            string evaluatedPath = Utils.call<string>(() => (vcConfiguration.Evaluate(pathWithSymbols)));
+            string evaluatedPath = Utils.call(() => (vcConfiguration.Evaluate(pathWithSymbols)));
 
             // If we ave an absolute path, we convert it to a relative one...
             string relativePath = evaluatedPath;
@@ -410,8 +410,8 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseProject_RootFolder()
         {
-            // The project root folder, both abolute and relative to the solution root...
-            m_projectInfo.RootFolderAbsolute = Utils.call<string>(() => (m_vcProject.ProjectDirectory));
+            // The project root folder, both absolute and relative to the solution root...
+            m_projectInfo.RootFolderAbsolute = Utils.call(() => (m_vcProject.ProjectDirectory));
             m_projectInfo.RootFolderRelative = Utils.makeRelativePath(m_solutionRootFolder, m_projectInfo.RootFolderAbsolute);
         }
 
@@ -421,13 +421,13 @@ namespace SolutionParser_VS2008
         private void parseProject_SourceFiles()
         {
             // We loop through the collection of files in the project...
-            IVCCollection files = Utils.call<IVCCollection>(() => (m_vcProject.Files as IVCCollection));
-            int numFiles = Utils.call<int>(() => (files.Count));
+            IVCCollection files = Utils.call(() => (m_vcProject.Files as IVCCollection));
+            int numFiles = Utils.call(() => (files.Count));
             for (int i = 1; i <= numFiles; ++i)
             {
                 // We get one file...
-                VCFile file = Utils.call<VCFile>(() => (files.Item(i) as VCFile));
-                string path = Utils.call<string>(() => (file.FullPath));
+                VCFile file = Utils.call(() => (files.Item(i) as VCFile));
+                string path = Utils.call(() => (file.FullPath));
 
                 // We find the extension, and see if it is one we treat 
                 // as a source file...
