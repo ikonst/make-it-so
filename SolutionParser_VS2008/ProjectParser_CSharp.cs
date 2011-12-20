@@ -61,6 +61,8 @@ namespace SolutionParser_VS2008
         {
             parseFiles();
             parseConfigurations();
+
+            Dictionary<string, object> projectProperties = getProjectProperties();
         }
 
         /// <summary>
@@ -118,6 +120,15 @@ namespace SolutionParser_VS2008
                 configurationInfo.addWarningToIgnore(warningToIgnore);
             }
 
+            // DebugInfo, e.g. "full"...
+            configurationInfo.DebugInfo = getStringProperty(properties, "DebugInfo");
+
+            // File alignment...
+            configurationInfo.FileAlignment = getIntProperty(properties, "FileAlignment");
+
+            // Warning level...
+            configurationInfo.WarningLevel = getIntProperty(properties, "WarningLevel");
+
             // We add the configuration-info to the project-info...
             m_projectInfo.addConfigurationInfo(configurationInfo);
         }
@@ -141,6 +152,15 @@ namespace SolutionParser_VS2008
         }
 
         /// <summary>
+        /// Gets an int property from the collection of properties passed in.
+        /// Returns 0 if the property is not in the collection.
+        /// </summary>
+        private int getIntProperty(Dictionary<string, object> properties, string name)
+        {
+            return (properties.ContainsKey(name) == true) ? Convert.ToInt32(properties[name]) : 0;
+        }
+
+        /// <summary>
         /// Converts the collection of properties for the configuration passed in,
         /// into a map of string -> object.
         /// </summary>
@@ -156,6 +176,33 @@ namespace SolutionParser_VS2008
                 string propertyName = Utils.call(() => (dteProperty.Name));
                 object propertyValue = Utils.call(() => (dteProperty.Value));
                 results[propertyName] = propertyValue;
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Converts the collection of properties for the project into a map 
+        /// of string -> object.
+        /// </summary>
+        private Dictionary<string, object> getProjectProperties()
+        {
+            Dictionary<string, object> results = new Dictionary<string, object>();
+
+            EnvDTE.Properties dteProperties = Utils.call(() => (m_dteProject.Properties));
+            int numProperties = Utils.call(() => (dteProperties.Count));
+            for (int i = 1; i <= numProperties; ++i)
+            {
+                try
+                {
+                    EnvDTE.Property dteProperty = Utils.call(() => (dteProperties.Item(i)));
+                    string propertyName = Utils.call(() => (dteProperty.Name));
+                    object propertyValue = Utils.call(() => (dteProperty.Value));
+                    results[propertyName] = propertyValue;
+                }
+                catch (Exception)
+                {
+                }
             }
 
             return results;

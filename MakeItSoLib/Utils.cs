@@ -25,7 +25,7 @@ namespace MakeItSoLib
         /// Visual Studio is busy, and in these cases we get a COM exception.
         /// 
         /// This function will retry calling the function if this happens, and
-        /// will only fail if it has retried 100 times without success.
+        /// will only fail if it has retried 20 times without success.
         /// 
         /// You pass in the function - or property - to call usually as a
         /// lambda. For example, to get the projects.Count property you would 
@@ -38,8 +38,8 @@ namespace MakeItSoLib
         /// </remarks>
         public static T call<T>(Func<T> fn)
         {
-            // We will try to call the function up to 100 times...
-            for (int i=0; i<100; ++i)
+            // We will try to call the function up to 20 times...
+            for (int i=0; i<20; ++i)
             {
                 try
                 {
@@ -55,7 +55,7 @@ namespace MakeItSoLib
                 }
             }
 
-            throw new Exception("'call' failed to call function after 100 tries.");
+            throw new Exception("'call' failed to call function after 20 tries.");
         }
 
         /// <summary>

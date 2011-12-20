@@ -110,6 +110,34 @@ namespace MakeItSoLib
             return m_warningsToIgnore.ToList();
         }
 
+        /// <summary>
+        /// Gets or sets the debug info type, e.g. "full".
+        /// Empty string if we do not need debug info.
+        /// </summary>
+        public string DebugInfo
+        {
+            get { return m_debugInfo; }
+            set { m_debugInfo = value; }
+        }
+
+        /// <summary>
+        /// The file alignment.
+        /// </summary>
+        public int FileAlignment
+        {
+            get { return m_fileAlignment; }
+            set { m_fileAlignment = value; }
+        }
+
+        /// <summary>
+        /// The warning level.
+        /// </summary>
+        public int WarningLevel
+        {
+            get { return m_warningLevel; }
+            set { m_warningLevel = value; }
+        }
+
         #endregion
 
         #region Private data
@@ -135,8 +163,17 @@ namespace MakeItSoLib
         // The collections of warnings to ignore...
         private HashSet<string> m_warningsToIgnore = new HashSet<string>();
 
+        // The type of debug info, e.g. "full"...
+        private string m_debugInfo = "";
+
         // The parent project...
         private ProjectInfo_CSharp m_parentProjectInfo = null;
+
+        // The file-alignment...
+        private int m_fileAlignment = 512;
+
+        // The warning level...
+        private int m_warningLevel = 4;
 
         #endregion
     }

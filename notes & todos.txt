@@ -45,15 +45,15 @@ Y - List of .cs files
 - List of references
   - List of library paths (do we need these if we have complete paths to references?)
   - Note: they may be different for Release and Debug configurations
-- Debug and release flags
-  - Debug_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -debug+ -debug:full -filealign:512 -pkg:dotnet -define:DEBUG -define:TRACE -optimize-   
-  - Release_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -filealign:512 -pkg:dotnet -define:TRACE -optimize+ 
-  - Parse project for:
-    - Warning level
-    - Ignore warnings
-    - Treat warnings as errors
-    - Defines(?)
-- Output path
+Y - Debug and release flags
+Y   - Debug_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -debug+ -debug:full -filealign:512 -pkg:dotnet -define:DEBUG -define:TRACE -optimize-   
+Y   - Release_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -filealign:512 -pkg:dotnet -define:TRACE -optimize+ 
+Y  - Parse project for:
+Y    - Warning level
+Y    - Ignore warnings
+Y    - Treat warnings as errors
+Y    - Defines(?)
+Y - Output path
 - Project type (library, exe, winexe)    
 
 - Properties
@@ -65,10 +65,9 @@ Y  "OutputPath"						"bin\Debug"
 Y  "TreatWarningsAsErrors"			true/false
 Y  "DefineConstants"					"DEBUG;TRACE"
 Y  "DebugSymbols"					true/false
-  "NoWarn"							"" (format?)
-  "TreatSpecificWarningsAsErrors"	"" (format?)
-  "DebugInfo"						"full"
-  "FileAlignment"					512
-  "WarningLevel"					4
+Y  "NoWarn"							"" (format?)
+Y  "DebugInfo"						"full"
+Y  "FileAlignment"					512
+Y  "WarningLevel"					4
   
   
