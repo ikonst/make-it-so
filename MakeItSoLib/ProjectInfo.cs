@@ -14,6 +14,12 @@ namespace MakeItSoLib
     /// solution. The information should be enough to create the
     /// makefile for the project.
     /// 
+    /// The idea is that data held in this class (and its derived classes)
+    /// is in a 'neutral format'. That is, not in a format specific to a
+    /// particular compiler version. So we should be able to build makefiles
+    /// from this data, regardless of the version of the original VS project
+    /// file that it came from.
+    /// 
     /// This base class holds properties that are common across different
     /// project types.
     /// </summary>
@@ -30,7 +36,10 @@ namespace MakeItSoLib
             INVALID,
             CPP_EXECUTABLE,
             CPP_STATIC_LIBRARY,
-            CPP_DLL
+            CPP_DLL,
+            CSHARP_EXECUTABLE,
+            CSHARP_LIBRARY,
+            CSHARP_WINFORMS_EXECUTABLE
         }
 
         #endregion

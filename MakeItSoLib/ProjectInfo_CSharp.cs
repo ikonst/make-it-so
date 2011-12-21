@@ -37,6 +37,15 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Gets or sets the output file name.
+        /// </summary>
+        public string OutputFileName
+        {
+            get { return m_outputFileName; }
+            set { m_outputFileName = value; }
+        }
+
+        /// <summary>
         /// Adds a cofiguration to the collection for this project.
         /// </summary>
         public void addConfigurationInfo(ProjectConfigurationInfo_CSharp configurationInfo)
@@ -58,6 +67,9 @@ namespace MakeItSoLib
 
         // The collection of source files in the project...
         protected HashSet<string> m_files = new HashSet<string>();
+
+        // The output file name...
+        private string m_outputFileName = "";
 
         // The collection of configurations (Debug, Release etc) for this project...
         private List<ProjectConfigurationInfo_CSharp> m_configurationInfos = new List<ProjectConfigurationInfo_CSharp>();

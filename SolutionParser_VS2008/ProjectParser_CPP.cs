@@ -11,7 +11,8 @@ namespace SolutionParser_VS2008
     /// <summary>
     /// Parses a C++ project.
     /// </summary><remarks>
-    /// We extract information from a VCProject object, and fill in a Project structure.
+    /// We extract information from a VCProject object, and fill in a 
+    /// ProjectInfo structure.
     /// </remarks>
     public class ProjectParser_CPP
     {

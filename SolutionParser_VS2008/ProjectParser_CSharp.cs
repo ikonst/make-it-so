@@ -5,13 +5,15 @@ using System.Text;
 using MakeItSoLib;
 using Microsoft.VisualStudio.VCProjectEngine;
 using VSLangProj80;
+using VSLangProj;
 
 namespace SolutionParser_VS2008
 {
     /// <summary>
     /// Parses a C# project.
     /// </summary><remarks>
-    /// We extract information from a VCProject object, and fill in a Project structure.
+    /// We extract information from a DTE Project and a VSProject2 object, and fill 
+    /// in a ProjectInfo structure.
     /// </remarks>
     public class ProjectParser_CSharp
     {
@@ -60,9 +62,58 @@ namespace SolutionParser_VS2008
         private void parseProject()
         {
             parseFiles();
+            parseProjectProperties();
             parseConfigurations();
+            parseReferences();
+        }
 
+        /// <summary>
+        /// We find the collection of references needed by this project.
+        /// </summary>
+        private void parseReferences()
+        {
+            string refs = "";
+
+            // We loop through the collection of references...
+            References references = Utils.call(() => (m_vsProject.References));
+            int numReferences = Utils.call(() => (references.Count));
+            for (int i = 1; i <= numReferences; ++i)
+            {
+                Reference reference = Utils.call(() => references.Item(i));
+                string path = Utils.call(() => (reference.Path));
+                refs += (path + ", ");
+            }
+        }
+
+        /// <summary>
+        /// Parses the project-level properties, such as the project type
+        /// and so on.
+        /// </summary>
+        private void parseProjectProperties()
+        {
+            // We convert the DTE properties to a map. (Note that this can
+            // be rather slow.)
             Dictionary<string, object> projectProperties = getProjectProperties();
+
+            // The project type (exe, library etc)...
+            prjOutputType outputType = (prjOutputType)getIntProperty(projectProperties, "OutputType");
+            switch(outputType)
+            {
+                case prjOutputType.prjOutputTypeExe:
+                    m_projectInfo.ProjectType = ProjectInfo.ProjectTypeEnum.CSHARP_EXECUTABLE;
+                    break;
+
+                case prjOutputType.prjOutputTypeLibrary:
+                    m_projectInfo.ProjectType = ProjectInfo.ProjectTypeEnum.CSHARP_LIBRARY;
+                    break;
+
+                case prjOutputType.prjOutputTypeWinExe:
+                    m_projectInfo.ProjectType = ProjectInfo.ProjectTypeEnum.CSHARP_WINFORMS_EXECUTABLE;
+                    break;
+            }
+
+            // The output file name, e.g. TextLib.dll...
+            m_projectInfo.OutputFileName = getStringProperty(projectProperties, "OutputFileName");
         }
 
         /// <summary>
@@ -202,6 +253,10 @@ namespace SolutionParser_VS2008
                 }
                 catch (Exception)
                 {
+                    // Some of the properties don't seem to have valid values.
+                    // I'm not really sure why this is. But we silently catch 
+                    // the exception, as they don't seem to be the properties
+                    // we need anyway.
                 }
             }
 
