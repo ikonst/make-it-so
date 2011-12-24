@@ -218,9 +218,12 @@ namespace SolutionParser_VS2008
                 }
             }
 
-            // We setup any implicit linking that needs to be done because 
-            // of project dependencies...
+            // We set up any implicit linking that needs to be done because 
+            // of project dependencies (this may be needed for C++ projects)...
             m_parsedSolution.setupImplicitLinking();
+
+            // We set up references for C# projects...
+            m_parsedSolution.setupReferences();
         }
 
         /// <summary>

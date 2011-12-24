@@ -269,6 +269,26 @@ namespace MakeItSoLib
             }
         }
 
+        /// <summary>
+        /// Returns true if the two paths are the same, regardless of case,
+        /// slash-direction or additional folder traversals. For example,
+        /// these two paths would be considered the same:
+        ///   d:\temp\f1\..\f2\file.txt
+        ///   d:/TEMP/f2/file.txt
+        /// </summary>
+        public static bool isSamePath(string path1, string path2)
+        {
+            path1 = path1.ToLower();
+            path1 = Path.GetFullPath(path1);
+            path1.TrimEnd('\\');
+
+            path2 = path2.ToLower();
+            path2 = Path.GetFullPath(path2);
+            path2.TrimEnd('\\');
+
+            return path1 == path2;
+        }
+
         #endregion
     }
 }

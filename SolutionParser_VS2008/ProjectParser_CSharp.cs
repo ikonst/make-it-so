@@ -116,6 +116,10 @@ namespace SolutionParser_VS2008
 
             // The output file name, e.g. TextLib.dll...
             m_projectInfo.OutputFileName = getStringProperty(projectProperties, "OutputFileName");
+
+            // The project folder, absolute and relative to the solution...
+            m_projectInfo.RootFolderAbsolute = getStringProperty(projectProperties, "FullPath");
+            m_projectInfo.RootFolderRelative = Utils.makeRelativePath(m_solutionRootFolder, m_projectInfo.RootFolderAbsolute);
         }
 
         /// <summary>

@@ -57,6 +57,15 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Gets or sets the solution that this project is part of.
+        /// </summary>
+        public SolutionInfo ParentSolution
+        {
+            get { return m_parentSolution; }
+            set { m_parentSolution = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the project type.
         /// </summary>
         public ProjectTypeEnum ProjectType
@@ -106,6 +115,9 @@ namespace MakeItSoLib
 
         // The project's name...
         protected string m_name = "";
+
+        // The solution that this project is part of...
+        protected SolutionInfo m_parentSolution = null;
 
         // The project's root folder, relative to the solution root...
         protected string m_rootFolderRelative = "";

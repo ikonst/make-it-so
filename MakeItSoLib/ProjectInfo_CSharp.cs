@@ -100,7 +100,7 @@ namespace MakeItSoLib
             ReferenceInfo referenceInfo = new ReferenceInfo();
             referenceInfo.AbsolutePath = fullPath;
             referenceInfo.CopyLocal = copyLocal;
-            m_references.Add(referenceInfo);
+            m_referenceInfos.Add(referenceInfo);
         }
 
         /// <summary>
@@ -108,7 +108,98 @@ namespace MakeItSoLib
         /// </summary>
         public List<ReferenceInfo> getReferences()
         {
-            return m_references.ToList();
+            return m_referenceInfos.ToList();
+        }
+
+        /// <summary>
+        /// Sets up references.
+        /// </summary>
+        public void setupReferences()
+        {
+            // Here we do the 'second-pass' at setting up the references. 
+            // This is called after all projects have been parsed. In particular
+            // we are doing two main things:
+            // - Trying to work out if references are 'project references'
+            //   ie, to other projects in the solution, or whether they are
+            //   'external references'.
+            // - Setting up references per configuration, rather than per project,
+            //   as they may be different.
+
+            // Here's what we do:
+            // 1. For each reference, we check if its path is the output path
+            //    of one of the other projects. 
+            //    1a. If so, we have found a 'project reference'
+            //    1b. If not, we have found an 'external reference'
+            //
+            // 2. For external references, we find the relative path to the 
+            //    assembly and add it to each configuration.
+            //
+            // 3. For project references, we want to try to link our configurations
+            //    to the equvalent configurations in the other project. For example, 
+            //    to link our Release build to its Release build.
+            //    3a. For each configuration in this project we find the equivalent
+            //        configuration in the other project.
+            //    3b. We find the relative path to the other configuration's output 
+            //        folder, and set theat as the reference.
+
+            // We loop through the references
+            foreach (ReferenceInfo referenceInfo in m_referenceInfos)
+            {
+                setupReference(referenceInfo);
+            }
+        }
+
+        #endregion
+
+        #region Private functions
+
+        /// <summary>
+        /// We set up the reference in all configurations of this project.
+        /// (See notes in setupReferences above.)
+        /// </summary>
+        private void setupReference(ReferenceInfo referenceInfo)
+        {
+            ProjectInfo_CSharp projectReference = findProjectReference(referenceInfo);
+        }
+
+        /// <summary>
+        /// Checks if the reference-info passed in comes from another project
+        /// in the solution.
+        /// Returns the referenced project if there is one, or null if the
+        /// reference is not to another project in the solution.
+        /// </summary>
+        private ProjectInfo_CSharp findProjectReference(ReferenceInfo referenceInfo)
+        {
+            ProjectInfo_CSharp result = null;
+
+            // We look through each project...
+            foreach (ProjectInfo projectInfo in ParentSolution.getProjectInfos())
+            {
+                // We are only interested in C# projects...
+                ProjectInfo_CSharp csProjectInfo = projectInfo as ProjectInfo_CSharp;
+                if (csProjectInfo == null)
+                {
+                    continue;
+                }
+
+                // We check each configuration for the project...
+                foreach (ProjectConfigurationInfo_CSharp configurationInfo in csProjectInfo.getConfigurationInfos())
+                {
+                    // We find the absolute path to the output for this configuration...
+                    string fullPath = csProjectInfo.RootFolderAbsolute + "/" + configurationInfo.OutputFolder + "/" + csProjectInfo.OutputFileName;
+                    
+                    // And we check if the reference passed points to the same assembly...
+                    if (Utils.isSamePath(fullPath, referenceInfo.AbsolutePath) == true)
+                    {
+                        // We've found a match, so we return the project that this
+                        // configuration is a part of, as the reference appears to
+                        // be a 'project reference' to this project...
+                        return csProjectInfo;
+                    }
+                }
+            }
+
+            return result;
         }
 
         #endregion
@@ -122,7 +213,7 @@ namespace MakeItSoLib
         private string m_outputFileName = "";
 
         // The collection of references for the project (see note in header comment)...
-        private HashSet<ReferenceInfo> m_references = new HashSet<ReferenceInfo>();
+        private HashSet<ReferenceInfo> m_referenceInfos = new HashSet<ReferenceInfo>();
 
         // The collection of configurations (Debug, Release etc) for this project...
         private List<ProjectConfigurationInfo_CSharp> m_configurationInfos = new List<ProjectConfigurationInfo_CSharp>();

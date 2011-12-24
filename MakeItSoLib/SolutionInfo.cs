@@ -36,6 +36,7 @@ namespace MakeItSoLib
         /// </summary>
         public void addProjectInfo(string projectName, ProjectInfo project)
         {
+            project.ParentSolution = this;
             m_projects.Add(projectName, project);
         }
 
@@ -73,6 +74,22 @@ namespace MakeItSoLib
                 if (cppProject != null)
                 {
                     cppProject.setupImplicitLinking();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets up references for C# projects.
+        /// </summary>
+        public void setupReferences()
+        {
+            foreach (ProjectInfo project in m_projects.Values)
+            {
+                // We only need to set up implicit linking for C# projects...
+                ProjectInfo_CSharp csProject = project as ProjectInfo_CSharp;
+                if (csProject != null)
+                {
+                    csProject.setupReferences();
                 }
             }
         }
