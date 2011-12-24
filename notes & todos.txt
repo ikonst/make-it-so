@@ -1,3 +1,5 @@
+
+
 Version 1.1
 -----------  
 - VS2010 parser
@@ -121,3 +123,31 @@ D:\code\make-it-so\Tests\Runtime\TestProjects\VS2008\C#\HelloWorldWithLibrary\Te
 C:\Windows\Microsoft.NET\Framework\v2.0.50727\mscorlib.dll, 
     
    
+References algorithm
+--------------------
+First pass:
+- Find the references at the project level
+- Store their full paths at the project level
+- Discard any of the standard ones: Any that start "System." or mscorlib.dll
+
+Second pass:
+- We want to check if references are to other projects in the solution.
+- For each project (outputProject)
+  - We check if the reference path is the same as the (absolute) output path 
+    of any configuration of another project.
+  
+  - If so, then the reference is to that project (referenceProject)
+    - For each configuration in the outputProject, we find the closest matching
+      named configuration from the referenceProject.
+    - We find the relative path to the reference output dll and add it to
+      the collection of references for the outputProject's configuration.
+      
+  - If the reference is not to another project, we just store the path to
+    the reference.
+      
+      
+
+- We hold each reference as a structure of:
+  - Relative path
+  - Absolute path (may be useful for removing / replacing references)
+  - CopyLocal flag

@@ -72,16 +72,18 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseReferences()
         {
-            string refs = "";
-
-            // We loop through the collection of references...
+            // We loop through the collection of references, adding
+            // them to the project. (There is a second pass later to 
+            // resolve references to other projects that may not have
+            // been parsed yet.)
             References references = Utils.call(() => (m_vsProject.References));
             int numReferences = Utils.call(() => (references.Count));
             for (int i = 1; i <= numReferences; ++i)
             {
                 Reference reference = Utils.call(() => references.Item(i));
-                string path = Utils.call(() => (reference.Path));
-                refs += (path + ", ");
+                string fullPath = Utils.call(() => (reference.Path));
+                bool copyLocal = Utils.call(() => (reference.CopyLocal));
+                m_projectInfo.addReference(fullPath, copyLocal);
             }
         }
 

@@ -45,7 +45,7 @@ namespace MakeItSoLib
         public bool libraryPathShouldBeRemoved(string fullLibraryPath)
         {
             // We make sure the path is formatted in the same way as the
-            // stored paths so that we can check if we've go it in the
+            // stored paths so that we can check if we've got it in the
             // collection of libraries to remove...
             fullLibraryPath = Path.GetFullPath(fullLibraryPath);
             fullLibraryPath = fullLibraryPath.ToLower();
