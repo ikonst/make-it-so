@@ -35,13 +35,6 @@ namespace MakeItSoLib
         /// </summary>
         public void addFile(string file)
         {
-            if (MakeItSoConfig.Instance.IsCygwinBuild == true)
-            {
-                // For a cygwin build, we seem to need path separators to be 
-                // double backslashes. (Not sure why they need to be double - maybe
-                // some sort of escaping thing?)
-                file = file.Replace("/", @"\\");
-            }
             m_files.Add(file);
         }
 
@@ -49,9 +42,9 @@ namespace MakeItSoLib
         /// Gets the collection of files in the project. 
         /// File paths are relative to the project's root folder.
         /// </summary>
-        public HashSet<string> getFiles()
+        public List<string> getFiles()
         {
-            return m_files;
+            return m_files.ToList();
         }
 
         /// <summary>
@@ -159,7 +152,107 @@ namespace MakeItSoLib
         /// </summary>
         private void setupReference(ReferenceInfo referenceInfo)
         {
-            ProjectInfo_CSharp projectReference = findProjectReference(referenceInfo);
+            // We check if the reference is pointing to another project in 
+            // the solution...
+            ProjectInfo_CSharp referencedProject = findProjectReference(referenceInfo);
+            if (referencedProject != null)
+            {
+                // The reference is to another project in the solution...
+                setupProjectReference(referenceInfo, referencedProject);
+            }
+            else
+            {
+                // The reference is not to a project is the solution, 
+                // ie it is an 'external reference'...
+                setupExternalReference(referenceInfo);
+            }
+        }
+
+        /// <summary>
+        /// Sets up a 'project reference' to the project passed in.
+        /// (See heading comment notes, and comments in setupReferences() above.)
+        /// </summary>
+        private void setupProjectReference(ReferenceInfo referenceInfo, ProjectInfo_CSharp referencedProject)
+        {
+            // For each configuration in this project, we find the equivalent
+            // configuration in the referenced-project, and set up references
+            // to its output folder...
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
+            {
+                // We find the equivalent configuration from the referenced project...
+                ProjectConfigurationInfo_CSharp referencedConfiguration = findEquivalentConfiguration(configurationInfo.Name, referencedProject);
+                if (referencedConfiguration == null)
+                {
+                    // The project has no equivalent configuration. (It probably
+                    // doesn't have any configurations at all.)
+                    continue;
+                }
+
+                // We find the absolute and relative path to the output of this
+                // configuration...
+                string absolutePath = referencedProject.RootFolderAbsolute + "/" + referencedConfiguration.OutputFolder + "/" + referencedProject.OutputFileName;
+                absolutePath = Path.GetFullPath(absolutePath);
+                string relativePath = Utils.makeRelativePath(m_rootFolderAbsolute, absolutePath);
+
+                // We store the reference-info for each configuration...
+                ReferenceInfo info = Utils.clone(referenceInfo);
+                info.AbsolutePath = absolutePath;
+                info.RelativePath = relativePath;
+                configurationInfo.addReference(info);
+            }
+        }
+
+        /// <summary>
+        /// Returns the configuration from the referenced-project with the name that best 
+        /// matches the name passed in. 
+        /// Returns null if no configurations are found .
+        /// </summary>
+        private ProjectConfigurationInfo_CSharp findEquivalentConfiguration(string configurationName, ProjectInfo_CSharp referencedProject)
+        {
+            ProjectConfigurationInfo_CSharp result = null;
+            int nearestDistance = -1;
+
+            // To find the best match, we look at the 'levenshtein distance' between the 
+            // configuration names from the project and the name we are looking for. The
+            // one with the smallest distance is the best match.
+            //
+            // The idea here is that we may not be matching exactly, but we still want
+            // to find a good match. For example, our configuration may be called 'Debug'
+            // and the best match may be called 'Debug Any CPU'. 
+            //
+            // This is a bit 'fuzzy' but it should be reasonably good. If there is an
+            // exac match, it will choose it.
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in referencedProject.getConfigurationInfos())
+            {
+                int distance = Utils.levenshteinDistance(configurationName, configurationInfo.Name);
+                if (distance < nearestDistance
+                    ||
+                    nearestDistance == -1)
+                {
+                    // This configuration is the best match so far...
+                    result = configurationInfo;
+                    nearestDistance = distance;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Sets up 'external references' to the reference passed in.
+        /// </summary>
+        private void setupExternalReference(ReferenceInfo referenceInfo)
+        {
+            // We find the relative path to the reference from the project folder...
+            string relativePath = Utils.makeRelativePath(m_rootFolderAbsolute, referenceInfo.AbsolutePath);
+
+            // We set up the reference for each configuration in this project...
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
+            {
+                // We store the reference-info for each configuration...
+                ReferenceInfo info = Utils.clone(referenceInfo);
+                info.RelativePath = relativePath;
+            }
         }
 
         /// <summary>

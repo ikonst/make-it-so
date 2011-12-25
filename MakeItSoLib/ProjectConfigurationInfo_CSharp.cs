@@ -138,6 +138,22 @@ namespace MakeItSoLib
             set { m_warningLevel = value; }
         }
 
+        /// <summary>
+        /// Adds a reference to this configuration.
+        /// </summary>
+        public void addReference(ReferenceInfo referenceInfo)
+        {
+            m_referenceInfos.Add(referenceInfo);
+        }
+
+        /// <summary>
+        /// Returns the collection of references for this configuration.
+        /// </summary>
+        public List<ReferenceInfo> getReferenceInfos()
+        {
+            return m_referenceInfos.ToList();
+        }
+
         #endregion
 
         #region Private data
@@ -174,6 +190,9 @@ namespace MakeItSoLib
 
         // The warning level...
         private int m_warningLevel = 4;
+
+        // The ollectin of references for this configuration...
+        private HashSet<ReferenceInfo> m_referenceInfos = new HashSet<ReferenceInfo>();
 
         #endregion
     }

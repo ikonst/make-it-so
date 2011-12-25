@@ -1,5 +1,6 @@
 
 
+
 Version 1.1
 -----------  
 - VS2010 parser
@@ -24,6 +25,15 @@ Version 2.0
 - C# / mono
 
 
+Tests
+-----
+- Test 'absolute references' in C#
+- Find out if you can implcitly link to projects that don't have 
+  the same configuration names (e.g. Debug, Debug32)
+- Find out what happens if you have a refernce in C# to a project
+  that has different configuration names.  
+
+
 WIKI
 ----
 - Notes on #ifdef stuff for dlls
@@ -42,112 +52,10 @@ BUGS
 
 C# / Mono
 ---------
-Things we need for C# makefiles:
-Y - List of .cs files
-- List of references
-  - List of library paths (do we need these if we have complete paths to references?)
-  - Note: they may be different for Release and Debug configurations
-Y - Debug and release flags
-Y   - Debug_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -debug+ -debug:full -filealign:512 -pkg:dotnet -define:DEBUG -define:TRACE -optimize-   
-Y   - Release_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -filealign:512 -pkg:dotnet -define:TRACE -optimize+ 
-Y  - Parse project for:
-Y    - Warning level
-Y    - Ignore warnings
-Y    - Treat warnings as errors
-Y    - Defines(?)
-Y - Output path
-Y - Project type (library, exe, winexe)    
+- Debug_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -debug+ -debug:full -filealign:512 -pkg:dotnet -define:DEBUG -define:TRACE -optimize-   
+- Release_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -filealign:512 -pkg:dotnet -define:TRACE -optimize+ 
 
-- Properties
-
-  Name								Value
-  ----                              -----
-Y  "Optimize"						true/false
-Y  "OutputPath"						"bin\Debug"
-Y  "TreatWarningsAsErrors"			true/false
-Y  "DefineConstants"					"DEBUG;TRACE"
-Y  "DebugSymbols"					true/false
-Y  "NoWarn"							"" (format?)
-Y  "DebugInfo"						"full"
-Y  "FileAlignment"					512
-Y  "WarningLevel"					4
-  
-For references:
-- Description = System.dll (not for assemblies in solution, at least not for mine)
-- Path = full path
-  - Seems to be just one of the configurations. Not sure how it chooses which one, 
-    as it's at project level rather than at configuration level.
-- CopyLocal: true/false
-  - If we copy a referenced assembly, we need to copy all the assemblies that it needs as well
-    (If they are references to assemblies in the solution, we should know from that project 
-    which references they need.)
- 
-- We don't need to include the standard .NET references, as we're using -pkg:dotnet
-  (which is good, as it's not entirely clear to me where they are in mono.)
-  - So we should deliberately exclude them.
-    - Can this just be by name, e.g. System.dll or is it possible to
-      have your own System.dll in a project (try this).
-  
-- Can we work out which references are to projects in the solution?
-  - We should be able to as we have the path, and we know the output 
-    paths of the other projects.
-    - Though we only know this after we have parsed them all.
-      So maybe this needs to be a step after the first pass of parsing,
-      rather like the implicit linking.
-      
 - Is there any harm in always doing copy-local?
-  - I suppose it might be bad if someone did not explicitly want it.
-  - The copy step should be done before the build step.
-  - The good thing about doing this is that it makes the library paths
-    easier, as we know that they are just in our output folder.
+  - We should only do this if the setting says to.
+  - If we do it, we should copy project references from the copied from project as well(?)
     
-From TextLib
-------------
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.dll, 
-C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll, 
-C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5\System.Xml.Linq.dll, 
-C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5\System.Data.DataSetExtensions.dll, 
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.Data.dll, 
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll, 
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\mscorlib.dll, 
-
-From App
---------
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.dll, 
-C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5\System.Core.dll, 
-C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5\System.Xml.Linq.dll, 
-C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.5\System.Data.DataSetExtensions.dll, 
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.Data.dll, 
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.Xml.dll, 
-D:\code\make-it-so\Tests\Runtime\TestProjects\VS2008\C#\HelloWorldWithLibrary\TextLib\bin\Debug\TextLib.dll, 
-C:\Windows\Microsoft.NET\Framework\v2.0.50727\mscorlib.dll, 
-    
-   
-References algorithm
---------------------
-First pass:
-- Find the references at the project level
-- Store their full paths at the project level
-- Discard any of the standard ones: Any that start "System." or mscorlib.dll
-
-Second pass:
-- We want to check if references are to other projects in the solution.
-- For each project (outputProject)
-  - We check if the reference path is the same as the (absolute) output path 
-    of any configuration of another project.
-  
-  - If so, then the reference is to that project (referenceProject)
-    - For each configuration in the outputProject, we find the closest matching
-      named configuration from the referenceProject.
-    - We find the relative path to the reference output dll and add it to
-      the collection of references for the outputProject's configuration.
-      
-  - If the reference is not to another project, we just store the path to
-    the reference.
-      
-      
-
-- We hold each reference as a structure of:
-  - Relative path
-  - Absolute path (may be useful for removing / replacing references)
-  - CopyLocal flag

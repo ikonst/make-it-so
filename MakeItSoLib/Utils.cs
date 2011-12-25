@@ -7,6 +7,8 @@ using System.Threading;
 using Thread = System.Threading.Thread;
 using System.IO;
 using System.ComponentModel;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MakeItSoLib
 {
@@ -38,8 +40,11 @@ namespace MakeItSoLib
         /// </remarks>
         public static T call<T>(Func<T> fn)
         {
+            int numTries = 10;
+            int intervalMS = 50;
+
             // We will try to call the function up to 20 times...
-            for (int i=0; i<20; ++i)
+            for (int i=0; i<numTries; ++i)
             {
                 try
                 {
@@ -51,11 +56,11 @@ namespace MakeItSoLib
                     // We've caught a COM exception, which is most likely
                     // a Server is Busy exception. So we sleep for a short
                     // while, and then try again...
-                    Thread.Sleep(1);
+                    Thread.Sleep(intervalMS);
                 }
             }
 
-            throw new Exception("'call' failed to call function after 20 tries.");
+            throw new Exception(String.Format("'call' failed to call function after {0} tries.", numTries));
         }
 
         /// <summary>
@@ -289,6 +294,146 @@ namespace MakeItSoLib
             return path1 == path2;
         }
 
+        /// <summary>
+        /// Perform a deep copy of the object.
+        /// </summary><remarks>
+        /// Code from: http://stackoverflow.com/questions/78536/cloning-objects-in-c-sharp
+        /// </remarks>
+        public static T clone<T>(T source)
+        {
+            if (!typeof(T).IsSerializable)
+            {
+                throw new ArgumentException("The type must be serializable.", "source");
+            }
+
+            // Don't serialize a null object, simply return the default for that object
+            if (Object.ReferenceEquals(source, null))
+            {
+                return default(T);
+            }
+
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new MemoryStream();
+            using (stream)
+            {
+                formatter.Serialize(stream, source);
+                stream.Seek(0, SeekOrigin.Begin);
+                return (T)formatter.Deserialize(stream);
+            }
+        }
+
+        /// <summary>
+        /// Calculates the Levenshtein distance between two strings. The closer
+        /// the two strings are two each other, the smaller the number will be.
+        /// </summary><remarks>
+        /// Code from: http://www.codeproject.com/KB/recipes/Levenshtein.aspx
+        /// </remarks>
+        public static int levenshteinDistance(String s1, String s2)
+        {
+            string sNew = s1.ToLower();
+            string sOld = s2.ToLower();
+
+            int[,] matrix;              // matrix
+            int sNewLen = sNew.Length;  // length of sNew
+            int sOldLen = sOld.Length;  // length of sOld
+            int sNewIdx; // iterates through sNew
+            int sOldIdx; // iterates through sOld
+            char sNew_i; // ith character of sNew
+            char sOld_j; // jth character of sOld
+            int cost; // cost
+
+            /// Test string length
+            if (Math.Max(sNew.Length, sOld.Length) > Math.Pow(2, 31))
+                throw (new Exception("\nMaximum string length in Levenshtein.LD is " + Math.Pow(2, 31) + ".\nYours is " + Math.Max(sNew.Length, sOld.Length) + "."));
+
+            // Step 1
+
+            if (sNewLen == 0)
+            {
+                return sOldLen;
+            }
+
+            if (sOldLen == 0)
+            {
+                return sNewLen;
+            }
+
+            matrix = new int[sNewLen + 1, sOldLen + 1];
+
+            // Step 2
+
+            for (sNewIdx = 0; sNewIdx <= sNewLen; sNewIdx++)
+            {
+                matrix[sNewIdx, 0] = sNewIdx;
+            }
+
+            for (sOldIdx = 0; sOldIdx <= sOldLen; sOldIdx++)
+            {
+                matrix[0, sOldIdx] = sOldIdx;
+            }
+
+            // Step 3
+
+            for (sNewIdx = 1; sNewIdx <= sNewLen; sNewIdx++)
+            {
+                sNew_i = sNew[sNewIdx - 1];
+
+                // Step 4
+
+                for (sOldIdx = 1; sOldIdx <= sOldLen; sOldIdx++)
+                {
+                    sOld_j = sOld[sOldIdx - 1];
+
+                    // Step 5
+
+                    if (sNew_i == sOld_j)
+                    {
+                        cost = 0;
+                    }
+                    else
+                    {
+                        cost = 1;
+                    }
+
+                    // Step 6
+
+                    matrix[sNewIdx, sOldIdx] = minimum(matrix[sNewIdx - 1, sOldIdx] + 1, matrix[sNewIdx, sOldIdx - 1] + 1, matrix[sNewIdx - 1, sOldIdx - 1] + cost);
+
+                }
+            }
+
+            // Step 7
+
+            /// Value between 0 - 100
+            /// 0==perfect match 100==totaly different
+            int max = System.Math.Max(sNewLen, sOldLen);
+            return (100 * matrix[sNewLen, sOldLen]) / max;
+        }
+
+        #endregion
+
+        #region Private functions
+
+        /// <summary>
+        /// Returns the smallest of the three numbers passed in.
+        /// (Used by the levenshteinDistance() function.)
+        /// </summary>
+        private static int minimum(int a, int b, int c)
+        {
+            int mi = a;
+
+            if (b < mi)
+            {
+                mi = b;
+            }
+            if (c < mi)
+            {
+                mi = c;
+            }
+
+            return mi;
+        }
+        
         #endregion
     }
 }

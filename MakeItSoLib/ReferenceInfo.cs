@@ -8,12 +8,18 @@ namespace MakeItSoLib
     /// <summary>
     /// Holds information about one reference for a C# project.
     /// </summary>
+    [Serializable()]
     public class ReferenceInfo
     {
         /// <summary>
         /// Gets or sets the absolute path to the reference.
         /// </summary>
         public string AbsolutePath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the relative path to the reference.
+        /// </summary>
+        public string RelativePath { get; set; }
 
         /// <summary>
         /// Gets or sets whether the referenced assembly should be copied to
