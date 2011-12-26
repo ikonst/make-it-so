@@ -61,6 +61,15 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Gets or sets the intermediate folder, relative to the project's root folder.
+        /// </summary>
+        public string IntermediateFolder
+        {
+            get { return m_intermediateFolder; }
+            set { m_intermediateFolder = value.Replace(" ", ""); }
+        }
+
+        /// <summary>
         /// Gets or sets whether we treat warnings as errors.
         /// </summary>
         public bool ThreatWarningsAsErrors
@@ -167,8 +176,10 @@ namespace MakeItSoLib
         // Whether to generate optimized code or not...
         private bool m_optimize = false;
 
-        // The output folder for built objects such as libraries and executables...
+        // The output and intermediate folders for built objects 
+        // such as libraries and executables...
         private string m_outputFolder = "";
+        private string m_intermediateFolder = "";
 
         // Treat warnings as errors...
         private bool m_treatWarningsAsErrors = false;

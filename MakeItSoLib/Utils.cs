@@ -111,13 +111,26 @@ namespace MakeItSoLib
 
         /// <summary>
         /// Adds the prefix passed in to the last folder in the path passed in.
+        /// The path is the path to a file.
+        /// </summary>
+        public static string addPrefixToFilePath(string path, string prefix)
+        {
+            string folder = Path.GetDirectoryName(path);
+            folder = addPrefixToFolderPath(folder, "mono");
+            string filename = Path.GetFileName(path);
+            return folder + "/" + filename;
+        }
+
+        /// <summary>
+        /// Adds the prefix passed in to the last folder in the path passed in.
+        /// The path must just be a path to a folder, not to a file.
         /// 
         /// For example:
         ///   path = ../Test/Output/Release
         ///   prefix = gcc
         ///   result = ../Test/Output/gccRelease
         /// </summary>
-        public static string addPrefixToFolder(string path, string prefix)
+        public static string addPrefixToFolderPath(string path, string prefix)
         {
             // We convert backslashes to forward slashes, and remove a 
             // trailing slash if there is one...

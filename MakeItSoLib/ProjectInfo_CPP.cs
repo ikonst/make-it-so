@@ -128,7 +128,7 @@ namespace MakeItSoLib
                             ProjectConfigurationInfo_CPP configuration = getConfigurationInfos().Find((cfg) => (cfg.Name == info.ConfigurationName));
 
                             // We add the collection of object files to the configuration...
-                            string intermediateFolderAbsolute = Utils.addPrefixToFolder(info.IntermediateFolderAbsolute, "gcc");
+                            string intermediateFolderAbsolute = Utils.addPrefixToFolderPath(info.IntermediateFolderAbsolute, "gcc");
                             foreach (string objectFile in info.ObjectFileNames)
                             {
                                 string absolutePath = intermediateFolderAbsolute + "/" + objectFile;

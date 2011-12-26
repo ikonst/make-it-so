@@ -519,7 +519,7 @@ namespace MakeItSo
         /// </summary>
         private string getIntermediateFolder(ProjectConfigurationInfo_CPP configuration)
         {
-            return Utils.addPrefixToFolder(configuration.IntermediateFolder, "gcc");
+            return Utils.addPrefixToFolderPath(configuration.IntermediateFolder, "gcc");
         }
 
         /// <summary>
@@ -527,7 +527,7 @@ namespace MakeItSo
         /// </summary>
         private string getOutputFolder(ProjectConfigurationInfo_CPP configuration)
         {
-            return Utils.addPrefixToFolder(configuration.OutputFolder, "gcc");
+            return Utils.addPrefixToFolderPath(configuration.OutputFolder, "gcc");
         }
 
         #endregion

@@ -146,7 +146,7 @@ namespace MakeItSoLib
                 string fullPath = Path.Combine(projectRootFolder, libraryPath);
                 if (projectSettings.libraryPathShouldBeRemoved(fullPath) == false)
                 {
-                    string gccPath = Utils.addPrefixToFolder(libraryPath, "gcc");
+                    string gccPath = Utils.addPrefixToFolderPath(libraryPath, "gcc");
                     configuration.addLibraryPath(gccPath);
                 }
             }

@@ -75,7 +75,7 @@ namespace MakeItSo
                 createCreateFoldersTarget();
 
                 // Creates the target that cleans intermediate files...
-                //createCleanTarget();
+                createCleanTarget();
             }
             finally
             {
@@ -85,6 +85,22 @@ namespace MakeItSo
                     m_file.Dispose();
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates the 'clean' target that removes intermediate files.
+        /// </summary>
+        private void createCleanTarget()
+        {
+            m_file.WriteLine("# Cleans output files...");
+            m_file.WriteLine(".PHONY: clean");
+            m_file.WriteLine("clean:");
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
+            {
+                string outputFolder = getOutputVariableName(configurationInfo);
+                m_file.WriteLine("\trm -f $({0})/*.*", outputFolder);
+            }
+            m_file.WriteLine("");
         }
 
         /// <summary>
@@ -100,41 +116,52 @@ namespace MakeItSo
             m_file.WriteLine("create_folders:");
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
             {
-                createFolderAndCopyReferences(configurationInfo);
+                // We create the output folder...
+                string outputFolder = Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
+                m_file.WriteLine("\tmkdir -p {0}", outputFolder);
+
+                // We copy the references...
+                foreach (ReferenceInfo referenceInfo in configurationInfo.getReferenceInfos())
+                {
+                    copyReference(configurationInfo, referenceInfo);
+                }
             }
             m_file.WriteLine("");
         }
 
         /// <summary>
-        /// Writes the section of the makefile to create the folder and copy 
-        /// references for the configuration passed in.
+        /// Writes the section of the makefile to copy one reference to our
+        /// output folder.
         /// </summary>
-        private void createFolderAndCopyReferences(ProjectConfigurationInfo_CSharp configurationInfo)
+        private void copyReference(ProjectConfigurationInfo_CSharp configurationInfo, ReferenceInfo referenceInfo)
         {
-            // We create the output folder...
-            string outputFolder = Utils.addPrefixToFolder(configurationInfo.OutputFolder, "mono");
-            m_file.WriteLine("\tmkdir -p {0}", outputFolder);
-
-            // We copy any references...
-            foreach (ReferenceInfo referenceInfo in configurationInfo.getReferenceInfos())
+            // We check if we need to copy the reference...
+            if (referenceInfo.CopyLocal == false)
             {
-                if (referenceInfo.CopyLocal == false)
-                {
-                    // We don't need to copy this references...
-                    continue;
-                }
-
-                // We find the (Windows) output path for the reference as a 
-                // relative path to this project...
-                string windowsPath = referenceInfo.AbsolutePath;
-                string relativeWindowsPath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, windowsPath);
-
-                // We convert this into our output folder...
-                string folder = Path.GetDirectoryName(relativeWindowsPath);
-                string filename = Path.GetFileName(relativeWindowsPath);
-
-                // We find 
+                return;
             }
+
+            // We copy the reference...
+            string outputFolder = getOutputVariableName(configurationInfo);
+            string path = getReferenceRelativePath(referenceInfo);
+            m_file.WriteLine("\tcp {0} $({1})", path, outputFolder);
+        }
+
+        /// <summary>
+        /// Gets the relative path to the reference. Converts the output folder to our 
+        /// folder-style if it is a reference to another project in the solution.
+        /// </summary>
+        private string getReferenceRelativePath(ReferenceInfo referenceInfo)
+        {
+            switch(referenceInfo.ReferenceType)
+            {
+                case ReferenceInfo.ReferenceTypeEnum.EXTERNAL_REFERENCE:
+                    return referenceInfo.RelativePath;
+
+                case ReferenceInfo.ReferenceTypeEnum.PROJECT_REFERENCE:
+                    return Utils.addPrefixToFilePath(referenceInfo.RelativePath, "mono");
+            }
+            return "(reference-path-not-found)";
         }
 
         /// <summary>
@@ -231,7 +258,7 @@ namespace MakeItSo
         {
             // We find the Windows output path, and convert it to our output
             // path, e.g. bin/Debug/MyLib.dll ==> bin/monoDebug/MyLib.dll
-            string linuxOutputFolder = Utils.addPrefixToFolder(configurationInfo.OutputFolder, "mono");
+            string linuxOutputFolder = Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
             string linuxPath = linuxOutputFolder + "/" + m_projectInfo.OutputFileName;
             return linuxPath;
         }
@@ -350,7 +377,7 @@ namespace MakeItSo
                 }
                 foreach (ReferenceInfo referenceInfo in referenceInfos)
                 {
-                    value += (referenceInfo.RelativePath + ",");
+                    value += (getReferenceRelativePath(referenceInfo) + ",");
                 }
                 value = value.TrimEnd(',');
 

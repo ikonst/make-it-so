@@ -198,6 +198,7 @@ namespace MakeItSoLib
                 ReferenceInfo info = Utils.clone(referenceInfo);
                 info.AbsolutePath = absolutePath;
                 info.RelativePath = relativePath;
+                info.ReferenceType = ReferenceInfo.ReferenceTypeEnum.PROJECT_REFERENCE;
                 configurationInfo.addReference(info);
             }
         }
@@ -252,6 +253,8 @@ namespace MakeItSoLib
                 // We store the reference-info for each configuration...
                 ReferenceInfo info = Utils.clone(referenceInfo);
                 info.RelativePath = relativePath;
+                info.ReferenceType = ReferenceInfo.ReferenceTypeEnum.EXTERNAL_REFERENCE;
+                configurationInfo.addReference(info);
             }
         }
 
@@ -279,10 +282,13 @@ namespace MakeItSoLib
                 foreach (ProjectConfigurationInfo_CSharp configurationInfo in csProjectInfo.getConfigurationInfos())
                 {
                     // We find the absolute path to the output for this configuration...
-                    string fullPath = csProjectInfo.RootFolderAbsolute + "/" + configurationInfo.OutputFolder + "/" + csProjectInfo.OutputFileName;
+                    string fullOutputPath = csProjectInfo.RootFolderAbsolute + "/" + configurationInfo.OutputFolder + "/" + csProjectInfo.OutputFileName;
+                    string fullIntermediatePath = csProjectInfo.RootFolderAbsolute + "/" + configurationInfo.IntermediateFolder + "/" + csProjectInfo.OutputFileName;
                     
                     // And we check if the reference passed points to the same assembly...
-                    if (Utils.isSamePath(fullPath, referenceInfo.AbsolutePath) == true)
+                    if (Utils.isSamePath(fullOutputPath, referenceInfo.AbsolutePath) == true
+                        ||
+                        Utils.isSamePath(fullIntermediatePath, referenceInfo.AbsolutePath) == true)
                     {
                         // We've found a match, so we return the project that this
                         // configuration is a part of, as the reference appears to
