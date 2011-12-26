@@ -1,4 +1,5 @@
-
+- Make C# parsing faster by ignoring properties that aren't there.
+  - (find which ones these are)
 
 
 Version 1.1

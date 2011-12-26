@@ -62,6 +62,7 @@ namespace MakeItSo
                 createReferencesVariables();
                 createFlagsVariables();
                 createOutputVariables();
+                createTargetVariable();
 
                 // We create an 'all configurations' root target...
                 m_file.WriteLine("");
@@ -71,7 +72,7 @@ namespace MakeItSo
                 createConfigurationTargets();
 
                 // We create a target to create the intermediate and output folders...
-                //createCreateFoldersTarget();
+                createCreateFoldersTarget();
 
                 // Creates the target that cleans intermediate files...
                 //createCleanTarget();
@@ -83,6 +84,79 @@ namespace MakeItSo
                     m_file.Close();
                     m_file.Dispose();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Creates a target that creates the output folders, and which also
+        /// copies any required references from other projects.
+        /// </summary>
+        private void createCreateFoldersTarget()
+        {
+            // We create the output folder and copy references for each 
+            // configuration in the project...
+            m_file.WriteLine("# Creates the output folders for each configuration, and copies references...");
+            m_file.WriteLine(".PHONY: create_folders");
+            m_file.WriteLine("create_folders:");
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
+            {
+                createFolderAndCopyReferences(configurationInfo);
+            }
+            m_file.WriteLine("");
+        }
+
+        /// <summary>
+        /// Writes the section of the makefile to create the folder and copy 
+        /// references for the configuration passed in.
+        /// </summary>
+        private void createFolderAndCopyReferences(ProjectConfigurationInfo_CSharp configurationInfo)
+        {
+            // We create the output folder...
+            string outputFolder = Utils.addPrefixToFolder(configurationInfo.OutputFolder, "mono");
+            m_file.WriteLine("\tmkdir -p {0}", outputFolder);
+
+            // We copy any references...
+            foreach (ReferenceInfo referenceInfo in configurationInfo.getReferenceInfos())
+            {
+                if (referenceInfo.CopyLocal == false)
+                {
+                    // We don't need to copy this references...
+                    continue;
+                }
+
+                // We find the (Windows) output path for the reference as a 
+                // relative path to this project...
+                string windowsPath = referenceInfo.AbsolutePath;
+                string relativeWindowsPath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, windowsPath);
+
+                // We convert this into our output folder...
+                string folder = Path.GetDirectoryName(relativeWindowsPath);
+                string filename = Path.GetFileName(relativeWindowsPath);
+
+                // We find 
+            }
+        }
+
+        /// <summary>
+        /// Creates a TARGET variable to hold the type of target (exe, library)
+        /// that we are building.
+        /// </summary>
+        private void createTargetVariable()
+        {
+            // We work out the target-type...
+            switch (m_projectInfo.ProjectType)
+            {
+                case ProjectInfo.ProjectTypeEnum.CSHARP_EXECUTABLE:
+                    m_file.WriteLine("TARGET = exe");
+                    break;
+
+                case ProjectInfo.ProjectTypeEnum.CSHARP_LIBRARY:
+                    m_file.WriteLine("TARGET = library");
+                    break;
+
+                case ProjectInfo.ProjectTypeEnum.CSHARP_WINFORMS_EXECUTABLE:
+                    m_file.WriteLine("TARGET = winexe");
+                    break;
             }
         }
 
@@ -110,69 +184,29 @@ namespace MakeItSo
         /// </summary>
         private void createConfigurationTargets()
         {
-            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
-            {
-                // We create the configuration target...
-                createConfigurationTarget(configurationInfo);
-            }
-        }
-
-        /// <summary>
-        /// Creates a configuration target.
-        /// </summary>
-        private void createConfigurationTarget(ProjectConfigurationInfo_CSharp configuration)
-        {
-            // For example:
+            // We create a target for each configuration, for example:
             //
             //   .PHONY: Debug
             //   Debug: $(FILES)
-            //       gmcs $(REFERENCES) $(Debug_FLAGS) -out:$(Debug_OUTPUT) -target:library $(FILES)
+            //       gmcs $(REFERENCES) $(Debug_FLAGS) -out:$(Debug_OUTPUT) $(TARGET) $(FILES)
+            //
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
+            {
+                // The target name...
+                m_file.WriteLine("# Builds the {0} configuration...", configurationInfo.Name);
+                m_file.WriteLine(".PHONY: {0}", configurationInfo.Name);
+                m_file.WriteLine("{0}: create_folders $(FILES)", configurationInfo.Name);
 
-            // The target name...
-            m_file.WriteLine("# Builds the {0} configuration...", configuration.Name);
-            m_file.WriteLine(".PHONY: {0}", configuration.Name);
-            m_file.WriteLine("{0}: create_folders $(FILES)", configuration.Name);
+                // We find the variable names...
+                string references = getReferencesVariableName(configurationInfo);
+                string flags = getFlagsVariableName(configurationInfo);
+                string output = getOutputVariableName(configurationInfo);
 
-            //// We find variables needed for the link step...
-            //string outputFolder = getOutputFolder(configuration);
-            //string implicitlyLinkedObjectFiles = String.Format("$({0})", getImplicitlyLinkedObjectsVariableName(configuration));
+                // The command-line to build the project...
+                m_file.WriteLine("\t$(COMPILER) $({0}) $({1}) -out:$({2}) -target:$(TARGET) $(FILES)", references, flags, output);
 
-            //// The link step...
-            //switch (m_projectInfo.ProjectType)
-            //{
-            //    // Creates a C++ executable...
-            //    case ProjectInfo_CPP.ProjectTypeEnum.CPP_EXECUTABLE:
-            //        string libraryPath = getLibraryPathVariableName(configuration);
-            //        string libraries = getLibrariesVariableName(configuration);
-            //        m_file.WriteLine("\tg++ {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe", objectFiles, libraryPath, libraries, outputFolder, m_projectInfo.Name);
-            //        break;
-
-
-            //    // Creates a static library...
-            //    case ProjectInfo_CPP.ProjectTypeEnum.CPP_STATIC_LIBRARY:
-            //        m_file.WriteLine("\tar rcs {0}/lib{1}.a {2} {3}", outputFolder, m_projectInfo.Name, objectFiles, implicitlyLinkedObjectFiles);
-            //        break;
-
-
-            //    // Creates a DLL (shared-objects) library...
-            //    case ProjectInfo_CPP.ProjectTypeEnum.CPP_DLL:
-            //        string dllName, pic;
-            //        if (MakeItSoConfig.Instance.IsCygwinBuild == true)
-            //        {
-            //            dllName = String.Format("lib{0}.dll", m_projectInfo.Name);
-            //            pic = "";
-            //        }
-            //        else
-            //        {
-            //            dllName = String.Format("lib{0}.so", m_projectInfo.Name);
-            //            pic = "-fPIC";
-            //        }
-
-            //        m_file.WriteLine("\tg++ {0} -shared -Wl,-soname,{1} -o {2}/{1} {3} {4}", pic, dllName, outputFolder, objectFiles, implicitlyLinkedObjectFiles);
-            //        break;
-            //}
-
-            m_file.WriteLine("");
+                m_file.WriteLine("");
+            }
         }
 
         /// <summary>
