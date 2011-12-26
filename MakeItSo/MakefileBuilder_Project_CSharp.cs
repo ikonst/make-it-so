@@ -60,6 +60,7 @@ namespace MakeItSo
                 createCompilerVariable();
                 createFilesVariable();
                 createReferencesVariables();
+                createFlagsVariables();
 
                 // We create an 'all configurations' root target...
                 //createAllConfigurationsTarget();
@@ -81,6 +82,93 @@ namespace MakeItSo
                     m_file.Dispose();
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates variables for the compiler flags for each 
+        /// configuration in the project.
+        /// </summary>
+        private void createFlagsVariables()
+        {
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
+            {
+                createConfigurationFlagsVariable(configurationInfo);
+            }
+        }
+
+        /// <summary>
+        /// Creates compiler flags for the configuration passed in.
+        /// </summary>
+        private void createConfigurationFlagsVariable(ProjectConfigurationInfo_CSharp configurationInfo)
+        {
+            string variableName = getFlagsVariableName(configurationInfo);
+            string flags = "";
+
+            // Optimize...
+            if (configurationInfo.Optimize == true)
+            {
+                flags += "-optimize+ ";
+            }
+            else
+            {
+                flags += "-optimize- ";
+            }
+
+            // Treat warnings as errors...
+            if (configurationInfo.ThreatWarningsAsErrors == true)
+            {
+                flags += "-warnaserror+ ";
+            }
+
+            // Defined constants...
+            foreach (string definedConstant in configurationInfo.getDefinedConstants())
+            {
+                flags += ("-define:" + definedConstant + " ");
+            }
+
+            // Debug build...
+            if (configurationInfo.Debug == true)
+            {
+                flags += "-debug+ ";
+            }
+
+            // Type of debug info...
+            if (configurationInfo.DebugInfo != "")
+            {
+                flags += ("-debug:" + configurationInfo.DebugInfo + " ");
+            }
+
+            // Warnings to ignore...
+            List<string> warningsToIgnore = configurationInfo.getWarningsToIgnore();
+            if (warningsToIgnore.Count > 0)
+            {
+                flags += "-nowarn:";
+                foreach (string warningToIgnore in warningsToIgnore)
+                {
+                    flags += (warningToIgnore + ",");
+                }
+                flags = flags.TrimEnd(',') + " ";
+            }
+
+            // File alignment...
+            flags += ("-filealign:" + configurationInfo.FileAlignment + " ");
+
+            // Warning level...
+            flags += ("-warn:" + configurationInfo.WarningLevel + " ");
+
+            // We add the mono .net packages...
+            flags += "-pkg:dotnet ";
+
+            // We add the flags to the makefile...
+            m_file.WriteLine(variableName + " = " + flags);
+        }
+
+        /// <summary>
+        /// Returns the variable name for this data for this configuration.
+        /// </summary>
+        private string getFlagsVariableName(ProjectConfigurationInfo_CSharp configurationInfo)
+        {
+            return configurationInfo.Name + "_FLAGS";
         }
 
         /// <summary>
