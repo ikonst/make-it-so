@@ -61,12 +61,14 @@ namespace MakeItSo
                 createFilesVariable();
                 createReferencesVariables();
                 createFlagsVariables();
+                createOutputVariables();
 
                 // We create an 'all configurations' root target...
-                //createAllConfigurationsTarget();
+                m_file.WriteLine("");
+                createAllConfigurationsTarget();
 
                 // We create one target for each configuration...
-                //createConfigurationTargets();
+                createConfigurationTargets();
 
                 // We create a target to create the intermediate and output folders...
                 //createCreateFoldersTarget();
@@ -85,7 +87,131 @@ namespace MakeItSo
         }
 
         /// <summary>
-        /// Creates variables for the compiler flags for each 
+        /// Creates the default target, to build all configurations
+        /// </summary>
+        private void createAllConfigurationsTarget()
+        {
+            // We create a list of the configuration names...
+            string strConfigurations = "";
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
+            {
+                strConfigurations += (configurationInfo.Name + " ");
+            }
+
+            // And create a target that depends on both configurations...
+            m_file.WriteLine("# Builds all configurations for this project...");
+            m_file.WriteLine(".PHONY: build_all_configurations");
+            m_file.WriteLine("build_all_configurations: {0}", strConfigurations);
+            m_file.WriteLine("");
+        }
+
+        /// <summary>
+        /// Creates a target for each configuration.
+        /// </summary>
+        private void createConfigurationTargets()
+        {
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
+            {
+                // We create the configuration target...
+                createConfigurationTarget(configurationInfo);
+            }
+        }
+
+        /// <summary>
+        /// Creates a configuration target.
+        /// </summary>
+        private void createConfigurationTarget(ProjectConfigurationInfo_CSharp configuration)
+        {
+            // For example:
+            //
+            //   .PHONY: Debug
+            //   Debug: $(FILES)
+            //       gmcs $(REFERENCES) $(Debug_FLAGS) -out:$(Debug_OUTPUT) -target:library $(FILES)
+
+            // The target name...
+            m_file.WriteLine("# Builds the {0} configuration...", configuration.Name);
+            m_file.WriteLine(".PHONY: {0}", configuration.Name);
+            m_file.WriteLine("{0}: create_folders $(FILES)", configuration.Name);
+
+            //// We find variables needed for the link step...
+            //string outputFolder = getOutputFolder(configuration);
+            //string implicitlyLinkedObjectFiles = String.Format("$({0})", getImplicitlyLinkedObjectsVariableName(configuration));
+
+            //// The link step...
+            //switch (m_projectInfo.ProjectType)
+            //{
+            //    // Creates a C++ executable...
+            //    case ProjectInfo_CPP.ProjectTypeEnum.CPP_EXECUTABLE:
+            //        string libraryPath = getLibraryPathVariableName(configuration);
+            //        string libraries = getLibrariesVariableName(configuration);
+            //        m_file.WriteLine("\tg++ {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe", objectFiles, libraryPath, libraries, outputFolder, m_projectInfo.Name);
+            //        break;
+
+
+            //    // Creates a static library...
+            //    case ProjectInfo_CPP.ProjectTypeEnum.CPP_STATIC_LIBRARY:
+            //        m_file.WriteLine("\tar rcs {0}/lib{1}.a {2} {3}", outputFolder, m_projectInfo.Name, objectFiles, implicitlyLinkedObjectFiles);
+            //        break;
+
+
+            //    // Creates a DLL (shared-objects) library...
+            //    case ProjectInfo_CPP.ProjectTypeEnum.CPP_DLL:
+            //        string dllName, pic;
+            //        if (MakeItSoConfig.Instance.IsCygwinBuild == true)
+            //        {
+            //            dllName = String.Format("lib{0}.dll", m_projectInfo.Name);
+            //            pic = "";
+            //        }
+            //        else
+            //        {
+            //            dllName = String.Format("lib{0}.so", m_projectInfo.Name);
+            //            pic = "-fPIC";
+            //        }
+
+            //        m_file.WriteLine("\tg++ {0} -shared -Wl,-soname,{1} -o {2}/{1} {3} {4}", pic, dllName, outputFolder, objectFiles, implicitlyLinkedObjectFiles);
+            //        break;
+            //}
+
+            m_file.WriteLine("");
+        }
+
+        /// <summary>
+        /// Creates variables for the OUTPUT paths for each configuration.
+        /// </summary>
+        private void createOutputVariables()
+        {
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
+            {
+                string variableName = getOutputVariableName(configurationInfo);
+                string outputPath = getOutputPath(configurationInfo);
+                m_file.WriteLine(variableName + " = " + outputPath);
+            }
+        }
+
+        /// <summary>
+        /// Returns the output path (including the output file name) for the
+        /// configuration passed in. This is relative to its own project's
+        /// root folder.
+        /// </summary>
+        private string getOutputPath(ProjectConfigurationInfo_CSharp configurationInfo)
+        {
+            // We find the Windows output path, and convert it to our output
+            // path, e.g. bin/Debug/MyLib.dll ==> bin/monoDebug/MyLib.dll
+            string linuxOutputFolder = Utils.addPrefixToFolder(configurationInfo.OutputFolder, "mono");
+            string linuxPath = linuxOutputFolder + "/" + m_projectInfo.OutputFileName;
+            return linuxPath;
+        }
+
+        /// <summary>
+        /// Returns the variable name for this data for this configuration.
+        /// </summary>
+        private string getOutputVariableName(ProjectConfigurationInfo_CSharp configurationInfo)
+        {
+            return configurationInfo.Name + "_OUTPUT";
+        }
+
+        /// <summary>
+        /// Creates variables for the compiler FLAGS for each 
         /// configuration in the project.
         /// </summary>
         private void createFlagsVariables()

@@ -119,7 +119,11 @@ namespace MakeItSoLib
         /// </summary>
         public static string addPrefixToFolder(string path, string prefix)
         {
+            // We convert backslashes to forward slashes, and remove a 
+            // trailing slash if there is one...
             path = path.Replace("\\", "/");
+            path = path.TrimEnd('/');
+            
             int i = path.LastIndexOf('/');
             if (i == -1)
             {
