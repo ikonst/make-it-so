@@ -1,5 +1,10 @@
 - NOTE: We need to deploy the MakeItSo.exe.config file
 
+- New variables OUTPUT_FOLDER
+  - Use this for copy and clean
+  - Or maybe separate OUTPUT_FOLDER and OUTPUT_FILE varibales
+    - (one FILE, one FOLDER per configuration)
+
 - Make C# parsing faster by ignoring properties that aren't there.
   - (find which ones these are)
   

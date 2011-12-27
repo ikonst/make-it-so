@@ -97,7 +97,7 @@ namespace MakeItSo
             m_file.WriteLine("clean:");
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
             {
-                string outputFolder = getOutputVariableName(configurationInfo);
+                string outputFolder = getOutputFolderVariableName(configurationInfo);
                 m_file.WriteLine("\trm -f $({0})/*.*", outputFolder);
             }
             m_file.WriteLine("");
@@ -117,8 +117,8 @@ namespace MakeItSo
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
             {
                 // We create the output folder...
-                string outputFolder = Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
-                m_file.WriteLine("\tmkdir -p {0}", outputFolder);
+                string outputFolder = getOutputFolderVariableName(configurationInfo);
+                m_file.WriteLine("\tmkdir -p $({0})", outputFolder);
 
                 // We copy the references...
                 foreach (ReferenceInfo referenceInfo in configurationInfo.getReferenceInfos())
@@ -142,7 +142,7 @@ namespace MakeItSo
             }
 
             // We copy the reference...
-            string outputFolder = getOutputVariableName(configurationInfo);
+            string outputFolder = getOutputFolderVariableName(configurationInfo);
             string path = getReferenceRelativePath(referenceInfo);
             m_file.WriteLine("\tcp {0} $({1})", path, outputFolder);
         }
@@ -227,48 +227,39 @@ namespace MakeItSo
                 // We find the variable names...
                 string references = getReferencesVariableName(configurationInfo);
                 string flags = getFlagsVariableName(configurationInfo);
-                string output = getOutputVariableName(configurationInfo);
+                string outputFolder = getOutputFolderVariableName(configurationInfo);
 
                 // The command-line to build the project...
-                m_file.WriteLine("\t$(COMPILER) $({0}) $({1}) -out:$({2}) -target:$(TARGET) $(FILES)", references, flags, output);
+                m_file.WriteLine("\t$(COMPILER) $({0}) $({1}) -out:$({2})/$(OUTPUT_FILE) -target:$(TARGET) $(FILES)", references, flags, outputFolder);
 
                 m_file.WriteLine("");
             }
         }
 
         /// <summary>
-        /// Creates variables for the OUTPUT paths for each configuration.
+        /// Creates variables for the OUTPUT_FILE for the project 
+        /// and OUTPUT_FOLDER paths for each configuration.
         /// </summary>
         private void createOutputVariables()
         {
+            // We create an output-file vairable...
+            m_file.WriteLine("OUTPUT_FILE = " + m_projectInfo.OutputFileName);
+
+            // We create output-folder variables for each configuration...
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
             {
-                string variableName = getOutputVariableName(configurationInfo);
-                string outputPath = getOutputPath(configurationInfo);
+                string variableName = getOutputFolderVariableName(configurationInfo);
+                string outputPath = Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
                 m_file.WriteLine(variableName + " = " + outputPath);
             }
         }
 
         /// <summary>
-        /// Returns the output path (including the output file name) for the
-        /// configuration passed in. This is relative to its own project's
-        /// root folder.
-        /// </summary>
-        private string getOutputPath(ProjectConfigurationInfo_CSharp configurationInfo)
-        {
-            // We find the Windows output path, and convert it to our output
-            // path, e.g. bin/Debug/MyLib.dll ==> bin/monoDebug/MyLib.dll
-            string linuxOutputFolder = Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
-            string linuxPath = linuxOutputFolder + "/" + m_projectInfo.OutputFileName;
-            return linuxPath;
-        }
-
-        /// <summary>
         /// Returns the variable name for this data for this configuration.
         /// </summary>
-        private string getOutputVariableName(ProjectConfigurationInfo_CSharp configurationInfo)
+        private string getOutputFolderVariableName(ProjectConfigurationInfo_CSharp configurationInfo)
         {
-            return configurationInfo.Name + "_OUTPUT";
+            return configurationInfo.Name + "_OUTPUT_FOLDER";
         }
 
         /// <summary>
