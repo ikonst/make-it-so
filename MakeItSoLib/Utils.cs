@@ -40,7 +40,7 @@ namespace MakeItSoLib
         /// </remarks>
         public static T call<T>(Func<T> fn)
         {
-            int numTries = 10;
+            int numTries = 20;
             int intervalMS = 50;
 
             // We will try to call the function up to 20 times...

@@ -93,8 +93,7 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseProjectProperties()
         {
-            // We convert the DTE properties to a map. (Note that this can
-            // be rather slow.)
+            // We convert the DTE properties to a map...
             Dictionary<string, object> projectProperties = getProjectProperties();
 
             // The project type (exe, library etc)...
@@ -247,6 +246,12 @@ namespace SolutionParser_VS2008
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
+            // Some properties do not seem to have valid values. These are
+            // the main ones we have trouble with, so we will ignore them and
+            // not try to retrieve their values...
+            HashSet<string> slowProperties = new HashSet<string> { "WebServer", "ServerExtensionsVersion", "OfflineURL", "WebServerVersion", "WebAccessMethod", "ActiveFileSharePath", "AspnetVersion", "FileSharePath" };
+
+            // We loop through the properties...
             EnvDTE.Properties dteProperties = Utils.call(() => (m_dteProject.Properties));
             int numProperties = Utils.call(() => (dteProperties.Count));
             for (int i = 1; i <= numProperties; ++i)
@@ -255,6 +260,12 @@ namespace SolutionParser_VS2008
                 {
                     EnvDTE.Property dteProperty = Utils.call(() => (dteProperties.Item(i)));
                     string propertyName = Utils.call(() => (dteProperty.Name));
+                    if (slowProperties.Contains(propertyName) == true)
+                    {
+                        // This is one of the properties to ignore...
+                        continue;
+                    }
+
                     object propertyValue = Utils.call(() => (dteProperty.Value));
                     results[propertyName] = propertyValue;
                 }
