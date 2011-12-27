@@ -1,3 +1,5 @@
+- NOTE: We need to deploy the MakeItSo.exe.config file
+
 - Make C# parsing faster by ignoring properties that aren't there.
   - (find which ones these are)
   

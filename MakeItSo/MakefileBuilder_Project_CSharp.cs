@@ -343,8 +343,11 @@ namespace MakeItSo
             // Warning level...
             flags += ("-warn:" + configurationInfo.WarningLevel + " ");
 
-            // We add the mono .net packages...
-            flags += "-pkg:dotnet ";
+            // We add the mono .net packages (if we are not in a cygwin build)...
+            if (MakeItSoConfig.Instance.IsCygwinBuild == false)
+            {
+                flags += "-pkg:dotnet ";
+            }
 
             // We add the flags to the makefile...
             m_file.WriteLine(variableName + " = " + flags);
