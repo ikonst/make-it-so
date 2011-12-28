@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextLib", "TextLib\TextLib.vcproj", "{33702663-B281-46D3-84E7-67D9FB6311B8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcproj", "{7B8FBEA2-F110-443A-98B6-9B60844ED192}"
+	ProjectSection(ProjectDependencies) = postProject
+		{33702663-B281-46D3-84E7-67D9FB6311B8} = {33702663-B281-46D3-84E7-67D9FB6311B8}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33702663-B281-46D3-84E7-67D9FB6311B8}.Debug|Win32.ActiveCfg = Releasex86|Win32
+		{33702663-B281-46D3-84E7-67D9FB6311B8}.Debug|Win32.Build.0 = Releasex86|Win32
+		{33702663-B281-46D3-84E7-67D9FB6311B8}.Release|Win32.ActiveCfg = Releasex86|Win32
+		{33702663-B281-46D3-84E7-67D9FB6311B8}.Release|Win32.Build.0 = Releasex86|Win32
+		{7B8FBEA2-F110-443A-98B6-9B60844ED192}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7B8FBEA2-F110-443A-98B6-9B60844ED192}.Debug|Win32.Build.0 = Debug|Win32
+		{7B8FBEA2-F110-443A-98B6-9B60844ED192}.Release|Win32.ActiveCfg = Release|Win32
+		{7B8FBEA2-F110-443A-98B6-9B60844ED192}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
