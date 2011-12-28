@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWinformsApp", "SimpleWinformsApp.csproj", "{C68D6FEB-FF7F-4444-A08E-787BEA44883F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C68D6FEB-FF7F-4444-A08E-787BEA44883F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68D6FEB-FF7F-4444-A08E-787BEA44883F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68D6FEB-FF7F-4444-A08E-787BEA44883F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68D6FEB-FF7F-4444-A08E-787BEA44883F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
