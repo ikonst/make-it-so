@@ -1,6 +1,22 @@
 - NOTE: We need to deploy the MakeItSo.exe.config file
 
+C# copy-local in a chain
+------------------------
+- P1 has a project-reference to P2
+- P2 has a project-reference to P3
+- P2 has a project-reference to P4
+- P3 has an external-reference to R5
+  
+-  P1's makefile needs to copy references from P2, P3, P4 and R5.
 
+- Maybe the reference-info could include a reference to the project-info
+  if it is a project-reference (null if it isn't)
+  - Or maybe to the configuration-info for the referenced configuration.
+
+- Do this in setupReferences() function in ProjectInfo_CSharp?
+  - Sets up all references
+    - Some are actual references for the project (ie go into gmcs command-line)
+    - Some are copy-only references (ie, from further up the chain)
 
 Version 1.1
 -----------  
@@ -30,8 +46,6 @@ Tests
 -----
 - Find out if you can implcitly link to projects that don't have 
   the same configuration names (e.g. Debug, Debug32)
-- Find out what happens if you have a refernce in C# to a project
-  that has different configuration names.  
 - C# test using a custom control
 - C# with chain of libraries, where one library uses an external reference
 
