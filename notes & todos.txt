@@ -28,11 +28,12 @@ Version 2.0
 
 Tests
 -----
-- Test 'absolute references' in C#
 - Find out if you can implcitly link to projects that don't have 
   the same configuration names (e.g. Debug, Debug32)
 - Find out what happens if you have a refernce in C# to a project
   that has different configuration names.  
+- C# test using a custom control
+- C# with chain of libraries, where one library uses an external reference
 
 
 WIKI
