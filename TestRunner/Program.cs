@@ -15,7 +15,7 @@ namespace TestRunner
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TestRunner());
+            Application.Run(new TestRunnerForm());
         }
     }
 }

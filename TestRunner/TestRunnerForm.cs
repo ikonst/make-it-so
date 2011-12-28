@@ -24,7 +24,7 @@ namespace TestRunner
     ///   - Using cygwin: run a shell script that builds and runs the app.
     ///   - We test that the output of the app is what we expected.
     /// </summary>
-    public partial class TestRunner : Form
+    public partial class TestRunnerForm : Form
     {
         #region Events
 
@@ -35,7 +35,7 @@ namespace TestRunner
 
         #region Public methods and properties
 
-        public TestRunner()
+        public TestRunnerForm()
         {
             InitializeComponent();
         }

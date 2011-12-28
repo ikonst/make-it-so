@@ -54,16 +54,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SolutionInfo.cs" />
-    <Compile Include="TestRunner.cs">
+    <Compile Include="TestRunnerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TestRunner.Designer.cs">
-      <DependentUpon>TestRunner.cs</DependentUpon>
+    <Compile Include="TestRunnerForm.Designer.cs">
+      <DependentUpon>TestRunnerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="TestRunner.resx">
-      <DependentUpon>TestRunner.cs</DependentUpon>
+    <EmbeddedResource Include="TestRunnerForm.resx">
+      <DependentUpon>TestRunnerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

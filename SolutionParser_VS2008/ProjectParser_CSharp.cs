@@ -6,6 +6,7 @@ using MakeItSoLib;
 using Microsoft.VisualStudio.VCProjectEngine;
 using VSLangProj80;
 using VSLangProj;
+using System.IO;
 
 namespace SolutionParser_VS2008
 {
@@ -61,8 +62,8 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseProject()
         {
-            parseFiles();
             parseProjectProperties();
+            parseFiles();
             parseConfigurations();
             parseReferences();
         }
@@ -94,7 +95,8 @@ namespace SolutionParser_VS2008
         private void parseProjectProperties()
         {
             // We convert the DTE properties to a map...
-            Dictionary<string, object> projectProperties = getProjectProperties();
+            EnvDTE.Properties dteProperties = Utils.call(() => (m_dteProject.Properties));
+            Dictionary<string, object> projectProperties = getProperties(dteProperties);
 
             // The project type (exe, library etc)...
             prjOutputType outputType = (prjOutputType)getIntProperty(projectProperties, "OutputType");
@@ -148,7 +150,8 @@ namespace SolutionParser_VS2008
 
             // We parse the configuration's properties, and set configuration
             // seetings from them...
-            Dictionary<string, object> properties = getConfigurationProperties(dteConfiguration);
+            EnvDTE.Properties dteProperties = Utils.call(() => (dteConfiguration.Properties));
+            Dictionary<string, object> properties = getProperties(dteProperties);
 
             // Whether to optimize...
             configurationInfo.Optimize = getBoolProperty(properties, "Optimize");
@@ -218,31 +221,10 @@ namespace SolutionParser_VS2008
         }
 
         /// <summary>
-        /// Converts the collection of properties for the configuration passed in,
-        /// into a map of string -> object.
-        /// </summary>
-        private Dictionary<string, object> getConfigurationProperties(EnvDTE.Configuration dteConfiguration)
-        {
-            Dictionary<string, object> results = new Dictionary<string, object>();
-
-            EnvDTE.Properties dteProperties = Utils.call(() => (dteConfiguration.Properties));
-            int numProperties = Utils.call(() => (dteProperties.Count));
-            for (int i = 1; i <= numProperties; ++i)
-            {
-                EnvDTE.Property dteProperty = Utils.call(() => (dteProperties.Item(i)));
-                string propertyName = Utils.call(() => (dteProperty.Name));
-                object propertyValue = Utils.call(() => (dteProperty.Value));
-                results[propertyName] = propertyValue;
-            }
-
-            return results;
-        }
-
-        /// <summary>
-        /// Converts the collection of properties for the project into a map 
+        /// Converts the collection of properties passed in into a map 
         /// of string -> object.
         /// </summary>
-        private Dictionary<string, object> getProjectProperties()
+        private Dictionary<string, object> getProperties(EnvDTE.Properties dteProperties)
         {
             Dictionary<string, object> results = new Dictionary<string, object>();
 
@@ -252,7 +234,6 @@ namespace SolutionParser_VS2008
             HashSet<string> slowProperties = new HashSet<string> { "WebServer", "ServerExtensionsVersion", "OfflineURL", "WebServerVersion", "WebAccessMethod", "ActiveFileSharePath", "AspnetVersion", "FileSharePath" };
 
             // We loop through the properties...
-            EnvDTE.Properties dteProperties = Utils.call(() => (m_dteProject.Properties));
             int numProperties = Utils.call(() => (dteProperties.Count));
             for (int i = 1; i <= numProperties; ++i)
             {
@@ -287,9 +268,9 @@ namespace SolutionParser_VS2008
         private void parseFiles()
         {
             // We find the collection of files...
-            List<string> files = new List<string>();
+            HashSet<string> files = new HashSet<string>();
             EnvDTE.ProjectItems projectItems = Utils.call(() => (m_dteProject.ProjectItems));
-            findFiles(projectItems, files, "");
+            findFiles(projectItems, files);
 
             // We add the files to the project info...
             foreach (string file in files)
@@ -298,30 +279,35 @@ namespace SolutionParser_VS2008
             }
         }
 
-
         /// <summary>
         /// Find all .cs files in the project, including sub-folders.
         /// </summary>
-        private void findFiles(EnvDTE.ProjectItems projectItems, List<string> files, string path)
+        private void findFiles(EnvDTE.ProjectItems projectItems, HashSet<string> files)
         {
             // We look through the items...
             int numProjectItems = Utils.call(() => (projectItems.Count));
             for (int i = 1; i <= numProjectItems; ++i)
             {
                 EnvDTE.ProjectItem projectItem = Utils.call(() => (projectItems.Item(i)));
-                string itemName = Utils.call(() => projectItem.Name);
-                if (itemName.EndsWith(".cs") == true)
+
+                // We get the full-path...
+                EnvDTE.Properties dteProperties = Utils.call(() => (projectItem.Properties));
+                Dictionary<string, object> properties = getProperties(dteProperties);
+                string fullPath = getStringProperty(properties, "FullPath");
+
+                // Is it a .cs file?
+                if (Path.GetExtension(fullPath) == ".cs")
                 {
-                    string filePath = path + itemName;
-                    files.Add(filePath);
+                    // We convert it to a relative path, and add it to the project...
+                    string relativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, fullPath);
+                    files.Add(relativePath);
                 }
 
                 // We see if the item itself has sub-items...
                 EnvDTE.ProjectItems subItems = Utils.call(() => (projectItem.ProjectItems));
                 if (subItems != null)
                 {
-                    string newPath = path + itemName + "/";
-                    findFiles(subItems, files, newPath);
+                    findFiles(subItems, files);
                 }
 
                 // We see if this item has a sub-project...
@@ -329,8 +315,7 @@ namespace SolutionParser_VS2008
                 if (subProject != null)
                 {
                     EnvDTE.ProjectItems subProjectItems = Utils.call(() => (subProject.ProjectItems));
-                    string newPath = path + itemName + "/";
-                    findFiles(subProjectItems, files, newPath);
+                    findFiles(subProjectItems, files);
                 }
             }
         }

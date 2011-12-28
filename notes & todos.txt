@@ -1,6 +1,12 @@
 - NOTE: We need to deploy the MakeItSo.exe.config file
 
 
+Files
+-----
+- File:{6BB5F8EE-4483-11D3-8BCF-00C04F8EC28C}
+- Can we get the full path to a file?
+  - Do the project-items have properties?
+
 Version 1.1
 -----------  
 - VS2010 parser

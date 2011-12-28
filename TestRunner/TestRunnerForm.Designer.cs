@@ -1,6 +1,7 @@
-﻿namespace TestRunner
+﻿
+namespace TestRunner
 {
-    partial class TestRunner
+    partial class TestRunnerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +29,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.ctrlSolutions = new ColoredCheckedListBox();
+            this.ctrlSolutions = new TestRunner.ColoredCheckedListBox();
             this.cmdSelectAll = new System.Windows.Forms.Button();
             this.cmdUnselectAll = new System.Windows.Forms.Button();
             this.cmdRunTests = new System.Windows.Forms.Button();
@@ -41,16 +42,17 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.ctrlSolutions.CheckOnClick = true;
             this.ctrlSolutions.FormattingEnabled = true;
+            this.ctrlSolutions.IntegralHeight = false;
             this.ctrlSolutions.Location = new System.Drawing.Point(12, 12);
             this.ctrlSolutions.Name = "ctrlSolutions";
-            this.ctrlSolutions.Size = new System.Drawing.Size(654, 259);
+            this.ctrlSolutions.Size = new System.Drawing.Size(654, 327);
             this.ctrlSolutions.Sorted = true;
             this.ctrlSolutions.TabIndex = 0;
             // 
             // cmdSelectAll
             // 
             this.cmdSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdSelectAll.Location = new System.Drawing.Point(12, 276);
+            this.cmdSelectAll.Location = new System.Drawing.Point(12, 344);
             this.cmdSelectAll.Name = "cmdSelectAll";
             this.cmdSelectAll.Size = new System.Drawing.Size(97, 29);
             this.cmdSelectAll.TabIndex = 1;
@@ -61,7 +63,7 @@
             // cmdUnselectAll
             // 
             this.cmdUnselectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdUnselectAll.Location = new System.Drawing.Point(115, 277);
+            this.cmdUnselectAll.Location = new System.Drawing.Point(115, 345);
             this.cmdUnselectAll.Name = "cmdUnselectAll";
             this.cmdUnselectAll.Size = new System.Drawing.Size(97, 29);
             this.cmdUnselectAll.TabIndex = 2;
@@ -72,7 +74,7 @@
             // cmdRunTests
             // 
             this.cmdRunTests.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdRunTests.Location = new System.Drawing.Point(569, 277);
+            this.cmdRunTests.Location = new System.Drawing.Point(569, 345);
             this.cmdRunTests.Name = "cmdRunTests";
             this.cmdRunTests.Size = new System.Drawing.Size(97, 29);
             this.cmdRunTests.TabIndex = 3;
@@ -80,16 +82,16 @@
             this.cmdRunTests.UseVisualStyleBackColor = true;
             this.cmdRunTests.Click += new System.EventHandler(this.cmdRunTests_Click);
             // 
-            // TestRunner
+            // TestRunnerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 313);
+            this.ClientSize = new System.Drawing.Size(678, 381);
             this.Controls.Add(this.cmdRunTests);
             this.Controls.Add(this.cmdUnselectAll);
             this.Controls.Add(this.cmdSelectAll);
             this.Controls.Add(this.ctrlSolutions);
-            this.Name = "TestRunner";
+            this.Name = "TestRunnerForm";
             this.Text = "TestRunner";
             this.Load += new System.EventHandler(this.TestRunner_Load);
             this.ResumeLayout(false);
