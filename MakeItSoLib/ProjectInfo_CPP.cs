@@ -95,13 +95,12 @@ namespace MakeItSoLib
                         {
                             // We find the configuration for this info and add
                             // the library to it...
-                            ProjectConfigurationInfo_CPP configuration = getConfigurationInfos().Find((cfg) => (cfg.Name == info.ConfigurationName));
+                            ProjectConfigurationInfo_CPP configuration = getConfigurationInfo(info.ConfigurationName);
                             if (configuration == null)
                             {
-                                // We may fail to find the library to implicitly link
-                                // if the configuration names do not match. (For example
-                                // if our project has a Debug configuration, and the
-                                // library to link has a DebugStatic configuration...
+                                // We should only fail to find a configuration is the 
+                                // project has no configurations. So really, this should
+                                // not happen...
                                 Log.log(String.Format("Project {0} could not implicitly link {1}. Could not find the {2} configuration.", Name, info.LibraryRawName, info.ConfigurationName));
                                 continue;
                             }
@@ -170,6 +169,37 @@ namespace MakeItSoLib
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Finds the configuration info for the name passed in. It will try to
+        /// find a close match if it cannot find an exact macth.
+        /// Return null if no match can be found. 
+        /// </summary>
+        private ProjectConfigurationInfo_CPP getConfigurationInfo(string configurationName)
+        {
+            // Have we already worked out which configuration is needed for this name?
+            if (m_mapNamesToConfigurations.ContainsKey(configurationName) == true)
+            {
+                return m_mapNamesToConfigurations[configurationName];
+            }
+
+            // We look for the closest match for the name passed in...
+            ProjectConfigurationInfo_CPP result = null;
+            int closestDistance = -1;
+            foreach (ProjectConfigurationInfo_CPP configurationInfo in m_configurationInfos)
+            {
+                int distance = Utils.levenshteinDistance(configurationName, configurationInfo.Name);
+                if (distance < closestDistance
+                    ||
+                    closestDistance == -1)
+                {
+                    result = configurationInfo;
+                    closestDistance = distance;
+                }
+            }
+            m_mapNamesToConfigurations.Add(configurationName, result);
+            return result;
+        }
 
         /// <summary>
         /// Finds extra libraries that this executable project needs to link 
@@ -256,6 +286,13 @@ namespace MakeItSoLib
 
         // True if we need to implicitly link libraries we depend on...
         private bool m_linkLibraryDependencies = false;
+
+        // A map of configuration names to configuration-info. This is used when implicitly
+        // linking, and maps names of configurations in *other projects* to configurations
+        // in this project. These are matched by the closeness of the name, so they may not
+        // be exact matches to the configuration names in this project. For example, we 
+        // might map 'Debugx86' to 'Debug'...
+        private Dictionary<string, ProjectConfigurationInfo_CPP> m_mapNamesToConfigurations = new Dictionary<string, ProjectConfigurationInfo_CPP>();
 
         // Holds information about files we need to link in implicitly...
         private class ImplicitLinkInfo
