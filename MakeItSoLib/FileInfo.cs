@@ -12,6 +12,18 @@ namespace MakeItSoLib
     public class FileInfo
     {
         /// <summary>
+        /// Returns a new copy of this FileInfo.
+        /// </summary>
+        public FileInfo clone()
+        {
+            FileInfo result = new FileInfo();
+            result.AbsolutePath = AbsolutePath;
+            result.CopyToOutputFolder = CopyToOutputFolder;
+            result.RelativePath = RelativePath;
+            return result;
+        }
+
+        /// <summary>
         /// Gets or sets the absolute path.
         /// </summary>
         public string AbsolutePath { get; set; }

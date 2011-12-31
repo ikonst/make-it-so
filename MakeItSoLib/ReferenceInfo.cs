@@ -8,9 +8,22 @@ namespace MakeItSoLib
     /// <summary>
     /// Holds information about one reference for a C# project.
     /// </summary>
-    [Serializable()]
     public class ReferenceInfo
     {
+        /// <summary>
+        /// Creates a copy of the data.
+        /// </summary>
+        public ReferenceInfo clone()
+        {
+            ReferenceInfo result = new ReferenceInfo();
+            result.AbsolutePath = AbsolutePath;
+            result.ConfigurationInfo = ConfigurationInfo;
+            result.CopyLocal = CopyLocal;
+            result.ReferenceType = ReferenceType;
+            result.RelativePath = RelativePath;
+            return result;
+        }
+
         /// <summary>
         /// The reference type.
         /// </summary>
@@ -53,6 +66,17 @@ namespace MakeItSoLib
             set { m_referenceType = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the project-configuration that this reference points to
+        /// if it is a project-reference.
+        /// </summary><remarks>
+        /// We use this when working out which files to copy into the output folder,
+        /// as we need to copy files from referenced projects as well as from 'our
+        /// own' project.
+        /// </remarks>
+        public ProjectConfigurationInfo_CSharp ConfigurationInfo { get; set; }
+
+        // The type of reference, e.g. project-reference or external-reference...
         private ReferenceTypeEnum m_referenceType = ReferenceTypeEnum.INVALID;
     }
 }

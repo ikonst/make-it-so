@@ -155,7 +155,11 @@ namespace MakeItSoLib
             m_referenceInfos.Add(referenceInfo);
             if (referenceInfo.CopyLocal == true)
             {
-                m_filesToCopyToOutputFolder.Add(referenceInfo.RelativePath);
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.AbsolutePath = referenceInfo.AbsolutePath;
+                fileInfo.RelativePath = referenceInfo.RelativePath;
+                fileInfo.CopyToOutputFolder = referenceInfo.CopyLocal;
+                m_filesToCopyToOutputFolder.Add(fileInfo);
             }
         }
 
@@ -171,17 +175,49 @@ namespace MakeItSoLib
         /// Adds a file to the collection to copy to the output folder. The file
         /// is passed in as a path relative to the project's root folder.
         /// </summary>
-        public void addFileToCopyToOutputFolder(string relativePath)
+        public void addFileToCopyToOutputFolder(FileInfo fileInfo)
         {
-            m_filesToCopyToOutputFolder.Add(relativePath);
+            m_filesToCopyToOutputFolder.Add(fileInfo);
         }
 
         /// <summary>
         /// Gets the collection of files to copy to the output folder.
-        /// </summary>
-        public List<string> getFilesToCopyToOutputFolder()
+        /// </summary><remarks>
+        /// These files include:
+        /// - Files from the current project with the CopyToOutputFolder flag set.
+        /// - Referenced assemblies with the CopyLocal flag set.
+        /// - Files and references from other projects that we have references to.
+        /// </remarks>
+        public List<FileInfo> getFilesToCopyToOutputFolder()
         {
-            return m_filesToCopyToOutputFolder.ToList();
+            // The collection of files from this project / configuration...
+            List<FileInfo> results = m_filesToCopyToOutputFolder.ToList();
+
+            // We add the list of files from other projects that 
+            // we have references to...
+            foreach (ReferenceInfo referenceInfo in m_referenceInfos)
+            {
+                if (referenceInfo.ReferenceType != ReferenceInfo.ReferenceTypeEnum.PROJECT_REFERENCE)
+                {
+                    continue;
+                }
+
+                // We've got a project-reference, so we find the files
+                // that it needs to copy...
+                ProjectConfigurationInfo_CSharp referencedConfiguration = referenceInfo.ConfigurationInfo;
+                List<FileInfo> filesFromReferencedConfiguration = referencedConfiguration.getFilesToCopyToOutputFolder();
+
+                // We add them to the list for this configuration, first converting
+                // the paths to be relative to our project's root folder...
+                foreach (FileInfo fileInfo in filesFromReferencedConfiguration)
+                {
+                    FileInfo infoWithRelativePath = fileInfo.clone();
+                    infoWithRelativePath.RelativePath = Utils.makeRelativePath(fileInfo.AbsolutePath, ParentProjectInfo.RootFolderAbsolute);
+                    results.Add(infoWithRelativePath);
+                }
+            }
+
+            return results;
         }
 
         #endregion
@@ -227,7 +263,7 @@ namespace MakeItSoLib
         private HashSet<ReferenceInfo> m_referenceInfos = new HashSet<ReferenceInfo>();
 
         // The collection of files (relative paths) to copy to the output folder...
-        private HashSet<string> m_filesToCopyToOutputFolder = new HashSet<string>();
+        private HashSet<FileInfo> m_filesToCopyToOutputFolder = new HashSet<FileInfo>();
 
         #endregion
     }

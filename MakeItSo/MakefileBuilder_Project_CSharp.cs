@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MakeItSoLib;
 using System.IO;
+using FileInfo = MakeItSoLib.FileInfo;
 
 namespace MakeItSo
 {
@@ -121,9 +122,9 @@ namespace MakeItSo
                 m_file.WriteLine("\tmkdir -p $({0})", outputFolder);
 
                 // We copy any files that need to copied to the output folder...
-                foreach (string fileToCopy in configurationInfo.getFilesToCopyToOutputFolder())
+                foreach (FileInfo fileInfo in configurationInfo.getFilesToCopyToOutputFolder())
                 {
-                    m_file.WriteLine("\tcp {0} $({1})", fileToCopy, outputFolder);
+                    m_file.WriteLine("\tcp {0} $({1})", fileInfo.RelativePath, outputFolder);
                 }
             }
             m_file.WriteLine("");

@@ -145,12 +145,12 @@ namespace MakeItSoLib
         /// <summary>
         /// Adds a file to the collection to copy to the output folder.
         /// </summary>
-        public void addFileToCopyToOutputFolder(string relativePath)
+        public void addFileToCopyToOutputFolder(FileInfo fileInfo)
         {
             // We store this info in the configurations...
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
             {
-                configurationInfo.addFileToCopyToOutputFolder(relativePath);
+                configurationInfo.addFileToCopyToOutputFolder(fileInfo);
             }
         }
 
@@ -207,10 +207,12 @@ namespace MakeItSoLib
                 string relativePath = Utils.makeRelativePath(m_rootFolderAbsolute, absolutePath);
 
                 // We store the reference-info for each configuration...
-                ReferenceInfo info = Utils.clone(referenceInfo);
+                ReferenceInfo info = new ReferenceInfo();
+                info.CopyLocal = referenceInfo.CopyLocal;
                 info.AbsolutePath = absolutePath;
                 info.RelativePath = relativePath;
                 info.ReferenceType = ReferenceInfo.ReferenceTypeEnum.PROJECT_REFERENCE;
+                info.ConfigurationInfo = referencedConfiguration;
                 configurationInfo.addReference(info);
             }
         }
@@ -263,9 +265,12 @@ namespace MakeItSoLib
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
             {
                 // We store the reference-info for each configuration...
-                ReferenceInfo info = Utils.clone(referenceInfo);
+                ReferenceInfo info = new ReferenceInfo();
+                info.AbsolutePath = referenceInfo.AbsolutePath;
                 info.RelativePath = relativePath;
+                info.CopyLocal = referenceInfo.CopyLocal;
                 info.ReferenceType = ReferenceInfo.ReferenceTypeEnum.EXTERNAL_REFERENCE;
+                info.ConfigurationInfo = null;
                 configurationInfo.addReference(info);
             }
         }

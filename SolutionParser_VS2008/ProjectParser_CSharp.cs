@@ -290,7 +290,7 @@ namespace SolutionParser_VS2008
                 // We check if the file should be copied to the output folder...
                 if (fileInfo.CopyToOutputFolder == true)
                 {
-                    m_projectInfo.addFileToCopyToOutputFolder(fileInfo.RelativePath);
+                    m_projectInfo.addFileToCopyToOutputFolder(fileInfo);
                 }
             }
         }
