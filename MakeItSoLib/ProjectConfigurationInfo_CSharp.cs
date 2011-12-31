@@ -212,7 +212,7 @@ namespace MakeItSoLib
                 foreach (FileInfo fileInfo in filesFromReferencedConfiguration)
                 {
                     FileInfo infoWithRelativePath = fileInfo.clone();
-                    infoWithRelativePath.RelativePath = Utils.makeRelativePath(fileInfo.AbsolutePath, ParentProjectInfo.RootFolderAbsolute);
+                    infoWithRelativePath.RelativePath = Utils.makeRelativePath(ParentProjectInfo.RootFolderAbsolute,fileInfo.AbsolutePath);
                     results.Add(infoWithRelativePath);
                 }
             }
