@@ -153,6 +153,10 @@ namespace MakeItSoLib
         public void addReference(ReferenceInfo referenceInfo)
         {
             m_referenceInfos.Add(referenceInfo);
+            if (referenceInfo.CopyLocal == true)
+            {
+                m_filesToCopyToOutputFolder.Add(referenceInfo.RelativePath);
+            }
         }
 
         /// <summary>
@@ -161,6 +165,23 @@ namespace MakeItSoLib
         public List<ReferenceInfo> getReferenceInfos()
         {
             return m_referenceInfos.ToList();
+        }
+
+        /// <summary>
+        /// Adds a file to the collection to copy to the output folder. The file
+        /// is passed in as a path relative to the project's root folder.
+        /// </summary>
+        public void addFileToCopyToOutputFolder(string relativePath)
+        {
+            m_filesToCopyToOutputFolder.Add(relativePath);
+        }
+
+        /// <summary>
+        /// Gets the collection of files to copy to the output folder.
+        /// </summary>
+        public List<string> getFilesToCopyToOutputFolder()
+        {
+            return m_filesToCopyToOutputFolder.ToList();
         }
 
         #endregion
@@ -202,8 +223,11 @@ namespace MakeItSoLib
         // The warning level...
         private int m_warningLevel = 4;
 
-        // The ollectin of references for this configuration...
+        // The collection of references for this configuration...
         private HashSet<ReferenceInfo> m_referenceInfos = new HashSet<ReferenceInfo>();
+
+        // The collection of files (relative paths) to copy to the output folder...
+        private HashSet<string> m_filesToCopyToOutputFolder = new HashSet<string>();
 
         #endregion
     }

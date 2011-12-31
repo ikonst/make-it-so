@@ -120,31 +120,13 @@ namespace MakeItSo
                 string outputFolder = getOutputFolderVariableName(configurationInfo);
                 m_file.WriteLine("\tmkdir -p $({0})", outputFolder);
 
-                // We copy the references...
-                foreach (ReferenceInfo referenceInfo in configurationInfo.getReferenceInfos())
+                // We copy any files that need to copied to the output folder...
+                foreach (string fileToCopy in configurationInfo.getFilesToCopyToOutputFolder())
                 {
-                    copyReference(configurationInfo, referenceInfo);
+                    m_file.WriteLine("\tcp {0} $({1})", fileToCopy, outputFolder);
                 }
             }
             m_file.WriteLine("");
-        }
-
-        /// <summary>
-        /// Writes the section of the makefile to copy one reference to our
-        /// output folder.
-        /// </summary>
-        private void copyReference(ProjectConfigurationInfo_CSharp configurationInfo, ReferenceInfo referenceInfo)
-        {
-            // We check if we need to copy the reference...
-            if (referenceInfo.CopyLocal == false)
-            {
-                return;
-            }
-
-            // We copy the reference...
-            string outputFolder = getOutputFolderVariableName(configurationInfo);
-            string path = getReferenceRelativePath(referenceInfo);
-            m_file.WriteLine("\tcp {0} $({1})", path, outputFolder);
         }
 
         /// <summary>

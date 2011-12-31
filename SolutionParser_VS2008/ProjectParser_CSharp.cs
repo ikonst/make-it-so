@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.VCProjectEngine;
 using VSLangProj80;
 using VSLangProj;
 using System.IO;
+using FileInfo = MakeItSoLib.FileInfo;
 
 namespace SolutionParser_VS2008
 {
@@ -62,9 +63,14 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseProject()
         {
+            // Note: We need to parse the project properties and configurations 
+            //       first, as the later stages need to know things like the 
+            //       project root folder, and which configurations there are...
             parseProjectProperties();
-            parseFiles();
             parseConfigurations();
+
+            // We parse the rest of the project...
+            parseFiles();
             parseReferences();
         }
 
@@ -268,21 +274,31 @@ namespace SolutionParser_VS2008
         private void parseFiles()
         {
             // We find the collection of files...
-            HashSet<string> files = new HashSet<string>();
+            HashSet<FileInfo> fileInfos = new HashSet<FileInfo>();
             EnvDTE.ProjectItems projectItems = Utils.call(() => (m_dteProject.ProjectItems));
-            findFiles(projectItems, files);
+            findFiles(projectItems, fileInfos);
 
-            // We add the files to the project info...
-            foreach (string file in files)
+            // We decide what to do with the files we've found...
+            foreach (FileInfo fileInfo in fileInfos)
             {
-                m_projectInfo.addFile(file);
+                // We add the .cs files to the project info...
+                if (fileInfo.Extension == ".cs")
+                {
+                    m_projectInfo.addFile(fileInfo.RelativePath);
+                }
+
+                // We check if the file should be copied to the output folder...
+                if (fileInfo.CopyToOutputFolder == true)
+                {
+                    m_projectInfo.addFileToCopyToOutputFolder(fileInfo.RelativePath);
+                }
             }
         }
 
         /// <summary>
         /// Find all .cs files in the project, including sub-folders.
         /// </summary>
-        private void findFiles(EnvDTE.ProjectItems projectItems, HashSet<string> files)
+        private void findFiles(EnvDTE.ProjectItems projectItems, HashSet<FileInfo> files)
         {
             // We look through the items...
             int numProjectItems = Utils.call(() => (projectItems.Count));
@@ -294,13 +310,17 @@ namespace SolutionParser_VS2008
                 EnvDTE.Properties dteProperties = Utils.call(() => (projectItem.Properties));
                 Dictionary<string, object> properties = getProperties(dteProperties);
                 string fullPath = getStringProperty(properties, "FullPath");
+                int copyToOutputFolder = getIntProperty(properties, "CopyToOutputDirectory");
 
-                // Is it a .cs file?
-                if (Path.GetExtension(fullPath) == ".cs")
+                // We check if it is a file (it could be a folder instead)...
+                if (File.Exists(fullPath) == true)
                 {
-                    // We convert it to a relative path, and add it to the project...
-                    string relativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, fullPath);
-                    files.Add(relativePath);
+                    // We add it to the list of files...
+                    FileInfo fileInfo = new FileInfo();
+                    fileInfo.AbsolutePath = fullPath;
+                    fileInfo.RelativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, fullPath);
+                    fileInfo.CopyToOutputFolder = (copyToOutputFolder != 0);
+                    files.Add(fileInfo);
                 }
 
                 // We see if the item itself has sub-items...

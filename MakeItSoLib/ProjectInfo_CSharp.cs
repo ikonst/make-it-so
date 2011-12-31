@@ -142,6 +142,18 @@ namespace MakeItSoLib
             }
         }
 
+        /// <summary>
+        /// Adds a file to the collection to copy to the output folder.
+        /// </summary>
+        public void addFileToCopyToOutputFolder(string relativePath)
+        {
+            // We store this info in the configurations...
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
+            {
+                configurationInfo.addFileToCopyToOutputFolder(relativePath);
+            }
+        }
+
         #endregion
 
         #region Private functions

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileInfo.cs" />
     <Compile Include="ProjectConfigurationInfo_CSharp.cs" />
     <Compile Include="ProjectInfo.cs" />
     <Compile Include="ProjectInfo_CSharp.cs" />
