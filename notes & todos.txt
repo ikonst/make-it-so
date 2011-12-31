@@ -2,6 +2,10 @@
 
 C# copy-local in a chain
 ------------------------
+
+- Maybe we should copy *all files* from project output folders?
+  - It looks like that's what VS does??
+
 - P1 has a project-reference to P2
 - P2 has a project-reference to P3
 - P2 has a project-reference to P4
