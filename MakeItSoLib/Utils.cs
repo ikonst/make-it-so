@@ -43,8 +43,8 @@ namespace MakeItSoLib
             int numTries = 20;
             int intervalMS = 50;
 
-            // We will try to call the function up to 20 times...
-            for (int i=0; i<numTries; ++i)
+            // We will try to call the function a number of times...
+            for (int i = 0; i < numTries; ++i)
             {
                 try
                 {
@@ -62,6 +62,38 @@ namespace MakeItSoLib
 
             throw new Exception(String.Format("'call' failed to call function after {0} tries.", numTries));
         }
+
+        /// <summary>
+        /// Calls a function with no return value, retrying if necessary.
+        /// </summary>
+        public static void callVoidFunction(Action fn)
+        {
+            int numTries = 20;
+            int intervalMS = 50;
+
+            // We will try to call the function a number of times...
+            for (int i = 0; i < numTries; ++i)
+            {
+                try
+                {
+                    // We call the function passed in, and return
+                    // if it succeeds...
+                    fn();
+                    return;
+                }
+                catch (COMException)
+                {
+                    // We've caught a COM exception, which is most likely
+                    // a Server is Busy exception. So we sleep for a short
+                    // while, and then try again...
+                    Thread.Sleep(intervalMS);
+                }
+            }
+
+            throw new Exception(String.Format("'callVoidFunction' failed to call function after {0} tries.", numTries));
+        }
+
+
 
         /// <summary>
         /// Returns the relative path between the two paths passed in.

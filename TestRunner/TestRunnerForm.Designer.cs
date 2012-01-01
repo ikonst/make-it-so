@@ -45,14 +45,14 @@ namespace TestRunner
             this.ctrlSolutions.IntegralHeight = false;
             this.ctrlSolutions.Location = new System.Drawing.Point(12, 12);
             this.ctrlSolutions.Name = "ctrlSolutions";
-            this.ctrlSolutions.Size = new System.Drawing.Size(654, 327);
+            this.ctrlSolutions.Size = new System.Drawing.Size(654, 549);
             this.ctrlSolutions.Sorted = true;
             this.ctrlSolutions.TabIndex = 0;
             // 
             // cmdSelectAll
             // 
             this.cmdSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdSelectAll.Location = new System.Drawing.Point(12, 344);
+            this.cmdSelectAll.Location = new System.Drawing.Point(12, 566);
             this.cmdSelectAll.Name = "cmdSelectAll";
             this.cmdSelectAll.Size = new System.Drawing.Size(97, 29);
             this.cmdSelectAll.TabIndex = 1;
@@ -63,7 +63,7 @@ namespace TestRunner
             // cmdUnselectAll
             // 
             this.cmdUnselectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cmdUnselectAll.Location = new System.Drawing.Point(115, 345);
+            this.cmdUnselectAll.Location = new System.Drawing.Point(115, 567);
             this.cmdUnselectAll.Name = "cmdUnselectAll";
             this.cmdUnselectAll.Size = new System.Drawing.Size(97, 29);
             this.cmdUnselectAll.TabIndex = 2;
@@ -74,7 +74,7 @@ namespace TestRunner
             // cmdRunTests
             // 
             this.cmdRunTests.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdRunTests.Location = new System.Drawing.Point(569, 345);
+            this.cmdRunTests.Location = new System.Drawing.Point(569, 567);
             this.cmdRunTests.Name = "cmdRunTests";
             this.cmdRunTests.Size = new System.Drawing.Size(97, 29);
             this.cmdRunTests.TabIndex = 3;
@@ -86,7 +86,7 @@ namespace TestRunner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(678, 381);
+            this.ClientSize = new System.Drawing.Size(678, 603);
             this.Controls.Add(this.cmdRunTests);
             this.Controls.Add(this.cmdUnselectAll);
             this.Controls.Add(this.cmdSelectAll);

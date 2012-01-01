@@ -13,7 +13,7 @@ using VSLangProj80;
 namespace SolutionParser_VS2008
 {
     /// <summary>
-    /// Parses a Visual Studio solution.
+    /// Parses a Visual Studio 2008 solution.
     /// </summary><remarks>
     /// When we parse a solution file we are looking for:
     /// - C++ projects
@@ -81,8 +81,8 @@ namespace SolutionParser_VS2008
 
             // We open the solution. (This needs to be a full path.)
             string path = Path.GetFullPath(m_parsedSolution.Name);
-            m_dteSolution = m_dte.Solution;
-            m_dteSolution.Open(path);
+            m_dteSolution = Utils.call(() => (m_dte.Solution));
+            Utils.callVoidFunction(() => { m_dteSolution.Open(path); });
 
             // We get the root folder for the solution...
             m_parsedSolution.RootFolderAbsolute = Path.GetDirectoryName(path) + "\\";

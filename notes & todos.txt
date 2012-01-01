@@ -1,7 +1,13 @@
 - NOTE: We need to deploy the MakeItSo.exe.config file
 
-Version 1.1
------------  
+2010 notes
+----------
+- First (non-empty) line of solution: "Microsoft Visual Studio Solution File, Format Version 11.00"
+  - VS2008 line:                      "Microsoft Visual Studio Solution File, Format Version 10.00"
+
+
+VS 2010
+-------  
 - VS2010 parser
 - Auto-detect VS version from the .sln file  
 - Ability to add or suppress compiler flags
@@ -12,16 +18,12 @@ Version 1.1
 - Config option to suppress checking in current folder for dlls. 
 
 
-Version 1.2
------------
+Custom build steps etc
+----------------------
 - Custom build steps
 - Pre / post build steps
 - Allow change to folder prefix "gcc" (maybe v 1.2) 
 
-
-Version 2.0
------------
-- C# / mono
 
 
 Tests
@@ -44,13 +46,3 @@ BUGS
 ----
 - OnDemandPriceLogger: fails with 'Value cannot be null'
 
-
-C# / Mono
----------
-- Debug_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -debug+ -debug:full -filealign:512 -pkg:dotnet -define:DEBUG -define:TRACE -optimize-   
-- Release_FLAGS = -warn:4 -warnaserror+ -nowarn:1701,1702 -filealign:512 -pkg:dotnet -define:TRACE -optimize+ 
-
-- Is there any harm in always doing copy-local?
-  - We should only do this if the setting says to.
-  - If we do it, we should copy project references from the copied from project as well(?)
-    

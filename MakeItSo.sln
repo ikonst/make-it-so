@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MakeItSoLib", "MakeItSoLib\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionParser_VS2008", "SolutionParser_VS2008\SolutionParser_VS2008.csproj", "{EE467C35-87D8-461D-A102-DFDDB45613B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionParser_VS2010", "SolutionParser_VS2010\SolutionParser_VS2010.csproj", "{9194750C-6492-44AF-B18C-4247AC16D32B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{EE467C35-87D8-461D-A102-DFDDB45613B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE467C35-87D8-461D-A102-DFDDB45613B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE467C35-87D8-461D-A102-DFDDB45613B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9194750C-6492-44AF-B18C-4247AC16D32B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9194750C-6492-44AF-B18C-4247AC16D32B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9194750C-6492-44AF-B18C-4247AC16D32B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9194750C-6492-44AF-B18C-4247AC16D32B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
