@@ -6,9 +6,9 @@ make
 
 # Run the test and store the output...
 pushd App/bin/monoDebug
-./App.exe > testOutput.txt
+./App.exe
 popd
 
 pushd App/bin/monoRelease
-./App.exe > testOutput.txt
+./App.exe
 popd

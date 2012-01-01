@@ -26,10 +26,7 @@ Version 2.0
 
 Tests
 -----
-- C# test using a custom control
-- C# with chain of libraries, where one library uses an external reference
-- Test that copy works, if all output is going to the same folder 
-  - ie, that it can copy from the folder to itself, and overwrite existing files
+
 
 
 WIKI
