@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseTextBox", "ReverseTextBox\ReverseTextBox.csproj", "{0A9A9288-D92B-4610-A8DF-4D539D1D4008}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{1F92D67E-B323-4CA0-9075-CB4D9B16DE10}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A9A9288-D92B-4610-A8DF-4D539D1D4008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A9A9288-D92B-4610-A8DF-4D539D1D4008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A9A9288-D92B-4610-A8DF-4D539D1D4008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A9A9288-D92B-4610-A8DF-4D539D1D4008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F92D67E-B323-4CA0-9075-CB4D9B16DE10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F92D67E-B323-4CA0-9075-CB4D9B16DE10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F92D67E-B323-4CA0-9075-CB4D9B16DE10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F92D67E-B323-4CA0-9075-CB4D9B16DE10}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
