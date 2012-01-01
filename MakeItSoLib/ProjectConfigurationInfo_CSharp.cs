@@ -159,6 +159,10 @@ namespace MakeItSoLib
                 fileInfo.AbsolutePath = referenceInfo.AbsolutePath;
                 fileInfo.RelativePath = referenceInfo.RelativePath;
                 fileInfo.CopyToOutputFolder = referenceInfo.CopyLocal;
+                if (referenceInfo.ReferenceType == ReferenceInfo.ReferenceTypeEnum.PROJECT_REFERENCE)
+                {
+                    fileInfo.IsFromAProjectOutputFolder = true;
+                }
                 m_filesToCopyToOutputFolder.Add(fileInfo);
             }
         }

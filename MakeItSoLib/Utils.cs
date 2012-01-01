@@ -300,6 +300,20 @@ namespace MakeItSoLib
         /// </summary>
         public static bool isSamePath(string path1, string path2)
         {
+            // We have to be careful with empty paths.
+            // If both paths are empty, they are the same...
+            if (path1 == "" && path2 == "")
+            {
+                return true;
+            }
+
+            // They are not both empty, so if either path is empty
+            // then they're not the same...
+            if(path1 == "" || path2 == "")
+            {
+                return false;
+            }
+
             path1 = path1.ToLower();
             path1 = Path.GetFullPath(path1);
             path1.TrimEnd('\\');

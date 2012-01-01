@@ -118,13 +118,27 @@ namespace MakeItSo
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
             {
                 // We create the output folder...
-                string outputFolder = getOutputFolderVariableName(configurationInfo);
-                m_file.WriteLine("\tmkdir -p $({0})", outputFolder);
+                string outputFolderVariable = getOutputFolderVariableName(configurationInfo);
+                m_file.WriteLine("\tmkdir -p $({0})", outputFolderVariable);
 
                 // We copy any files that need to copied to the output folder...
                 foreach (FileInfo fileInfo in configurationInfo.getFilesToCopyToOutputFolder())
                 {
-                    m_file.WriteLine("\tcp {0} $({1})", fileInfo.RelativePath, outputFolder);
+                    // We get the path to the file. If it is from a project output folder,
+                    // we need to convert the name to our version of the folder name...
+                    string relativePath = fileInfo.RelativePath;
+                    if (fileInfo.IsFromAProjectOutputFolder == true)
+                    {
+                        relativePath = Utils.addPrefixToFilePath(relativePath, "mono");
+                    }
+
+                    // We only copy the file if the source and output are not the same...
+                    string folder = Path.GetDirectoryName(relativePath);
+                    string outputFolder = getOutputFolder(configurationInfo);
+                    if (Utils.isSamePath(folder, outputFolder) == false)
+                    {
+                        m_file.WriteLine("\tcp {0} $({1})", relativePath, outputFolderVariable);
+                    }
                 }
             }
             m_file.WriteLine("");
@@ -232,9 +246,17 @@ namespace MakeItSo
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_projectInfo.getConfigurationInfos())
             {
                 string variableName = getOutputFolderVariableName(configurationInfo);
-                string outputPath = Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
+                string outputPath = getOutputFolder(configurationInfo);
                 m_file.WriteLine(variableName + " = " + outputPath);
             }
+        }
+
+        /// <summary>
+        /// Returns the output folder for the configuration passed in.
+        /// </summary>
+        private string getOutputFolder(ProjectConfigurationInfo_CSharp configurationInfo)
+        {
+            return Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
         }
 
         /// <summary>

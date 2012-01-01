@@ -12,6 +12,14 @@ namespace MakeItSoLib
     public class FileInfo
     {
         /// <summary>
+        /// Constructor.
+        /// </summary>
+        public FileInfo()
+        {
+            IsFromAProjectOutputFolder = false;
+        }
+
+        /// <summary>
         /// Returns a new copy of this FileInfo.
         /// </summary>
         public FileInfo clone()
@@ -20,6 +28,7 @@ namespace MakeItSoLib
             result.AbsolutePath = AbsolutePath;
             result.CopyToOutputFolder = CopyToOutputFolder;
             result.RelativePath = RelativePath;
+            result.IsFromAProjectOutputFolder = IsFromAProjectOutputFolder;
             return result;
         }
 
@@ -38,6 +47,15 @@ namespace MakeItSoLib
         /// Gets or sets whether the file should be copied to the output folder.
         /// </summary>
         public bool CopyToOutputFolder { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether this file is from a project's output
+        /// folder (e.g. bin/Debug/file.ext). 
+        /// </summary><remarks>
+        /// If it is, we will need to change the folder name when adding 
+        /// it to the makefile.
+        /// </remarks>
+        public bool IsFromAProjectOutputFolder { get; set; }
 
         /// <summary>
         /// Gets the file extension, including the '.'
