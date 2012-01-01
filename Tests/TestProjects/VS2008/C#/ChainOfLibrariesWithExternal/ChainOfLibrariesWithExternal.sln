@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldLib", "WorldLib\WorldLib.csproj", "{48C9091E-00B5-44AC-BE83-F3E6B2F31773}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextLib", "TextLib\TextLib.csproj", "{36C5D048-CD1B-41CA-B7F4-FD3FCEC13CE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{A2D6F610-CDCE-4AD3-B9D1-A0E4D75A6923}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48C9091E-00B5-44AC-BE83-F3E6B2F31773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48C9091E-00B5-44AC-BE83-F3E6B2F31773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48C9091E-00B5-44AC-BE83-F3E6B2F31773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48C9091E-00B5-44AC-BE83-F3E6B2F31773}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C5D048-CD1B-41CA-B7F4-FD3FCEC13CE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C5D048-CD1B-41CA-B7F4-FD3FCEC13CE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C5D048-CD1B-41CA-B7F4-FD3FCEC13CE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C5D048-CD1B-41CA-B7F4-FD3FCEC13CE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D6F610-CDCE-4AD3-B9D1-A0E4D75A6923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D6F610-CDCE-4AD3-B9D1-A0E4D75A6923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D6F610-CDCE-4AD3-B9D1-A0E4D75A6923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D6F610-CDCE-4AD3-B9D1-A0E4D75A6923}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
