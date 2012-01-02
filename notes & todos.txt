@@ -5,6 +5,9 @@
 - First (non-empty) line of solution: "Microsoft Visual Studio Solution File, Format Version 11.00"
   - VS2008 line:                      "Microsoft Visual Studio Solution File, Format Version 10.00"
 
+- Refactor code so that adding/removing preprocessor definitions is not in the parser.
+  - Should be a common step after the parsing stage
+  - Also for libs etc.
 
 VS 2010
 -------  

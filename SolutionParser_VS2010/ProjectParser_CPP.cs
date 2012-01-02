@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.VCProjectEngine;
-using System.IO;
 using MakeItSoLib;
+using System.IO;
 
-namespace SolutionParser_VS2008
+namespace SolutionParser_VS2010
 {
     /// <summary>
     /// Parses a C++ project.
     /// </summary><remarks>
-    /// We extract information from a VCProject object, and fill in a 
-    /// ProjectInfo structure.
+    /// We extract information from a VCProject object, and fill in a  ProjectInfo structure.
     /// </remarks>
     internal class ProjectParser_CPP
     {
@@ -45,7 +44,7 @@ namespace SolutionParser_VS2008
         /// <summary>
         /// Gets the parsed project.
         /// </summary>
-        public ProjectInfo_CPP Project 
+        public ProjectInfo_CPP Project
         {
             get { return m_projectInfo; }
         }
@@ -167,8 +166,8 @@ namespace SolutionParser_VS2008
 
             // Generate debug info...
             bool debugInfo = Utils.call(() => (linkerTool.GenerateDebugInformation));
-            if (debugInfo == true 
-                && 
+            if (debugInfo == true
+                &&
                 configurationInfo.getPreprocessorDefinitions().Contains("NDEBUG") == false)
             {
                 configurationInfo.addCompilerFlag("-g");
@@ -232,7 +231,7 @@ namespace SolutionParser_VS2008
             MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
 
             List<string> additionalLibraries = Utils.split(strAdditionalLibraries, ' ');
-            foreach(string additionalLibrary in additionalLibraries)
+            foreach (string additionalLibrary in additionalLibraries)
             {
                 // We add the library to the project...
                 string rawName = Path.GetFileNameWithoutExtension(additionalLibrary);
@@ -354,7 +353,7 @@ namespace SolutionParser_VS2008
 
             // We add the definitions to the parsed configuration (removing ones that 
             // aren't relevant to a linux build)...
-            foreach(string definition in preprocessorDefinitions)
+            foreach (string definition in preprocessorDefinitions)
             {
                 configurationInfo.addPreprocessorDefinition(definition);
             }

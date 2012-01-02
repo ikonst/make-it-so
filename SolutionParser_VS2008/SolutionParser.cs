@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EnvDTE80;
-using EnvDTE;
 using System.IO;
 using Microsoft.VisualStudio.VCProjectEngine;
 using MakeItSoLib;
@@ -191,15 +190,15 @@ namespace SolutionParser_VS2008
             // that it depends on (called 'required projects').
 
             // We get the Solution.SolutionBuild.BuildDependencies object...
-            SolutionBuild solutionBuild = Utils.call(() => (m_dteSolution.SolutionBuild));
-            BuildDependencies buildDependencies = Utils.call(() => (solutionBuild.BuildDependencies));
+            EnvDTE.SolutionBuild solutionBuild = Utils.call(() => (m_dteSolution.SolutionBuild));
+            EnvDTE.BuildDependencies buildDependencies = Utils.call(() => (solutionBuild.BuildDependencies));
 
             // We loop through the 'BuildDependencies'. Each one of these holds dependency 
             // information for one project...
             int numBuildDependencies = Utils.call(() => (buildDependencies.Count));
             for (int i = 1; i <= numBuildDependencies; ++i)
             {
-                BuildDependency buildDependency = Utils.call(() => (buildDependencies.Item(i)));
+                EnvDTE.BuildDependency buildDependency = Utils.call(() => (buildDependencies.Item(i)));
 
                 // We get the project's name...
                 EnvDTE.Project project = Utils.call(() => (buildDependency.Project));

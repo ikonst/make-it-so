@@ -17,7 +17,7 @@ namespace SolutionParser_VS2008
     /// We extract information from a DTE Project and a VSProject2 object, and fill 
     /// in a ProjectInfo structure.
     /// </remarks>
-    public class ProjectParser_CSharp
+    internal class ProjectParser_CSharp
     {
         #region Public methods and properties
 
