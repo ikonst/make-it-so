@@ -9,6 +9,11 @@
   - Should be a common step after the parsing stage
   - Also for libs etc.
 
+- Make it so that the parser assmebly is dynamically loaded
+  - We only load the version we need.
+  - This may help with assembly-conflict problems
+  - It should also help if you don't have the correct VS version installed.
+
 VS 2010
 -------  
 - VS2010 parser
@@ -31,8 +36,11 @@ Custom build steps etc
 
 Tests
 -----
-
-
+- Test on a machine that only has VS2008 installed
+- Test on a machine that only has VS2010 installed
+  - Test without SP1 in both cases, as well as with it.
+  - What happens if you try to parse a VS2010 solution, but only have VS2008 installed?
+    - It probably won't work, but is the error message any good?
 
 WIKI
 ----

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextLib", "TextLib\TextLib.vcxproj", "{E9E98E77-F0E9-4A9E-A534-015FB406D10E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcxproj", "{0732E876-21A0-4F4E-8D5E-939D2928B612}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E9E98E77-F0E9-4A9E-A534-015FB406D10E} = {E9E98E77-F0E9-4A9E-A534-015FB406D10E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
