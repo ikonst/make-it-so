@@ -67,6 +67,10 @@ namespace SolutionParser_VS2010
             // We create a DTE object to automate our interaction
             // with Visual Studio.
             Type type = Type.GetTypeFromProgID("VisualStudio.DTE.10.0");
+            if (type == null)
+            {
+                throw new Exception("Visual Studio 2010 cannot be loaded");
+            }
             Object obj = System.Activator.CreateInstance(type, true);
             m_dte = (DTE2)obj;
 
