@@ -44,7 +44,6 @@ Tests
 
 WIKI
 ----
-- Notes on #ifdef stuff for dlls
 - Notes on the code
   - Notes on cygwin install for testings
 

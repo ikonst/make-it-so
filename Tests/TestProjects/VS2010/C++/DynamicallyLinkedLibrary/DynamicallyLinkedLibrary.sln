@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextDLL", "TextDLL\TextDLL.vcxproj", "{6C157839-550A-4229-9AF3-C32244F1311A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcxproj", "{6EDA5720-8528-439E-BFBA-84CAC150827E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C157839-550A-4229-9AF3-C32244F1311A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6C157839-550A-4229-9AF3-C32244F1311A}.Debug|Win32.Build.0 = Debug|Win32
+		{6C157839-550A-4229-9AF3-C32244F1311A}.Release|Win32.ActiveCfg = Release|Win32
+		{6C157839-550A-4229-9AF3-C32244F1311A}.Release|Win32.Build.0 = Release|Win32
+		{6EDA5720-8528-439E-BFBA-84CAC150827E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6EDA5720-8528-439E-BFBA-84CAC150827E}.Debug|Win32.Build.0 = Debug|Win32
+		{6EDA5720-8528-439E-BFBA-84CAC150827E}.Release|Win32.ActiveCfg = Release|Win32
+		{6EDA5720-8528-439E-BFBA-84CAC150827E}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
