@@ -2,10 +2,8 @@
 
 2010 notes
 ----------
-- Refactor code so that adding/removing preprocessor definitions is not in the parser.
-  - Should be a common step after the parsing stage
-  - Also for libs etc.
-
+- Need to work out how to do the combined libs thing in VS2010
+  - The VS2008 technique doesn't seem to work.
 
 
 VS 2010
