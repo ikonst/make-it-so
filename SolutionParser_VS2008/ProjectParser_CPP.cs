@@ -193,9 +193,6 @@ namespace SolutionParser_VS2008
                 return;
             }
 
-            // We get the project config, so we can check if paths should be removed...
-            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
-
             List<string> additionalLibraryDirectories = Utils.split(strAdditionalLibraryDirectories, ';');
             foreach (string additionalLibraryDirectory in additionalLibraryDirectories)
             {
@@ -227,9 +224,6 @@ namespace SolutionParser_VS2008
             {
                 return;
             }
-
-            // We get the project config, so we can check if libraries should be removed...
-            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
 
             List<string> additionalLibraries = Utils.split(strAdditionalLibraries, ' ');
             foreach(string additionalLibrary in additionalLibraries)
@@ -346,11 +340,6 @@ namespace SolutionParser_VS2008
             // split them...
             string strPreprocessorDefinitions = Utils.call(() => (compilerTool.PreprocessorDefinitions));
             List<string> preprocessorDefinitions = Utils.split(strPreprocessorDefinitions, ';');
-
-            // We find project and configuration config to see if any 
-            // definitions should be added or removed...
-            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(configurationInfo.ParentProjectInfo.Name);
-            MakeItSoConfig_Configuration configurationConfig = projectConfig.getConfiguration(configurationInfo.Name);
 
             // We add the definitions to the parsed configuration (removing ones that 
             // aren't relevant to a linux build)...
