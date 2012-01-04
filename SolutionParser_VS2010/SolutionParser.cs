@@ -6,6 +6,7 @@ using MakeItSoLib;
 using EnvDTE80;
 using System.IO;
 using Microsoft.VisualStudio.VCProjectEngine;
+using VSLangProj80;
 
 namespace SolutionParser_VS2010
 {
@@ -128,9 +129,9 @@ namespace SolutionParser_VS2010
                     {
                         // We get the Visual Studio project, parse it and store the 
                         // parsed project in our collection of results...
-                        //VSProject2 vsProject = Utils.call(() => (project.Object as VSProject2));
-                        //ProjectParser_CSharp parser = new ProjectParser_CSharp(vsProject, m_parsedSolution.RootFolderAbsolute);
-                        //m_parsedSolution.addProjectInfo(projectName, parser.Project);
+                        VSProject2 vsProject = Utils.call(() => (project.Object as VSProject2));
+                        ProjectParser_CSharp parser = new ProjectParser_CSharp(vsProject, m_parsedSolution.RootFolderAbsolute);
+                        m_parsedSolution.addProjectInfo(projectName, parser.Project);
                     }
                     break;
             }

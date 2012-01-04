@@ -83,7 +83,9 @@ namespace MakeItSoLib
             string filename = Path.GetFileName(fullPath);
             if (filename.StartsWith("System.") == true
                 ||
-                filename == "mscorlib.dll")
+                filename == "mscorlib.dll"
+                ||
+                filename == "Microsoft.CSharp.dll")
             {
                 return;
             }

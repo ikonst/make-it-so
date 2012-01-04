@@ -1,9 +1,12 @@
 - NOTE: We need to deploy the MakeItSo.exe.config file
 
+
+
+
 2010 notes
 ----------
-- Need to work out how to do the combined libs thing in VS2010
-  - The VS2008 technique doesn't seem to work.
+- What about other Microsoft .NET assemblies?
+  - Should we exclude them as well? Which other ones are part of -pkg:dotnet
 
 
 VS 2010
@@ -35,6 +38,7 @@ WIKI
 ----
 - Notes on the code
   - Notes on cygwin install for testings
+- Page on how to do the combined library thing in VS2010
 
 
 QUESTIONS
