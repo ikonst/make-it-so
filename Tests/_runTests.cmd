@@ -9,9 +9,9 @@ robocopy ./TestProjects ./Runtime/TestProjects *.* /S /E
 robocopy ../TestRunner/bin/Release ./Runtime TestRunner.exe
 
 :: We copy MakeItSo to the runtime folder...
-robocopy ../MakeItSo/bin/Release ./Runtime MakeItSo.exe
-robocopy ../MakeItSo/bin/Release ./Runtime *.dll
-robocopy ../MakeItSo/bin/Release ./Runtime *.config
+robocopy ../output ./Runtime MakeItSo.exe
+robocopy ../output ./Runtime *.dll
+robocopy ../output ./Runtime *.config
 
 :: We run the test-runner...
 cd ./Runtime
