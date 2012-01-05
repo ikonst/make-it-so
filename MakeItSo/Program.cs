@@ -4,18 +4,21 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using MakeItSoLib;
+using System.Reflection;
 
 namespace MakeItSo
 {
     /// <summary>
     /// The main class.
     /// </summary>
-    class Program
+    internal class Program
     {
+        #region Private functions
+
         /// <summary>
         /// The entry point 
         /// </summary>
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             try
             {
@@ -45,11 +48,11 @@ namespace MakeItSo
                 switch (version)
                 {
                     case 10:    // VS2008
-                        parser = new SolutionParser_VS2008.SolutionParser();
+                        parser = loadParser("SolutionParser_VS2008.dll");
                         break;
 
                     case 11:    // VS2010
-                        parser = new SolutionParser_VS2010.SolutionParser();
+                        parser = loadParser("SolutionParser_VS2010.dll");
                         break;
 
                     default:
@@ -97,5 +100,38 @@ namespace MakeItSo
 
             throw new Exception("Could not find Version from the solution file");
         }
+
+        /// <summary>
+        /// We load the parser dynamically.
+        /// </summary><remarks>
+        /// We do this so that we don't hold references to the parsing libraries
+        /// in this project. They use incompatible versions of the same EnvDTE
+        /// assemblies, and this causes conflicts that are hard to resolve using
+        /// the app.config. So instead we don't reference them, but load them
+        /// dynamically instead.
+        /// </remarks>
+        private static SolutionParserBase loadParser(string assemblyName)
+        {
+            // We load the assembly from the same folder as this executable...
+            string assemblyPath = AppDomain.CurrentDomain.BaseDirectory + assemblyName;
+            Assembly assembly = Assembly.LoadFrom(assemblyPath);
+
+            // We find the class in it derived from SolutionParserBase...
+            SolutionParserBase parser = null;
+            foreach (Type type in assembly.GetTypes())
+            {
+                if (type.IsSubclassOf(typeof(SolutionParserBase)) == true)
+                {
+                    // We've found the solution-parser type, so we create 
+                    // one and return it...
+                    parser = Activator.CreateInstance(type) as SolutionParserBase;
+                    break;
+                }
+            }
+
+            return parser;
+        }
+
+        #endregion
     }
 }

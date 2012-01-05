@@ -58,14 +58,6 @@
       <Project>{EF45162C-2901-49FE-A4DF-67223B44E61C}</Project>
       <Name>MakeItSoLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SolutionParser_VS2008\SolutionParser_VS2008.csproj">
-      <Project>{EE467C35-87D8-461D-A102-DFDDB45613B3}</Project>
-      <Name>SolutionParser_VS2008</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolutionParser_VS2010\SolutionParser_VS2010.csproj">
-      <Project>{9194750C-6492-44AF-B18C-4247AC16D32B}</Project>
-      <Name>SolutionParser_VS2010</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
