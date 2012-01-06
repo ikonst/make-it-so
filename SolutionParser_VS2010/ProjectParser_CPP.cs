@@ -431,6 +431,10 @@ namespace SolutionParser_VS2010
                     // It looks like a source file...
                     case ".cpp":
                     case ".c":
+                    case ".cc":
+                    case ".cp":
+                    case ".cxx":
+                    case ".c++":
                         // We add it to the project...
                         string relativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, path);
                         m_projectInfo.addFile(relativePath);

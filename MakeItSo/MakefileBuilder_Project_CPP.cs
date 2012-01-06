@@ -67,6 +67,7 @@ namespace MakeItSo
                 m_file.NewLine = "\n";
 
                 // We create variables...
+                createCompilerVariables();
                 createIncludePathVariables();
                 createLibraryPathVariables();
                 createLibrariesVariables();
@@ -94,6 +95,17 @@ namespace MakeItSo
                     m_file.Dispose();
                 }
             }
+        }
+
+        /// <summary>
+        /// We define which compilers we will use.
+        /// </summary>
+        private void createCompilerVariables()
+        {
+            // We create an collection of compiler flags for each configuration...
+            m_file.WriteLine("# Compiler flags...");
+            m_file.WriteLine("CPP_COMPILER = g++");
+            m_file.WriteLine("C_COMPILER = gcc");
         }
 
         /// <summary>
@@ -450,12 +462,19 @@ namespace MakeItSo
                 string objectPath = Path.ChangeExtension(path, ".o");
                 string dependenciesPath = Path.ChangeExtension(path, ".d");
 
+                // We decide which compiler to use...
+                string compiler = "$(CPP_COMPILER)";
+                if (Path.GetExtension(filename).ToLower() == ".c")
+                {
+                    compiler = "$(C_COMPILER)";
+                }
+
                 // We create the target...
                 m_file.WriteLine("# Compiles file {0} for the {1} configuration...", filename, configuration.Name);
                 m_file.WriteLine("-include {0}", dependenciesPath);
                 m_file.WriteLine("{0}: {1}", objectPath, filename);
-                m_file.WriteLine("\tg++ {0} {1} -c {2} {3} -o {4}", preprocessorDefinitions, compilerFlags, filename, includePath, objectPath);
-                m_file.WriteLine("\tg++ {0} {1} -MM {2} {3} > {4}", preprocessorDefinitions, compilerFlags, filename, includePath, dependenciesPath);
+                m_file.WriteLine("\t{0} {1} {2} -c {3} {4} -o {5}", compiler, preprocessorDefinitions, compilerFlags, filename, includePath, objectPath);
+                m_file.WriteLine("\t{0} {1} {2} -MM {3} {4} > {5}", compiler, preprocessorDefinitions, compilerFlags, filename, includePath, dependenciesPath);
                 m_file.WriteLine("");
             }
         }
