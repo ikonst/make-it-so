@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextLib", "TextLib\TextLib.vcproj", "{92773F74-0A14-4B3B-A351-BF917718B993}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcproj", "{B4DEBB19-E6ED-4D11-ACA4-15B868744880}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92773F74-0A14-4B3B-A351-BF917718B993} = {92773F74-0A14-4B3B-A351-BF917718B993}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92773F74-0A14-4B3B-A351-BF917718B993}.Debug|Win32.ActiveCfg = Debug|Win32
+		{92773F74-0A14-4B3B-A351-BF917718B993}.Debug|Win32.Build.0 = Debug|Win32
+		{92773F74-0A14-4B3B-A351-BF917718B993}.Release|Win32.ActiveCfg = Release|Win32
+		{92773F74-0A14-4B3B-A351-BF917718B993}.Release|Win32.Build.0 = Release|Win32
+		{B4DEBB19-E6ED-4D11-ACA4-15B868744880}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B4DEBB19-E6ED-4D11-ACA4-15B868744880}.Debug|Win32.Build.0 = Debug|Win32
+		{B4DEBB19-E6ED-4D11-ACA4-15B868744880}.Release|Win32.ActiveCfg = Release|Win32
+		{B4DEBB19-E6ED-4D11-ACA4-15B868744880}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
