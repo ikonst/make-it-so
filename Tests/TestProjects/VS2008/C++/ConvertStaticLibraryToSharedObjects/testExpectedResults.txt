@@ -1,0 +1,2 @@
+gccDebug/testOutput.txt = Hello, World!
+gccRelease/testOutput.txt = Hello, World!

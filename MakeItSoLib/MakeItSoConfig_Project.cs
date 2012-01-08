@@ -131,6 +131,15 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Gets whether we should convert this project to a shared-objects
+        /// library if it is a static library.
+        /// </summary>
+        public bool ConvertStaticLibraryToSharedObjects
+        {
+            get { return m_convertStaticLibraryToSharedObjects; }
+        }
+
+        /// <summary>
         /// Parses the config file to read config for this project.
         /// </summary>
         public void parseConfig(XmlNode configNode)
@@ -141,11 +150,29 @@ namespace MakeItSoLib
             parseConfig_PreprocessorDefinitions(configNode);
             parseConfig_CompilerFlags(configNode);
             parseConfig_Compilers(configNode);
+            parseConfig_Misc(configNode);
         }
 
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Parses the config for miscellaneous settings.
+        /// </summary>
+        private void parseConfig_Misc(XmlNode configNode)
+        {
+            // We look for the setting to convert static libraries to shared-objects...
+            XmlNode convertNode = configNode.SelectSingleNode("ConvertStaticLibraryToSharedObjects");
+            if (convertNode != null)
+            {
+                XmlAttribute convertAttribute = convertNode.Attributes["convert"];
+                if (convertAttribute != null)
+                {
+                    m_convertStaticLibraryToSharedObjects = (convertAttribute.Value == "true");
+                }
+            }
+        }
 
         /// <summary>
         /// Parses the config file for which compilers to use.
@@ -379,6 +406,9 @@ namespace MakeItSoLib
         // The C++ compiler to use when building this project...
         private string m_cppCompiler = "g++";
 
+        // Whether we will convert static libraries to shared-objects libraries
+        // for this project...
+        private bool m_convertStaticLibraryToSharedObjects = false;
 
         #endregion
     }

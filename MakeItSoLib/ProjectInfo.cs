@@ -70,8 +70,24 @@ namespace MakeItSoLib
         /// </summary>
         public ProjectTypeEnum ProjectType
         {
-            get { return m_projectType; }
-            set { m_projectType = value; }
+            get 
+            { 
+                return m_projectType; 
+            }
+            set 
+            { 
+                m_projectType = value; 
+
+                // We may need to build a shared-objects library instead of a static
+                // library, if this is specified in the config file...
+                MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_name);
+                if (m_projectType == ProjectTypeEnum.CPP_STATIC_LIBRARY
+                    &&
+                    projectConfig.ConvertStaticLibraryToSharedObjects == true)
+                {
+                    m_projectType = ProjectTypeEnum.CPP_DLL;
+                }
+            }
         }
 
         /// <summary>
