@@ -106,6 +106,7 @@ namespace MakeItSo
             m_file.WriteLine("# Compiler flags...");
             m_file.WriteLine("CPP_COMPILER = g++");
             m_file.WriteLine("C_COMPILER = gcc");
+            m_file.WriteLine("");
         }
 
         /// <summary>

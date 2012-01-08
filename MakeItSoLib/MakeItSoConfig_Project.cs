@@ -97,6 +97,40 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Gets the C# compiler to use when building this project.
+        /// </summary>
+        public string CSharpCompiler
+        {
+            get 
+            {
+                if (m_solutionConfig.IsCygwinBuild == true)
+                {
+                    return m_cygwinCSharpCompiler;
+                }
+                else
+                {
+                    return m_csharpCompiler;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the C compiler to use when building this project.
+        /// </summary>
+        public string CCompiler
+        {
+            get { return m_cCompiler; }
+        }
+
+        /// <summary>
+        /// Gets the C++ compiler to use when building this project.
+        /// </summary>
+        public string CPPCompiler
+        {
+            get { return m_cppCompiler; }
+        }
+
+        /// <summary>
         /// Parses the config file to read config for this project.
         /// </summary>
         public void parseConfig(XmlNode configNode)
@@ -106,11 +140,40 @@ namespace MakeItSoLib
             parseConfig_IncludePaths(configNode);
             parseConfig_PreprocessorDefinitions(configNode);
             parseConfig_CompilerFlags(configNode);
+            parseConfig_Compilers(configNode);
         }
 
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Parses the config file for which compilers to use.
+        /// </summary>
+        private void parseConfig_Compilers(XmlNode configNode)
+        {
+            findCompiler(configNode, "CPPCompiler", ref m_cppCompiler);
+            findCompiler(configNode, "CCompiler", ref m_cCompiler);
+            findCompiler(configNode, "CSharpCompiler", ref m_csharpCompiler);
+            findCompiler(configNode, "CSharpCompiler", ref m_cygwinCSharpCompiler);
+        }
+
+        /// <summary>
+        /// Finds a compiler variable from the config file and sets a member
+        /// variable from it.
+        /// </summary>
+        private void findCompiler(XmlNode configNode, string compilerName, ref string memberVariable)
+        {
+            XmlNode compilerNode = configNode.SelectSingleNode(compilerName);
+            if (compilerNode != null)
+            {
+                XmlAttribute compilerAttribute = compilerNode.Attributes["compiler"];
+                if (compilerAttribute != null)
+                {
+                    memberVariable = compilerAttribute.Value;
+                }
+            }
+        }
 
         /// <summary>
         /// Parses the config file for compiler flags to be added or removed
@@ -305,6 +368,17 @@ namespace MakeItSoLib
         // Config for specific configurations (debug, release) in this project as a map of:
         // Configuration-name => config for the configuration
         private Dictionary<string, MakeItSoConfig_Configuration> m_configurations = new Dictionary<string, MakeItSoConfig_Configuration>();
+
+        // The C# compiler to use when building this project...
+        private string m_csharpCompiler = "gmcs";
+        private string m_cygwinCSharpCompiler = "/cygdrive/c/Windows/Microsoft.NET/Framework/v3.5/Csc.exe";
+
+        // The C compiler to use when building this project...
+        private string m_cCompiler = "gcc";
+
+        // The C++ compiler to use when building this project...
+        private string m_cppCompiler = "g++";
+
 
         #endregion
     }

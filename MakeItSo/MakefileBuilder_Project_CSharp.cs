@@ -227,7 +227,7 @@ namespace MakeItSo
                 string outputFolder = getOutputFolderVariableName(configurationInfo);
 
                 // The command-line to build the project...
-                m_file.WriteLine("\t$(COMPILER) $({0}) $({1}) -out:$({2})/$(OUTPUT_FILE) -target:$(TARGET) $(FILES)", references, flags, outputFolder);
+                m_file.WriteLine("\t$(CSHARP_COMPILER) $({0}) $({1}) -out:$({2})/$(OUTPUT_FILE) -target:$(TARGET) $(FILES)", references, flags, outputFolder);
 
                 m_file.WriteLine("");
             }
@@ -421,12 +421,12 @@ namespace MakeItSo
             if (MakeItSoConfig.Instance.IsCygwinBuild == true)
             {
                 // We are creating a cygwin build...
-                m_file.WriteLine("COMPILER = /cygdrive/c/Windows/Microsoft.NET/Framework/v3.5/Csc.exe");
+                m_file.WriteLine("CSHARP_COMPILER = /cygdrive/c/Windows/Microsoft.NET/Framework/v3.5/Csc.exe");
             }
             else
             {
                 // We are creating a mono build...
-                m_file.WriteLine("COMPILER = gmcs");
+                m_file.WriteLine("CSHARP_COMPILER = gmcs");
             }
         }
 
