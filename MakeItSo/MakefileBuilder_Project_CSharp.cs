@@ -418,16 +418,8 @@ namespace MakeItSo
         /// </summary>
         private void createCompilerVariable()
         {
-            if (MakeItSoConfig.Instance.IsCygwinBuild == true)
-            {
-                // We are creating a cygwin build...
-                m_file.WriteLine("CSHARP_COMPILER = /cygdrive/c/Windows/Microsoft.NET/Framework/v3.5/Csc.exe");
-            }
-            else
-            {
-                // We are creating a mono build...
-                m_file.WriteLine("CSHARP_COMPILER = gmcs");
-            }
+            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
+            m_file.WriteLine("CSHARP_COMPILER = " + projectConfig.CSharpCompiler);
         }
 
         #endregion

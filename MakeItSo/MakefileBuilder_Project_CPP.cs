@@ -104,8 +104,10 @@ namespace MakeItSo
         {
             // We create an collection of compiler flags for each configuration...
             m_file.WriteLine("# Compiler flags...");
-            m_file.WriteLine("CPP_COMPILER = g++");
-            m_file.WriteLine("C_COMPILER = gcc");
+
+            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
+            m_file.WriteLine("CPP_COMPILER = " + projectConfig.CPPCompiler);
+            m_file.WriteLine("C_COMPILER = " + projectConfig.CCompiler);
             m_file.WriteLine("");
         }
 
