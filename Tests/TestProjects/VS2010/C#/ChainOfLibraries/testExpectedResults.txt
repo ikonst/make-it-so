@@ -1,0 +1,2 @@
+App/bin/monoDebug/testOutput.txt = Hello, World!
+App/bin/monoRelease/testOutput.txt = Hello, World!
