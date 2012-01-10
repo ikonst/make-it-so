@@ -1,2 +1,2 @@
-gccDebug/testOutput.txt = Hello, World!
-gccRelease/testOutput.txt = Hello, World!
+gccDebugStatic/testOutput.txt = Hello, World!
+gccReleaseStatic/testOutput.txt = Hello, World!

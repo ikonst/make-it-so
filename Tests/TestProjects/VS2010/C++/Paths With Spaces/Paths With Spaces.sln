@@ -6,6 +6,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Text Library", "Text Library\Text Library.vcxproj", "{7D9301A5-1500-4A4D-839B-0079C45E71A6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "The App", "The App\The App.vcxproj", "{C6A4C343-3DE2-4D36-9CCD-6E8CE1BB859C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C2B9DE56-D454-4183-B736-110AA93956D5} = {C2B9DE56-D454-4183-B736-110AA93956D5}
+		{7D9301A5-1500-4A4D-839B-0079C45E71A6} = {7D9301A5-1500-4A4D-839B-0079C45E71A6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
