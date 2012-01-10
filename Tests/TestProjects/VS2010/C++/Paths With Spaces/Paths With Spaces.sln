@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hello Library", "Hello Library\Hello Library.vcxproj", "{C2B9DE56-D454-4183-B736-110AA93956D5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Text Library", "Text Library\Text Library.vcxproj", "{7D9301A5-1500-4A4D-839B-0079C45E71A6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "The App", "The App\The App.vcxproj", "{C6A4C343-3DE2-4D36-9CCD-6E8CE1BB859C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Static|Win32 = Debug Static|Win32
+		Release Static|Win32 = Release Static|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2B9DE56-D454-4183-B736-110AA93956D5}.Debug Static|Win32.ActiveCfg = Debug Static|Win32
+		{C2B9DE56-D454-4183-B736-110AA93956D5}.Debug Static|Win32.Build.0 = Debug Static|Win32
+		{C2B9DE56-D454-4183-B736-110AA93956D5}.Release Static|Win32.ActiveCfg = Release Static|Win32
+		{C2B9DE56-D454-4183-B736-110AA93956D5}.Release Static|Win32.Build.0 = Release Static|Win32
+		{7D9301A5-1500-4A4D-839B-0079C45E71A6}.Debug Static|Win32.ActiveCfg = Debug Static|Win32
+		{7D9301A5-1500-4A4D-839B-0079C45E71A6}.Debug Static|Win32.Build.0 = Debug Static|Win32
+		{7D9301A5-1500-4A4D-839B-0079C45E71A6}.Release Static|Win32.ActiveCfg = Debug Static|Win32
+		{7D9301A5-1500-4A4D-839B-0079C45E71A6}.Release Static|Win32.Build.0 = Debug Static|Win32
+		{C6A4C343-3DE2-4D36-9CCD-6E8CE1BB859C}.Debug Static|Win32.ActiveCfg = Debug Static|Win32
+		{C6A4C343-3DE2-4D36-9CCD-6E8CE1BB859C}.Debug Static|Win32.Build.0 = Debug Static|Win32
+		{C6A4C343-3DE2-4D36-9CCD-6E8CE1BB859C}.Release Static|Win32.ActiveCfg = Release Static|Win32
+		{C6A4C343-3DE2-4D36-9CCD-6E8CE1BB859C}.Release Static|Win32.Build.0 = Release Static|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
