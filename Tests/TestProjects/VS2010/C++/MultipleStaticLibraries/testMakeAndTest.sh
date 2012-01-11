@@ -5,10 +5,10 @@ cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd
 make
 
 # Run the test and store the output...
-pushd gccDebugStatic
+pushd gccDebug
 "./TheApp.exe" > testOutput.txt
 popd
 
-pushd gccReleaseStatic
+pushd gccRelease
 "./TheApp.exe" > testOutput.txt
 popd
