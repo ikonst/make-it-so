@@ -4,4 +4,3 @@ std::string Hello::getText()
 {
 	return "Hello";
 }
-
