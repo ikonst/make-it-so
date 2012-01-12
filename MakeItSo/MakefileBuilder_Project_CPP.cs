@@ -275,6 +275,14 @@ namespace MakeItSo
                     libraries += String.Format("-l{0} ", libraryName);
                 }
 
+                // If we have some libraries, we surround them with start-group
+                // and end-group tags. This is needed as otherwise gcc is sensitive
+                // to the order than libraries are declared...
+                if (libraries != "")
+                {
+                    libraries = String.Format("-Wl,--start-group {0} -Wl,--end-group", libraries);
+                }
+
                 // We write the variable...
                 m_file.WriteLine("{0}={1}", variableName, libraries);
             }
