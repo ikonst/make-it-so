@@ -116,7 +116,7 @@ namespace MakeItSoLib
         /// Returns true if the project should be ignore, ie removed 
         /// from the solution;
         /// </summary>
-        public bool projectShouldBeIgnored(string projectName)
+        public bool ignoreProject(string projectName)
         {
             return m_projectsToIgnore.Contains(projectName.ToLower());
         }

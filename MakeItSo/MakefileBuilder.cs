@@ -96,18 +96,32 @@ namespace MakeItSo
         /// </summary>
         private void createProjectMakefiles()
         {
-            foreach (ProjectInfo project in m_solution.getProjectInfos())
+            foreach (ProjectInfo projectInfo in m_solution.getProjectInfos())
             {
-                // We build a different makefile, depending on the
-                // project type...
-                if (project is ProjectInfo_CPP)
-                {
-                    MakefileBuilder_Project_CPP.createMakefile(project as ProjectInfo_CPP);
-                }
-                if (project is ProjectInfo_CSharp)
-                {
-                    MakefileBuilder_Project_CSharp.createMakefile(project as ProjectInfo_CSharp);
-                }
+                createProjectMakefile(projectInfo);
+            }
+        }
+
+        /// <summary>
+        /// Creates a makefile for the project passed in.
+        /// </summary>
+        private static void createProjectMakefile(ProjectInfo projectInfo)
+        {
+            // Are we ignoring this project?
+            if (MakeItSoConfig.Instance.ignoreProject(projectInfo.Name) == true)
+            {
+                return;
+            }
+
+            // We build a different makefile, depending on the
+            // project type...
+            if (projectInfo is ProjectInfo_CPP)
+            {
+                MakefileBuilder_Project_CPP.createMakefile(projectInfo as ProjectInfo_CPP);
+            }
+            if (projectInfo is ProjectInfo_CSharp)
+            {
+                MakefileBuilder_Project_CSharp.createMakefile(projectInfo as ProjectInfo_CSharp);
             }
         }
 
@@ -124,9 +138,12 @@ namespace MakeItSo
             m_file.WriteLine(".PHONY: all_projects");
 
             string target = "all_projects: ";
-            foreach (ProjectInfo project in m_solution.getProjectInfos())
+            foreach (ProjectInfo projectInfo in m_solution.getProjectInfos())
             {
-                target += (project.Name + " ");
+                if (MakeItSoConfig.Instance.ignoreProject(projectInfo.Name) == false)
+                {
+                    target += (projectInfo.Name + " ");
+                }
             }
             m_file.WriteLine(target);
             m_file.WriteLine("");
@@ -140,9 +157,9 @@ namespace MakeItSo
         private void createProjectTargets()
         {
             // We write a section for each project in the solution...
-            foreach (ProjectInfo project in m_solution.getProjectInfos())
+            foreach (ProjectInfo projectInfo in m_solution.getProjectInfos())
             {
-                writeProjectSection(project);
+                writeProjectSection(projectInfo);
             }
         }
 
@@ -154,11 +171,14 @@ namespace MakeItSo
             m_file.WriteLine("# Cleans all projects...");
             m_file.WriteLine(".PHONY: clean");
             m_file.WriteLine("clean:");
-            foreach (ProjectInfo project in m_solution.getProjectInfos())
+            foreach (ProjectInfo projectInfo in m_solution.getProjectInfos())
             {
-                string directory = Utils.quote(project.RootFolderRelative);
-                string makefile = project.Name + ".makefile";
-                m_file.WriteLine("\tmake --directory={0} --file={1} clean", directory, makefile);
+                if (MakeItSoConfig.Instance.ignoreProject(projectInfo.Name) == false)
+                {
+                    string directory = Utils.quote(projectInfo.RootFolderRelative);
+                    string makefile = projectInfo.Name + ".makefile";
+                    m_file.WriteLine("\tmake --directory={0} --file={1} clean", directory, makefile);
+                }
             }
             m_file.WriteLine("");
         }
@@ -166,25 +186,34 @@ namespace MakeItSo
         /// <summary>
         /// Writes a section of the master Makefile for the project passed in.
         /// </summary>
-        private void writeProjectSection(ProjectInfo project)
+        private void writeProjectSection(ProjectInfo projectInfo)
         {
+            // We check if this project should be excluded from the makefiles...
+            if (MakeItSoConfig.Instance.ignoreProject(projectInfo.Name) == true)
+            {
+                return;
+            }
+
             // We create a target like:
             //   .PHONY: [project-name]
             //   [project-name]: [required-project-1] [required-project-2]
             //       make --directory=[project-folder] -f [makefile-name]
 
-            m_file.WriteLine("# Builds project '{0}'...", project.Name);
-            m_file.WriteLine(".PHONY: {0}", project.Name);
+            m_file.WriteLine("# Builds project '{0}'...", projectInfo.Name);
+            m_file.WriteLine(".PHONY: {0}", projectInfo.Name);
 
-            string dependencies = String.Format("{0}: ", project.Name);
-            foreach (ProjectInfo requiredProject in project.getRequiredProjects())
+            string dependencies = String.Format("{0}: ", projectInfo.Name);
+            foreach (ProjectInfo requiredProject in projectInfo.getRequiredProjects())
             {
-                dependencies += (requiredProject.Name + " ");
+                if (MakeItSoConfig.Instance.ignoreProject(requiredProject.Name) == false)
+                {
+                    dependencies += (requiredProject.Name + " ");
+                }
             }
             m_file.WriteLine(dependencies);
 
-            string directory = Utils.quote(project.RootFolderRelative);
-            string makefile = project.Name + ".makefile";
+            string directory = Utils.quote(projectInfo.RootFolderRelative);
+            string makefile = projectInfo.Name + ".makefile";
             m_file.WriteLine("\tmake --directory={0} --file={1}", directory, makefile);
             m_file.WriteLine("");
         }
