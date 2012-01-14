@@ -112,6 +112,15 @@ namespace MakeItSoLib
             }
         }
 
+        /// <summary>
+        /// Returns true if the project should be ignore, ie removed 
+        /// from the solution;
+        /// </summary>
+        public bool projectShouldBeIgnored(string projectName)
+        {
+            return m_projectsToIgnore.Contains(projectName.ToLower());
+        }
+
         #endregion
 
         #region Private functions
@@ -241,13 +250,40 @@ namespace MakeItSoLib
             xmlDocument.InnerXml = config;
             XmlNode rootNode = xmlDocument.SelectSingleNode("MakeItSo");
 
-            // We find the AllProjects node...
-            XmlNode allProjectsNode = rootNode.SelectSingleNode("AllProjects");
-            if (allProjectsNode != null)
-            {
-                m_allProjects.parseConfig(allProjectsNode);
-            }
+            // We parse settings that apply to all projects...
+            parseAllProjects(rootNode);
 
+            // We parse settings that apply to specific projects...
+            parseSpecificProjects(rootNode);
+
+            // We find any projects to be ignored...
+            parseIgnoredProjects(rootNode);
+        }
+
+        /// <summary>
+        /// We find the collection of projects to ignore.
+        /// </summary>
+        private void parseIgnoredProjects(XmlNode rootNode)
+        {
+            // We find each "IgnoreProject" node...
+            XmlNodeList ignoreProjectNodes = rootNode.SelectNodes("IgnoreProject");
+            foreach (XmlNode ignoreProjectNode in ignoreProjectNodes)
+            {
+                // The project name is in the 'project' attribute...
+                XmlAttribute projectNameAttribute = ignoreProjectNode.Attributes["project"];
+                string projectName = projectNameAttribute.Value;
+
+                // We store this (in lower-case) in out collection of 
+                // projects to ignore...
+                m_projectsToIgnore.Add(projectName.ToLower());
+            }
+        }
+
+        /// <summary>
+        /// Parses settings for specific projects.
+        /// </summary>
+        private void parseSpecificProjects(XmlNode rootNode)
+        {
             // We find each "Project" node for specific projects, 
             // and parse them...
             XmlNodeList projectNodes = rootNode.SelectNodes("Project");
@@ -264,6 +300,21 @@ namespace MakeItSoLib
                 m_projects.Add(projectName, projectConfig);
             }
         }
+
+        /// <summary>
+        /// Parses settings that apply to all projects.
+        /// </summary>
+        private void parseAllProjects(XmlNode rootNode)
+        {
+            // We find the AllProjects node...
+            XmlNode allProjectsNode = rootNode.SelectSingleNode("AllProjects");
+            if (allProjectsNode != null)
+            {
+                m_allProjects.parseConfig(allProjectsNode);
+            }
+        }
+
+
 
         #endregion
 
@@ -290,6 +341,10 @@ namespace MakeItSoLib
 
         // Will be set false if we can't parse the command-line...
         private bool m_convertSolution = true;
+
+        // Collection of projects that should be ignored, ie removed 
+        // from the solution. (Held in lower-case.)
+        private HashSet<string> m_projectsToIgnore = new HashSet<string>();
 
         #endregion
     }

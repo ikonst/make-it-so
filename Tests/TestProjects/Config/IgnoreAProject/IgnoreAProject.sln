@@ -4,6 +4,14 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App1", "App1\App1.vcproj", "{B9EFCC08-5959-4E98-8CF4-4278C92432BE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App2", "App2\App2.vcproj", "{0F705669-97F1-4216-BB12-A8867E3FF82D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B9EFCC08-5959-4E98-8CF4-4278C92432BE} = {B9EFCC08-5959-4E98-8CF4-4278C92432BE}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73EE7BB4-D64C-4537-BA5C-670064F97687}"
+	ProjectSection(SolutionItems) = preProject
+		MakeItSo.config = MakeItSo.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
