@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="Splitter"
+	Version="8.00"
+	>
+  <Rules>
+    <CustomBuildRule
+			Name="Splitter"
+			DisplayName="Splitter"
+			CommandLine="&quot;$(SolutionDir)output\Splitter.exe&quot; &quot;$(InputPath)&quot; &quot;[outputpath]&quot;"
+      Outputs="[outputpath]\$(InputName).h;[outputpath]\$(InputName).cpp"
+			FileExtensions="*.code"
+			ExecutionDescription="Running Splitter: $(InputName)"
+			SupportsFileBatching="false"
+			BatchingSeparator="," >
+      <Properties>
+        <StringProperty
+					Name="outputpath"
+					DisplayName="Output path"
+					Category="Output paths"
+					Description="Destination for output files"
+					Switch="[value]"
+				/>
+      </Properties>
+    </CustomBuildRule>
+  </Rules>
+</VisualStudioToolFile>
