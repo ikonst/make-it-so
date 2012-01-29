@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System.IO;
 using MakeItSoLib;
+using System.Reflection;
 
 namespace SolutionParser_VS2008
 {
@@ -424,9 +425,36 @@ namespace SolutionParser_VS2008
                 VCFile file = Utils.call(() => (files.Item(i) as VCFile));
                 string path = Utils.call(() => (file.FullPath));
 
+                string extension = Path.GetExtension(path).ToLower();
+                //if (extension == ".code")
+                //{
+                //    IVCCollection configurations = Utils.call(() => (file.FileConfigurations as IVCCollection));
+                //    //int count = Utils.call(() => (configurations.Count));
+                //    VCFileConfiguration configuration = Utils.call(() => (configurations.Item(1) as VCFileConfiguration));
+                //    VCCustomBuildRule rule = Utils.call(() => (configuration.Tool as VCCustomBuildRule));
+                //    string commandLine = Utils.call(() => (rule.CommandLine));
+                //    string expandedCommandLine = Utils.call(() => (configuration.Evaluate(commandLine)));
+
+                //    IVCCollection properties = Utils.call(() => (rule.Properties));
+                //    VCRuntimeProperty property = Utils.call(() => (properties.Item(1) as VCRuntimeProperty));
+                //    VCRuntimeStringProperty stringProperty = property as VCRuntimeStringProperty;
+                //    string propertyName = "[" + stringProperty.Name + "]";
+
+                //    Type ruleType = rule.GetType();
+                //    object o = Utils.call(() => (ruleType.InvokeMember("outputpath", BindingFlags.GetProperty, null, rule, null)));
+                //    string propertyValue = o as string;
+
+                //    expandedCommandLine = expandedCommandLine.Replace(propertyName, propertyValue);
+
+                //    string outputs = Utils.call(() => (rule.Outputs));
+                //    string expandedOutputs = Utils.call(() => (configuration.Evaluate(outputs)));
+                //    expandedOutputs = expandedOutputs.Replace(propertyName, propertyValue);
+                //}
+
+
                 // We find the extension, and see if it is one we treat 
                 // as a source file...
-                string extension = Path.GetExtension(path).ToLower();
+                //string extension = Path.GetExtension(path).ToLower();
                 switch (extension)
                 {
                     // It looks like a source file...

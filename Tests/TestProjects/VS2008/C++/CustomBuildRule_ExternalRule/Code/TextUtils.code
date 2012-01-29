@@ -1,0 +1,22 @@
+##START-HEADER##
+#pragma once
+
+#include <string>
+
+class TextUtils
+{
+public:
+	static std::string getText();
+};
+
+##END-HEADER##
+
+##START-CPP##
+#include "TextUtils.h"
+
+std::string TextUtils::getText()
+{
+	return "Hello, World!";
+}
+
+##END-CPP##
