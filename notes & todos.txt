@@ -1,31 +1,20 @@
-- NOTE: We need to deploy the MakeItSo.exe.config file
-
-EnvDTE, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a
-
-
-2010 notes
-----------
-- What about other Microsoft .NET assemblies?
-  - Should we exclude them as well? Which other ones are part of -pkg:dotnet
-
-
-VS 2010
--------  
-- VS2010 parser
-- Auto-detect VS version from the .sln file  
-- Ability to add or suppress compiler flags
+C++
+---
 - Projects with property sheets, and inherited properties
+
+General
+-------
 - Make path to cygwin configurable for the tester
 - Output target names might not be the same as project names.
 - 32-bit vs 64-bit generation?
 - Config option to suppress checking in current folder for dlls. 
+- Allow change to folder prefix "gcc" (maybe v 1.2) 
 
 
 Custom build steps etc
 ----------------------
 - Custom build steps
 - Pre / post build steps
-- Allow change to folder prefix "gcc" (maybe v 1.2) 
 
 
 
@@ -38,7 +27,6 @@ WIKI
 ----
 - Notes on the code
   - Notes on cygwin install for testings
-- Page on how to do the combined library thing in VS2010
 
 
 QUESTIONS
