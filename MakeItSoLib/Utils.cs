@@ -200,6 +200,7 @@ namespace MakeItSoLib
         /// Splits the string passed in by the delimiters passed in.
         /// Quoted sections are not split, and all tokens have whitespace
         /// trimmed from the start and end.
+        /// </summary>
         public static List<string> split(string stringToSplit, params char[] delimiters)
         {
             List<string> results = new List<string>();

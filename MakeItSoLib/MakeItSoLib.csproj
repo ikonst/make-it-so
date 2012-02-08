@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomBuildRuleInfo.cs" />
+    <Compile Include="CustomBuildRuleInfo_CPP.cs" />
     <Compile Include="FileInfo.cs" />
     <Compile Include="ProjectConfigurationInfo_CSharp.cs" />
     <Compile Include="ProjectInfo.cs" />
