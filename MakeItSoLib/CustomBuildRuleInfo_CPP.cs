@@ -14,6 +14,15 @@ namespace MakeItSoLib
         #region Public methods and properties
 
         /// <summary>
+        /// Gets or sets the rule name.
+        /// </summary>
+        public string RuleName
+        {
+            get { return m_ruleName; }
+            set { m_ruleName = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the relative path to the file the rule is run on.
         /// </summary>
         public string RelativePathToFile
@@ -65,9 +74,25 @@ namespace MakeItSoLib
             return m_relativeOuputFiles;
         }
 
+        /// <summary>
+        /// Returns the command-line for the rule.
+        /// </summary>
+        public string getCommandLine()
+        {
+            string commandLine = m_relativePathToExecutable;
+            foreach (string parameter in m_parameters)
+            {
+                commandLine += (" " + parameter);
+            }
+            return commandLine;
+        }
+
         #endregion
 
         #region Private data
+
+        // The name of the custom build rule...
+        private string m_ruleName = "";
 
         // The path to the file which the rule is to be run on, 
         // relative to the project root...

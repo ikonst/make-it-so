@@ -492,6 +492,7 @@ namespace SolutionParser_VS2008
             ruleInfo.RelativePathToFile = relativePath;
 
             // There is a custom build rule, so we parse it...
+            ruleInfo.RuleName = Utils.call(() => (rule.Name));
             string commandLine = Utils.call(() => (rule.CommandLine));
             string expandedCommandLine = Utils.call(() => (configuration.Evaluate(commandLine)));
 

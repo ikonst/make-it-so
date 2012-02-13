@@ -44,6 +44,16 @@ namespace MakeItSoLib
 
         #endregion
 
+        #region Abstract methods
+
+        /// <summary>
+        /// Returns true if the (absolute) folder passed in is an output
+        /// folder for any of the configurations in this project.
+        /// </summary>
+        public abstract bool isOutputFolder(string absoluteFolderPath);
+
+        #endregion
+
         #region Public methods and properties
 
         /// <summary>
@@ -148,5 +158,6 @@ namespace MakeItSoLib
         protected HashSet<ProjectInfo> m_requiredProjects = new HashSet<ProjectInfo>();
 
         #endregion
+
     }
 }

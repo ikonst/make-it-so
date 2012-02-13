@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace MakeItSoLib
 {
@@ -58,6 +59,14 @@ namespace MakeItSoLib
         {
             get { return m_outputFolder; }
             set { m_outputFolder = value.Replace(" ", ""); }
+        }
+
+        /// <summary>
+        /// Gets the absolute path to the output folder for this configuration.
+        /// </summary>
+        public string OutputFolderAbsolute
+        {
+            get { return Path.Combine(m_parentProjectInfo.RootFolderAbsolute, OutputFolder); }
         }
 
         /// <summary>

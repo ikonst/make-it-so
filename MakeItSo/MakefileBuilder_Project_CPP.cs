@@ -373,9 +373,68 @@ namespace MakeItSo
                 // We create the configuration target...
                 createConfigurationTarget(configuration);
 
+                // We run any custom build rules...
+                createCustomBuildRuleTargets(configuration);
+
                 // We compile all files for this target...
                 createFileTargets(configuration);
             }
+        }
+
+        /// <summary>
+        /// We create targets to build any custom build rules associated with 
+        /// this configuration.
+        /// </summary>
+        private void createCustomBuildRuleTargets(ProjectConfigurationInfo_CPP configuration)
+        {
+            foreach(CustomBuildRuleInfo_CPP ruleInfo in configuration.getCustomBuildRuleInfos())
+            {
+                createCustomBuildRuleTarget(configuration, ruleInfo);
+            }
+        }
+
+        /// <summary>
+        /// Creates a target for one custom build rule.
+        /// </summary>
+        private void createCustomBuildRuleTarget(ProjectConfigurationInfo_CPP configuration, CustomBuildRuleInfo_CPP ruleInfo)
+        {
+            m_file.WriteLine("# Custom build rule for " + ruleInfo.RelativePathToFile);
+
+            string targetName = getCustomRuleTargetName(configuration, ruleInfo);
+            m_file.WriteLine(".PHONY: " + targetName);
+            m_file.WriteLine(targetName + ":");
+            m_file.WriteLine("\t" + ruleInfo.getCommandLine());
+
+            // We find the path to the executable for the rule...
+            string executablePath = Path.Combine(configuration.ParentProjectInfo.RootFolderAbsolute, ruleInfo.RelativePathToExecutable);
+            string executableFolder = Path.GetDirectoryName(executablePath);
+
+            // The rule might be built by one of the other projects in this solution.
+            // If so, we need to change the folder name to the adjusted output folder
+            // name we generate. (This means that we need to know if the project that
+            // generates it is a C++ or C# project.)
+
+            //string commandLine = m_relativePathToExecutable;
+            //foreach (string parameter in m_parameters)
+            //{
+            //    commandLine += (" " + parameter);
+            //}
+
+
+            m_file.WriteLine("");
+        }
+
+        /// <summary>
+        /// Gets the target name for the configuration and rule passed in.
+        /// </summary>
+        private string getCustomRuleTargetName(ProjectConfigurationInfo_CPP configuration, CustomBuildRuleInfo_CPP ruleInfo)
+        {
+            // The target-name has this form:
+            //     [configuration]_CustomBuildRule_[rule-name]_[file-name]
+            // For example:
+            //     Release_CustomBuildRule_Splitter_TextUtils.code
+            string fileName = Path.GetFileName(ruleInfo.RelativePathToFile);
+            return String.Format("{0}_CustomBuildRule_{1}_{2}", configuration.Name, ruleInfo.RuleName, fileName);
         }
 
         /// <summary>
@@ -393,6 +452,9 @@ namespace MakeItSo
             m_file.WriteLine("# Builds the {0} configuration...", configuration.Name);
             m_file.WriteLine(".PHONY: {0}", configuration.Name);
 
+            // The targets that this target depends on...
+            string dependencies = "create_folders ";
+
             // The object files the target depends on...
             string intermediateFolder = getIntermediateFolder(configuration);
             string objectFiles = "";
@@ -401,8 +463,18 @@ namespace MakeItSo
                 string path = String.Format("{0}/{1}", intermediateFolder, filename);
                 string objectPath = Path.ChangeExtension(path, ".o");
                 objectFiles += (objectPath + " ");
+                dependencies += (objectPath + " ");
             }
-            m_file.WriteLine("{0}: create_folders {1}", configuration.Name, objectFiles);
+
+            // We add any custom build targets as dependencies...
+            foreach (CustomBuildRuleInfo_CPP ruleInfo in configuration.getCustomBuildRuleInfos())
+            {
+                string ruleTargetName = getCustomRuleTargetName(configuration, ruleInfo);
+                dependencies += (ruleTargetName + " ");
+            }
+
+            // We write the dependencies...
+            m_file.WriteLine("{0}: {1}", configuration.Name, dependencies);
 
             // We find variables needed for the link step...
             string outputFolder = getOutputFolder(configuration);

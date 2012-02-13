@@ -156,6 +156,22 @@ namespace MakeItSoLib
             }
         }
 
+        /// <summary>
+        /// Returns true if the (absolute) folder passed in is an output
+        /// folder for any of the configurations in this project.
+        /// </summary>
+        public override bool isOutputFolder(string absoluteFolderPath)
+        {
+            foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
+            {
+                if (Utils.isSamePath(configurationInfo.OutputFolderAbsolute, absoluteFolderPath) == true)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         #endregion
 
         #region Private functions

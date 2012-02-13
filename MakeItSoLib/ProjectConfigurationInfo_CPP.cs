@@ -232,6 +232,14 @@ namespace MakeItSoLib
             m_customBuildRuleInfos.Add(ruleInfo);
         }
 
+        /// <summary>
+        /// Returns the ollection of custom build rules for this configuration.
+        /// </summary>
+        public List<CustomBuildRuleInfo_CPP> getCustomBuildRuleInfos()
+        {
+            return m_customBuildRuleInfos;
+        }
+
         #endregion
 
         #region Private data
