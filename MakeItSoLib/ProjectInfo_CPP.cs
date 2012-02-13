@@ -166,6 +166,19 @@ namespace MakeItSoLib
             set { m_linkLibraryDependencies = value; }
         }
 
+        /// <summary>
+        /// Adds the custom build rule info (for one file) to the configuration
+        /// whose name is passed in.
+        /// </summary>
+        public void addCustomBuildRuleInfo(CustomBuildRuleInfo_CPP ruleInfo, string configurationName)
+        {
+            ProjectConfigurationInfo_CPP configurationInfo = getConfigurationInfo(configurationName);
+            if (configurationInfo != null)
+            {
+                configurationInfo.addCustomBuildRuleInfo(ruleInfo);
+            }
+        }
+
         #endregion
 
         #region Private functions

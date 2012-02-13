@@ -223,6 +223,15 @@ namespace MakeItSoLib
             return m_compilerFlags; 
         }
 
+        /// <summary>
+        /// Adds info about a custom build rule (for one file) to this
+        /// configuration.
+        /// </summary>
+        public void addCustomBuildRuleInfo(CustomBuildRuleInfo_CPP ruleInfo)
+        {
+            m_customBuildRuleInfos.Add(ruleInfo);
+        }
+
         #endregion
 
         #region Private data
@@ -260,6 +269,9 @@ namespace MakeItSoLib
 
         // The collection of compliler flags...
         private HashSet<string> m_compilerFlags = new HashSet<string>();
+
+        // The collection of custom build rules for this configuration...
+        private List<CustomBuildRuleInfo_CPP> m_customBuildRuleInfos = new List<CustomBuildRuleInfo_CPP>();
 
         #endregion
     }
