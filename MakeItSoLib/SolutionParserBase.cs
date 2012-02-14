@@ -131,7 +131,8 @@ namespace MakeItSoLib
         {
             MakeItSoConfig_Project projectSettings = MakeItSoConfig.Instance.getProjectConfig(configuration.ParentProjectInfo.Name);
 
-            string projectRootFolder = configuration.ParentProjectInfo.RootFolderAbsolute;
+            ProjectInfo projectInfo = configuration.ParentProjectInfo;
+            string projectRootFolder = projectInfo.RootFolderAbsolute;
 
             // We check if any library paths should be removed...
             List<string> libraryPaths = new List<string>(configuration.getLibraryPaths());
@@ -146,7 +147,8 @@ namespace MakeItSoLib
                 string fullPath = Path.Combine(projectRootFolder, libraryPath);
                 if (projectSettings.libraryPathShouldBeRemoved(fullPath) == false)
                 {
-                    string gccPath = Utils.addPrefixToFolderPath(libraryPath, "gcc");
+                    string prefix = MakeItSoConfig.Instance.getProjectConfig(projectInfo.Name).CPPFolderPrefix;
+                    string gccPath = Utils.addPrefixToFolderPath(libraryPath, prefix);
                     configuration.addLibraryPath(gccPath);
                 }
             }

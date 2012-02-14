@@ -127,7 +127,8 @@ namespace MakeItSoLib
                             ProjectConfigurationInfo_CPP configuration = getConfigurationInfos().Find((cfg) => (cfg.Name == info.ConfigurationName));
 
                             // We add the collection of object files to the configuration...
-                            string intermediateFolderAbsolute = Utils.addPrefixToFolderPath(info.IntermediateFolderAbsolute, "gcc");
+                            string prefix = MakeItSoConfig.Instance.getProjectConfig(Name).CPPFolderPrefix;
+                            string intermediateFolderAbsolute = Utils.addPrefixToFolderPath(info.IntermediateFolderAbsolute, prefix);
                             foreach (string objectFile in info.ObjectFileNames)
                             {
                                 string absolutePath = intermediateFolderAbsolute + "/" + objectFile;
@@ -180,19 +181,27 @@ namespace MakeItSoLib
         }
 
         /// <summary>
-        /// Returns true if the (absolute) folder passed in is an output
-        /// folder for any of the configurations in this project.
+        /// Returns the type of executable, if the executable passed in
+        /// is an output of the project.
         /// </summary>
-        public override bool isOutputFolder(string absoluteFolderPath)
+        public override ProjectInfo.ProjectTypeEnum isOutputObject(string absoluteExecutablePath)
         {
+            // We are only interested in executable projects...
+            if(m_projectType != ProjectTypeEnum.CPP_EXECUTABLE)
+            {
+                return ProjectTypeEnum.INVALID;
+            }
+
+            // We check each configuration...
             foreach (ProjectConfigurationInfo_CPP configurationInfo in m_configurationInfos)
             {
-                if (Utils.isSamePath(configurationInfo.OutputFolderAbsolute, absoluteFolderPath) == true)
+                string configurationOutput = String.Format("{0}/{1}.exe", configurationInfo.OutputFolder, Name);
+                if (Utils.isSamePath(configurationOutput, absoluteExecutablePath) == true)
                 {
-                    return true;
+                    return ProjectTypeEnum.CPP_EXECUTABLE;
                 }
             }
-            return false;
+            return ProjectTypeEnum.INVALID;
         }
 
         #endregion

@@ -407,12 +407,13 @@ namespace MakeItSo
 
             // We find the path to the executable for the rule...
             string executablePath = Path.Combine(configuration.ParentProjectInfo.RootFolderAbsolute, ruleInfo.RelativePathToExecutable);
-            string executableFolder = Path.GetDirectoryName(executablePath);
 
             // The rule might be built by one of the other projects in this solution.
             // If so, we need to change the folder name to the adjusted output folder
             // name we generate. (This means that we need to know if the project that
             // generates it is a C++ or C# project.)
+            ProjectInfo.ProjectTypeEnum projectType = m_projectInfo.ParentSolution.isOutputObject(executablePath);
+
 
             //string commandLine = m_relativePathToExecutable;
             //foreach (string parameter in m_parameters)
@@ -621,7 +622,8 @@ namespace MakeItSo
         /// </summary>
         private string getIntermediateFolder(ProjectConfigurationInfo_CPP configuration)
         {
-            return Utils.addPrefixToFolderPath(configuration.IntermediateFolder, "gcc");
+            string prefix = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name).CPPFolderPrefix;
+            return Utils.addPrefixToFolderPath(configuration.IntermediateFolder, prefix);
         }
 
         /// <summary>
@@ -629,7 +631,8 @@ namespace MakeItSo
         /// </summary>
         private string getOutputFolder(ProjectConfigurationInfo_CPP configuration)
         {
-            return Utils.addPrefixToFolderPath(configuration.OutputFolder, "gcc");
+            string prefix = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name).CPPFolderPrefix;
+            return Utils.addPrefixToFolderPath(configuration.OutputFolder, prefix);
         }
 
         #endregion

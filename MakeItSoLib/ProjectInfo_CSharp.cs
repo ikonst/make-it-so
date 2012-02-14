@@ -157,19 +157,27 @@ namespace MakeItSoLib
         }
 
         /// <summary>
-        /// Returns true if the (absolute) folder passed in is an output
-        /// folder for any of the configurations in this project.
+        /// Returns the type of executable, if the executable passed in
+        /// is an output of the project.
         /// </summary>
-        public override bool isOutputFolder(string absoluteFolderPath)
+        public override ProjectInfo.ProjectTypeEnum isOutputObject(string absoluteExecutablePath)
         {
+            // We are only interested in executable projects...
+            if (m_projectType != ProjectTypeEnum.CSHARP_EXECUTABLE)
+            {
+                return ProjectTypeEnum.INVALID;
+            }
+
+            // We check each configuration...
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
             {
-                if (Utils.isSamePath(configurationInfo.OutputFolderAbsolute, absoluteFolderPath) == true)
+                string configurationOutput = String.Format("{0}/{1}.exe", configurationInfo.OutputFolder, Name);
+                if (Utils.isSamePath(configurationOutput, absoluteExecutablePath) == true)
                 {
-                    return true;
+                    return ProjectTypeEnum.CSHARP_EXECUTABLE;
                 }
             }
-            return false;
+            return ProjectTypeEnum.INVALID;
         }
 
         #endregion

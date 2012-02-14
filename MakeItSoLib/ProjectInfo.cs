@@ -47,10 +47,10 @@ namespace MakeItSoLib
         #region Abstract methods
 
         /// <summary>
-        /// Returns true if the (absolute) folder passed in is an output
-        /// folder for any of the configurations in this project.
+        /// Returns the type of executable, if the executable passed in
+        /// is an output of the project.
         /// </summary>
-        public abstract bool isOutputFolder(string absoluteFolderPath);
+        public abstract ProjectInfo.ProjectTypeEnum isOutputObject(string absoluteExecutablePath);
 
         #endregion
 

@@ -140,6 +140,22 @@ namespace MakeItSoLib
         }
 
         /// <summary>
+        /// Gets the prefix to use for output folders for C++ projects.
+        /// </summary>
+        public string CPPFolderPrefix
+        {
+            get { return m_cppFolderPrefix; }
+        }
+
+        /// <summary>
+        /// Gets the prefix to use for output folders for C# projects.
+        /// </summary>
+        public string CSharpFolderPrefix
+        {
+            get { return m_csharpFolderPrefix; }
+        }
+
+        /// <summary>
         /// Parses the config file to read config for this project.
         /// </summary>
         public void parseConfig(XmlNode configNode)
@@ -150,12 +166,41 @@ namespace MakeItSoLib
             parseConfig_PreprocessorDefinitions(configNode);
             parseConfig_CompilerFlags(configNode);
             parseConfig_Compilers(configNode);
+            parseConfig_FolderPrefixes(configNode);
             parseConfig_Misc(configNode);
         }
 
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Parses the prefixes to use for 
+        /// </summary>
+        private void parseConfig_FolderPrefixes(XmlNode configNode)
+        {
+            // C++ folder prefix...
+            XmlNode cppPrefixNode = configNode.SelectSingleNode("CPPFolderPrefix");
+            if (cppPrefixNode != null)
+            {
+                XmlAttribute prefixAttribute = cppPrefixNode.Attributes["prefix"];
+                if (prefixAttribute != null)
+                {
+                    m_cppFolderPrefix = prefixAttribute.Value;
+                }
+            }
+
+            // C# folder prefix...
+            XmlNode csharpPrefixNode = configNode.SelectSingleNode("CSharpFolderPrefix");
+            if (csharpPrefixNode != null)
+            {
+                XmlAttribute prefixAttribute = csharpPrefixNode.Attributes["prefix"];
+                if (prefixAttribute != null)
+                {
+                    m_csharpFolderPrefix = prefixAttribute.Value;
+                }
+            }
+        }
 
         /// <summary>
         /// Parses the config for miscellaneous settings.
@@ -409,6 +454,12 @@ namespace MakeItSoLib
         // Whether we will convert static libraries to shared-objects libraries
         // for this project...
         private bool m_convertStaticLibraryToSharedObjects = false;
+
+        // The prefix we add to output folders for C++ projects...
+        private string m_cppFolderPrefix = "gcc";
+
+        // The prefix we add to output folders for C# projects...
+        private string m_csharpFolderPrefix = "mono";
 
         #endregion
     }

@@ -95,19 +95,21 @@ namespace MakeItSoLib
         }
 
         /// <summary>
-        /// Returns true if the (absolute) folder passed in is an output
-        /// folder for any of the projects in the solution.
+        /// Checks if the (absolute path to) the executable passed in is an 
+        /// output object for any of the projects in the solution.
+        /// Returns the type of executable if it is, or INVALID if it is not.
         /// </summary>
-        public bool isOutputFolder(string absoluteFolderPath)
+        public ProjectInfo.ProjectTypeEnum isOutputObject(string absoluteExecutablePath)
         {
             foreach (ProjectInfo projectInfo in m_projectInfos.Values)
             {
-                if (projectInfo.isOutputFolder(absoluteFolderPath) == true)
+                ProjectInfo.ProjectTypeEnum result = projectInfo.isOutputObject(absoluteExecutablePath);
+                if (result != ProjectInfo.ProjectTypeEnum.INVALID)
                 {
-                    return true;
+                    return result;
                 }
             }
-            return false;
+            return ProjectInfo.ProjectTypeEnum.INVALID;
         }
 
         #endregion

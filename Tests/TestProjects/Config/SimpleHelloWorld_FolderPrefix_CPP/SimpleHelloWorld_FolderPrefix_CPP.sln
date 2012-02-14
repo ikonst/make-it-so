@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleHelloWorld", "SimpleHelloWorld.vcproj", "{D27E4385-2900-40E0-A903-91062FC8EB52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0A5BF1B2-9CF7-4648-90E8-32F0AB413597}"
+	ProjectSection(SolutionItems) = preProject
+		notes.txt = notes.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D27E4385-2900-40E0-A903-91062FC8EB52}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D27E4385-2900-40E0-A903-91062FC8EB52}.Debug|Win32.Build.0 = Debug|Win32
+		{D27E4385-2900-40E0-A903-91062FC8EB52}.Release|Win32.ActiveCfg = Release|Win32
+		{D27E4385-2900-40E0-A903-91062FC8EB52}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
