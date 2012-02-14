@@ -1,0 +1,2 @@
+bin/Debug/testOutput.txt = Hello, World!
+bin/Release/testOutput.txt = Hello, World!

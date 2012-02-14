@@ -1,0 +1,2 @@
+bin/csharpPrefixDebug/testOutput.txt = Hello, World!
+bin/csharpPrefixRelease/testOutput.txt = Hello, World!
