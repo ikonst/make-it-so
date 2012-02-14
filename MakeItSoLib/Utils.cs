@@ -148,7 +148,7 @@ namespace MakeItSoLib
         public static string addPrefixToFilePath(string path, string prefix)
         {
             string folder = Path.GetDirectoryName(path);
-            folder = addPrefixToFolderPath(folder, "mono");
+            folder = addPrefixToFolderPath(folder, prefix);
             string filename = Path.GetFileName(path);
             return folder + "/" + filename;
         }

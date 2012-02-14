@@ -129,7 +129,8 @@ namespace MakeItSo
                     string relativePath = fileInfo.RelativePath;
                     if (fileInfo.IsFromAProjectOutputFolder == true)
                     {
-                        relativePath = Utils.addPrefixToFilePath(relativePath, "mono");
+                        string prefix = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name).CSharpFolderPrefix;
+                        relativePath = Utils.addPrefixToFilePath(relativePath, prefix);
                     }
 
                     // We only copy the file if the source and output are not the same...
@@ -156,7 +157,10 @@ namespace MakeItSo
                     return referenceInfo.RelativePath;
 
                 case ReferenceInfo.ReferenceTypeEnum.PROJECT_REFERENCE:
-                    return Utils.addPrefixToFilePath(referenceInfo.RelativePath, "mono");
+                {
+                    string prefix = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name).CSharpFolderPrefix;
+                    return Utils.addPrefixToFilePath(referenceInfo.RelativePath, prefix);
+                }
             }
             return "(reference-path-not-found)";
         }
@@ -256,7 +260,8 @@ namespace MakeItSo
         /// </summary>
         private string getOutputFolder(ProjectConfigurationInfo_CSharp configurationInfo)
         {
-            return Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, "mono");
+            string prefix = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name).CSharpFolderPrefix;
+            return Utils.addPrefixToFolderPath(configurationInfo.OutputFolder, prefix);
         }
 
         /// <summary>
