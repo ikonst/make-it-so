@@ -77,9 +77,9 @@ namespace MakeItSoLib
         /// <summary>
         /// Returns the command-line for the rule.
         /// </summary>
-        public string getCommandLine()
+        public string getCommandLine(string folderPrefix)
         {
-            string commandLine = m_relativePathToExecutable;
+            string commandLine = Utils.addPrefixToFilePath(m_relativePathToExecutable, folderPrefix);
             foreach (string parameter in m_parameters)
             {
                 commandLine += (" " + parameter);

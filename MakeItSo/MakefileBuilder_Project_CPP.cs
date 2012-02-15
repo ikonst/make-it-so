@@ -398,29 +398,32 @@ namespace MakeItSo
         /// </summary>
         private void createCustomBuildRuleTarget(ProjectConfigurationInfo_CPP configuration, CustomBuildRuleInfo_CPP ruleInfo)
         {
-            m_file.WriteLine("# Custom build rule for " + ruleInfo.RelativePathToFile);
-
-            string targetName = getCustomRuleTargetName(configuration, ruleInfo);
-            m_file.WriteLine(".PHONY: " + targetName);
-            m_file.WriteLine(targetName + ":");
-            m_file.WriteLine("\t" + ruleInfo.getCommandLine());
-
-            // We find the path to the executable for the rule...
-            string executablePath = Path.Combine(configuration.ParentProjectInfo.RootFolderAbsolute, ruleInfo.RelativePathToExecutable);
-
             // The rule might be built by one of the other projects in this solution.
             // If so, we need to change the folder name to the adjusted output folder
             // name we generate. (This means that we need to know if the project that
             // generates it is a C++ or C# project.)
+            string executablePath = Path.Combine(configuration.ParentProjectInfo.RootFolderAbsolute, ruleInfo.RelativePathToExecutable);
             ProjectInfo.ProjectTypeEnum projectType = m_projectInfo.ParentSolution.isOutputObject(executablePath);
+            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
 
+            string folderPrefix = "";
+            switch(projectType)
+            {
+                case ProjectInfo.ProjectTypeEnum.CPP_EXECUTABLE:
+                    folderPrefix = projectConfig.CPPFolderPrefix;
+                    break;
 
-            //string commandLine = m_relativePathToExecutable;
-            //foreach (string parameter in m_parameters)
-            //{
-            //    commandLine += (" " + parameter);
-            //}
+                case ProjectInfo.ProjectTypeEnum.CSHARP_EXECUTABLE:
+                    folderPrefix = projectConfig.CSharpFolderPrefix;
+                    break;
+            }
 
+            // We add the target to the makefile...
+            m_file.WriteLine("# Custom build rule for " + ruleInfo.RelativePathToFile);
+            string targetName = getCustomRuleTargetName(configuration, ruleInfo);
+            m_file.WriteLine(".PHONY: " + targetName);
+            m_file.WriteLine(targetName + ":");
+            m_file.WriteLine("\t" + ruleInfo.getCommandLine(folderPrefix));
 
             m_file.WriteLine("");
         }

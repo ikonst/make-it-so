@@ -171,7 +171,7 @@ namespace MakeItSoLib
             // We check each configuration...
             foreach (ProjectConfigurationInfo_CSharp configurationInfo in m_configurationInfos)
             {
-                string configurationOutput = String.Format("{0}/{1}.exe", configurationInfo.OutputFolder, Name);
+                string configurationOutput = String.Format("{0}/{1}.exe", configurationInfo.OutputFolderAbsolute, Name);
                 if (Utils.isSamePath(configurationOutput, absoluteExecutablePath) == true)
                 {
                     return ProjectTypeEnum.CSHARP_EXECUTABLE;
