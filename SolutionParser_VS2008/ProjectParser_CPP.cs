@@ -512,14 +512,6 @@ namespace SolutionParser_VS2008
                 expandedOutputs = expandedOutputs.Replace(tokenToReplace, property.Value);
             }
 
-            // We find the collection of output files, changing the paths to
-            // be in  Linux format...
-            foreach (string outputFile in expandedOutputs.Split(';'))
-            {
-                string convertedPath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, outputFile);
-                ruleInfo.addRelativeOutputFile(convertedPath);
-            }
-
             // We split the command-line to find the executable and the parameters...
             List<string> splitCommandLine = Utils.split(expandedCommandLine, ' ');
 

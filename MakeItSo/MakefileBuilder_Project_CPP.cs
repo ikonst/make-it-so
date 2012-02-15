@@ -459,6 +459,13 @@ namespace MakeItSo
             // The targets that this target depends on...
             string dependencies = "create_folders ";
 
+            // We add any custom build targets as dependencies...
+            foreach (CustomBuildRuleInfo_CPP ruleInfo in configuration.getCustomBuildRuleInfos())
+            {
+                string ruleTargetName = getCustomRuleTargetName(configuration, ruleInfo);
+                dependencies += (ruleTargetName + " ");
+            }
+
             // The object files the target depends on...
             string intermediateFolder = getIntermediateFolder(configuration);
             string objectFiles = "";
@@ -468,13 +475,6 @@ namespace MakeItSo
                 string objectPath = Path.ChangeExtension(path, ".o");
                 objectFiles += (objectPath + " ");
                 dependencies += (objectPath + " ");
-            }
-
-            // We add any custom build targets as dependencies...
-            foreach (CustomBuildRuleInfo_CPP ruleInfo in configuration.getCustomBuildRuleInfos())
-            {
-                string ruleTargetName = getCustomRuleTargetName(configuration, ruleInfo);
-                dependencies += (ruleTargetName + " ");
             }
 
             // We write the dependencies...
