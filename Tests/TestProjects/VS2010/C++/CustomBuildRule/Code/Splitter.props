@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(SplitterBeforeTargets)' == '' and '$(SplitterAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <SplitterBeforeTargets>Midl</SplitterBeforeTargets>
+    <SplitterAfterTargets>CustomBuild</SplitterAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SplitterDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(SplitterDependsOn)</SplitterDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Splitter>
+      <CommandLineTemplate>"$(SolutionDir)output\Splitter.exe" "%(FullPath)" "[outputpath]"</CommandLineTemplate>
+      <Outputs>[outputpath]\%(Filename).h;[outputpath]\%(Filename).cpp</Outputs>
+      <ExecutionDescription>Running Splitter: %(Filename)</ExecutionDescription>
+    </Splitter>
+  </ItemDefinitionGroup>
+</Project>

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PropertyPageSchema
+      Include="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml" />
+    <AvailableItemName
+      Include="Splitter">
+      <Targets>_Splitter</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+  <UsingTask
+    TaskName="Splitter"
+    TaskFactory="XamlTaskFactory"
+    AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(MSBuildThisFileDirectory)$(MSBuildThisFileName).xml</Task>
+  </UsingTask>
+  <Target
+    Name="_Splitter"
+    BeforeTargets="$(SplitterBeforeTargets)"
+    AfterTargets="$(SplitterAfterTargets)"
+    Condition="'@(Splitter)' != ''"
+    DependsOnTargets="$(SplitterDependsOn);ComputeSplitterOutput"
+    Outputs="%(Splitter.Outputs)"
+    Inputs="%(Splitter.Identity);%(Splitter.AdditionalDependencies);$(MSBuildProjectFile)">
+    <ItemGroup
+      Condition="'@(SelectedFiles)' != ''">
+      <Splitter
+        Remove="@(Splitter)"
+        Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+    <ItemGroup>
+      <Splitter_tlog
+        Include="%(Splitter.Outputs)"
+        Condition="'%(Splitter.Outputs)' != '' and '%(Splitter.ExcludedFromBuild)' != 'true'">
+        <Source>@(Splitter, '|')</Source>
+      </Splitter_tlog>
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="%(Splitter.ExecutionDescription)" />
+    <WriteLinesToFile
+      Condition="'@(Splitter_tlog)' != '' and '%(Splitter_tlog.ExcludedFromBuild)' != 'true'"
+      File="$(IntDir)$(ProjectName).write.1.tlog"
+      Lines="^%(Splitter_tlog.Source);@(Splitter_tlog-&gt;'%(Fullpath)')" />
+    <Splitter
+      Condition="'@(Splitter)' != '' and '%(Splitter.ExcludedFromBuild)' != 'true'"
+      CommandLineTemplate="%(Splitter.CommandLineTemplate)"
+      outputpath="%(Splitter.outputpath)"
+      AdditionalOptions="%(Splitter.AdditionalOptions)"
+      Inputs="%(Splitter.Identity)" />
+  </Target>
+  <PropertyGroup>
+    <ComputeLinkInputsTargets>
+            $(ComputeLinkInputsTargets);
+            ComputeSplitterOutput;
+          </ComputeLinkInputsTargets>
+    <ComputeLibInputsTargets>
+            $(ComputeLibInputsTargets);
+            ComputeSplitterOutput;
+          </ComputeLibInputsTargets>
+  </PropertyGroup>
+  <Target
+    Name="ComputeSplitterOutput"
+    Condition="'@(Splitter)' != ''">
+    <ItemGroup>
+      <SplitterDirsToMake
+        Condition="'@(Splitter)' != '' and '%(Splitter.ExcludedFromBuild)' != 'true'"
+        Include="%(Splitter.Outputs)" />
+      <Link
+        Include="%(SplitterDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <Lib
+        Include="%(SplitterDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+      <ImpLib
+        Include="%(SplitterDirsToMake.Identity)"
+        Condition="'%(Extension)'=='.obj' or '%(Extension)'=='.res' or '%(Extension)'=='.rsc' or '%(Extension)'=='.lib'" />
+    </ItemGroup>
+    <MakeDir
+      Directories="@(SplitterDirsToMake-&gt;'%(RootDir)%(Directory)')" />
+  </Target>
+</Project>
