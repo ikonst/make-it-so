@@ -240,6 +240,24 @@ namespace MakeItSoLib
             return m_customBuildRuleInfos;
         }
 
+        /// <summary>
+        /// Gets or sets the pre-build event.
+        /// </summary>
+        public string PreBuildEvent
+        {
+            get { return m_preBuildEvent; }
+            set { m_preBuildEvent = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the post-build event.
+        /// </summary>
+        public string PostBuildEvent
+        {
+            get { return m_postBuildEvent; }
+            set { m_postBuildEvent = value; }
+        }
+
         #endregion
 
         #region Private data
@@ -280,6 +298,11 @@ namespace MakeItSoLib
 
         // The collection of custom build rules for this configuration...
         private List<CustomBuildRuleInfo_CPP> m_customBuildRuleInfos = new List<CustomBuildRuleInfo_CPP>();
+
+        // Pre- and post- build events. These will be a path to a .sh file if 
+        // an event is set up...
+        private string m_preBuildEvent = "";
+        private string m_postBuildEvent = "";
 
         #endregion
     }

@@ -368,17 +368,39 @@ namespace MakeItSo
         /// </summary>
         private void createConfigurationTargets()
         {
-            foreach (ProjectConfigurationInfo_CPP configuration in m_projectInfo.getConfigurationInfos())
+            foreach (ProjectConfigurationInfo_CPP configurationInfo in m_projectInfo.getConfigurationInfos())
             {
                 // We create the configuration target...
-                createConfigurationTarget(configuration);
+                createConfigurationTarget(configurationInfo);
 
-                // We run any custom build rules...
-                createCustomBuildRuleTargets(configuration);
+                // We create the pre-build event target (if there is a pre-build event)...
+                createPreBuildEventTarget(configurationInfo);
+
+                // We create targets for any custom build rules...
+                createCustomBuildRuleTargets(configurationInfo);
 
                 // We compile all files for this target...
-                createFileTargets(configuration);
+                createFileTargets(configurationInfo);
             }
+        }
+
+        /// <summary>
+        /// Creates a target for the pre-build event, if there is one.
+        /// </summary>
+        private void createPreBuildEventTarget(ProjectConfigurationInfo_CPP configurationInfo)
+        {
+            if (configurationInfo.PreBuildEvent == "")
+            {
+                return;
+            }
+
+            m_file.WriteLine("# Pre-build step...");
+            string targetName = getPreBuildTargetName(configurationInfo);
+            m_file.WriteLine(".PHONY: " + targetName);
+            m_file.WriteLine(targetName + ":");
+            m_file.WriteLine("\t" + configurationInfo.PreBuildEvent);
+
+            m_file.WriteLine("");
         }
 
         /// <summary>
@@ -431,20 +453,20 @@ namespace MakeItSo
         /// <summary>
         /// Gets the target name for the configuration and rule passed in.
         /// </summary>
-        private string getCustomRuleTargetName(ProjectConfigurationInfo_CPP configuration, CustomBuildRuleInfo_CPP ruleInfo)
+        private string getCustomRuleTargetName(ProjectConfigurationInfo_CPP configurationInfo, CustomBuildRuleInfo_CPP ruleInfo)
         {
             // The target-name has this form:
             //     [configuration]_CustomBuildRule_[rule-name]_[file-name]
             // For example:
             //     Release_CustomBuildRule_Splitter_TextUtils.code
             string fileName = Path.GetFileName(ruleInfo.RelativePathToFile);
-            return String.Format("{0}_CustomBuildRule_{1}_{2}", configuration.Name, ruleInfo.RuleName, fileName);
+            return String.Format("{0}_CustomBuildRule_{1}_{2}", configurationInfo.Name, ruleInfo.RuleName, fileName);
         }
 
         /// <summary>
         /// Creates a configuration target.
         /// </summary>
-        private void createConfigurationTarget(ProjectConfigurationInfo_CPP configuration)
+        private void createConfigurationTarget(ProjectConfigurationInfo_CPP configurationInfo)
         {
             // For example:
             //
@@ -453,21 +475,28 @@ namespace MakeItSo
             //       g++ debug/main.o debug/math.o debug/utility.o -o output/hello.exe
 
             // The target name...
-            m_file.WriteLine("# Builds the {0} configuration...", configuration.Name);
-            m_file.WriteLine(".PHONY: {0}", configuration.Name);
+            m_file.WriteLine("# Builds the {0} configuration...", configurationInfo.Name);
+            m_file.WriteLine(".PHONY: {0}", configurationInfo.Name);
 
             // The targets that this target depends on...
             string dependencies = "create_folders ";
 
-            // We add any custom build targets as dependencies...
-            foreach (CustomBuildRuleInfo_CPP ruleInfo in configuration.getCustomBuildRuleInfos())
+            // Is there a pre-build event for this configuration?
+            if (configurationInfo.PreBuildEvent != "")
             {
-                string ruleTargetName = getCustomRuleTargetName(configuration, ruleInfo);
+                string preBuildTargetName = getPreBuildTargetName(configurationInfo);
+                dependencies += (preBuildTargetName + " ");
+            }
+
+            // We add any custom build targets as dependencies...
+            foreach (CustomBuildRuleInfo_CPP ruleInfo in configurationInfo.getCustomBuildRuleInfos())
+            {
+                string ruleTargetName = getCustomRuleTargetName(configurationInfo, ruleInfo);
                 dependencies += (ruleTargetName + " ");
             }
 
             // The object files the target depends on...
-            string intermediateFolder = getIntermediateFolder(configuration);
+            string intermediateFolder = getIntermediateFolder(configurationInfo);
             string objectFiles = "";
             foreach (string filename in m_projectInfo.getFiles())
             {
@@ -478,19 +507,19 @@ namespace MakeItSo
             }
 
             // We write the dependencies...
-            m_file.WriteLine("{0}: {1}", configuration.Name, dependencies);
+            m_file.WriteLine("{0}: {1}", configurationInfo.Name, dependencies);
 
             // We find variables needed for the link step...
-            string outputFolder = getOutputFolder(configuration);
-            string implicitlyLinkedObjectFiles = String.Format("$({0})", getImplicitlyLinkedObjectsVariableName(configuration));
+            string outputFolder = getOutputFolder(configurationInfo);
+            string implicitlyLinkedObjectFiles = String.Format("$({0})", getImplicitlyLinkedObjectsVariableName(configurationInfo));
 
             // The link step...
             switch (m_projectInfo.ProjectType)
             {
                 // Creates a C++ executable...
                 case ProjectInfo_CPP.ProjectTypeEnum.CPP_EXECUTABLE:
-                    string libraryPath = getLibraryPathVariableName(configuration);
-                    string libraries = getLibrariesVariableName(configuration);
+                    string libraryPath = getLibraryPathVariableName(configurationInfo);
+                    string libraries = getLibrariesVariableName(configurationInfo);
                     m_file.WriteLine("\tg++ {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe", objectFiles, libraryPath, libraries, outputFolder, m_projectInfo.Name);
                     break;
 
@@ -519,13 +548,28 @@ namespace MakeItSo
                     break;
             }
 
+            // The post-build step, if there is one...
+            if (configurationInfo.PostBuildEvent != "")
+            {
+                m_file.WriteLine("\t" + configurationInfo.PostBuildEvent);
+            }
+
             m_file.WriteLine("");
+        }
+
+        /// <summary>
+        /// Gets the name for the pre-build event target for the configuration
+        /// passed in.
+        /// </summary>
+        private string getPreBuildTargetName(ProjectConfigurationInfo_CPP configurationInfo)
+        {
+            return configurationInfo.Name + "_PreBuildEvent";
         }
 
         /// <summary>
         /// Creates targets to compile the files for the configuration passed in.
         /// </summary>
-        private void createFileTargets(ProjectConfigurationInfo_CPP configuration)
+        private void createFileTargets(ProjectConfigurationInfo_CPP configurationInfo)
         {
             // For example:
             //
@@ -535,10 +579,10 @@ namespace MakeItSo
             //       g++ -MM main.cpp [include-path] > debug/main.d
 
             // We find settings that aply to all files in the configuration...
-            string intermediateFolder = getIntermediateFolder(configuration);
-            string includePath = String.Format("$({0})", getIncludePathVariableName(configuration));
-            string preprocessorDefinitions = String.Format("$({0})", getPreprocessorDefinitionsVariableName(configuration));
-            string compilerFlags = String.Format("$({0})", getCompilerFlagsVariableName(configuration));
+            string intermediateFolder = getIntermediateFolder(configurationInfo);
+            string includePath = String.Format("$({0})", getIncludePathVariableName(configurationInfo));
+            string preprocessorDefinitions = String.Format("$({0})", getPreprocessorDefinitionsVariableName(configurationInfo));
+            string compilerFlags = String.Format("$({0})", getCompilerFlagsVariableName(configurationInfo));
 
             // We write a section of the makefile to compile each file...
             foreach (string filename in m_projectInfo.getFiles())
@@ -557,7 +601,7 @@ namespace MakeItSo
                 }
 
                 // We create the target...
-                m_file.WriteLine("# Compiles file {0} for the {1} configuration...", filename, configuration.Name);
+                m_file.WriteLine("# Compiles file {0} for the {1} configuration...", filename, configurationInfo.Name);
                 m_file.WriteLine("-include {0}", dependenciesPath);
                 m_file.WriteLine("{0}: {1}", objectPath, filename);
                 m_file.WriteLine("\t{0} {1} {2} -c {3} {4} -o {5}", compiler, preprocessorDefinitions, compilerFlags, filename, includePath, objectPath);
