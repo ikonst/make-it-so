@@ -110,8 +110,80 @@ namespace SolutionParser_VS2010
             // We parse librarian settings (how libraries are linked)...
             parseConfiguration_LibrarianSettings(vcConfiguration, configurationInfo);
 
+            // We see if there are any pre- or post- build events set up for this
+            // configuration. The only types of events we know how to deal with are
+            // ones that invoke a .cmd file. For these we convert them to invoke
+            // a .sh file with the same name.
+            parseConfiguration_PreBuildEvent(vcConfiguration, configurationInfo);
+            parseConfiguration_PostBuildEvent(vcConfiguration, configurationInfo);
+
             // We add the configuration to the collection of them for the project...
             m_projectInfo.addConfigurationInfo(configurationInfo);
+        }
+
+        /// <summary>
+        /// We parse the pre-build events.
+        /// </summary>
+        private void parseConfiguration_PreBuildEvent(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP configurationInfo)
+        {
+            // We see if there is a pre-build event...
+            IVCCollection tools = Utils.call(() => (vcConfiguration.Tools as IVCCollection));
+            VCPreBuildEventTool preBuildEvent = Utils.call(() => (tools.Item("VCPreBuildEventTool") as VCPreBuildEventTool));
+            if (preBuildEvent == null)
+            {
+                return;
+            }
+            string commandLine = Utils.call(() => (preBuildEvent.CommandLine));
+            configurationInfo.PreBuildEvent = convertBuildEventCommandLine(commandLine);
+        }
+
+        /// <summary>
+        /// We parse the post-build events.
+        /// </summary>
+        private void parseConfiguration_PostBuildEvent(VCConfiguration vcConfiguration, ProjectConfigurationInfo_CPP configurationInfo)
+        {
+            // We see if there is a pre-build event...
+            IVCCollection tools = Utils.call(() => (vcConfiguration.Tools as IVCCollection));
+            VCPostBuildEventTool postBuildEvent = Utils.call(() => (tools.Item("VCPostBuildEventTool") as VCPostBuildEventTool));
+            if (postBuildEvent == null)
+            {
+                return;
+            }
+            string commandLine = Utils.call(() => (postBuildEvent.CommandLine));
+            configurationInfo.PostBuildEvent = convertBuildEventCommandLine(commandLine);
+        }
+
+        /// <summary>
+        /// Converts the build-step command-line to one we can run in Linux.
+        /// </summary>
+        private string convertBuildEventCommandLine(string commandLine)
+        {
+            if (commandLine == null)
+            {
+                return "";
+            }
+
+            // We only convert a command line if it invokes a .cmd file...
+            commandLine = commandLine.Trim();
+            if (commandLine.EndsWith(".cmd") == false)
+            {
+                Console.WriteLine("Build event does not invoke a .cmd file. MakeItSo only converts [event].cmd -> [event].sh");
+                return "";
+            }
+
+            // We've got an event that runs a .cmd file. So we replace the extension
+            // with .sh and convert the path to Linux format...
+            commandLine = Path.ChangeExtension(commandLine, ".sh");
+            commandLine = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, commandLine);
+
+            // We check if the file in in the root folder. If so, we need to change its
+            // name to ./[name.sh] for Linux...
+            if (commandLine.Contains("/") == false)
+            {
+                commandLine = "./" + commandLine;
+            }
+
+            return commandLine;
         }
 
         /// <summary>
