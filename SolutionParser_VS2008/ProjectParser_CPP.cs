@@ -95,6 +95,13 @@ namespace SolutionParser_VS2008
             ProjectConfigurationInfo_CPP configurationInfo = new ProjectConfigurationInfo_CPP();
             configurationInfo.ParentProjectInfo = m_projectInfo;
 
+            //IVCCollection sheets = Utils.call(() => (vcConfiguration.PropertySheets as IVCCollection));
+            //int numSheets = Utils.call(() => (sheets.Count));
+            //for (int i = 1; i <= numSheets; ++i)
+            //{
+            //     VCPropertySheet sheet = Utils.call(() => (sheets.Item(i) as VCPropertySheet));
+            //}
+
             // The configuration name...
             configurationInfo.Name = Utils.call(() => (vcConfiguration.ConfigurationName));
 
