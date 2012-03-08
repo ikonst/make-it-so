@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloLib", "HelloLib\HelloLib.vcproj", "{4C0FF7AC-6267-400C-8386-9ABC9FD2C81D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcproj", "{5EA07239-08A0-4BCE-8A31-5430CFE347F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C0FF7AC-6267-400C-8386-9ABC9FD2C81D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4C0FF7AC-6267-400C-8386-9ABC9FD2C81D}.Debug|Win32.Build.0 = Debug|Win32
+		{4C0FF7AC-6267-400C-8386-9ABC9FD2C81D}.Release|Win32.ActiveCfg = Release|Win32
+		{4C0FF7AC-6267-400C-8386-9ABC9FD2C81D}.Release|Win32.Build.0 = Release|Win32
+		{5EA07239-08A0-4BCE-8A31-5430CFE347F4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5EA07239-08A0-4BCE-8A31-5430CFE347F4}.Debug|Win32.Build.0 = Debug|Win32
+		{5EA07239-08A0-4BCE-8A31-5430CFE347F4}.Release|Win32.ActiveCfg = Release|Win32
+		{5EA07239-08A0-4BCE-8A31-5430CFE347F4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
