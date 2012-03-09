@@ -2,6 +2,6 @@
 
 std::string Hello::getText()
 {
-	return "Hello, World!";
+	return "Hello";
 }
 

@@ -95,12 +95,21 @@ namespace SolutionParser_VS2008
             ProjectConfigurationInfo_CPP configurationInfo = new ProjectConfigurationInfo_CPP();
             configurationInfo.ParentProjectInfo = m_projectInfo;
 
-            //IVCCollection sheets = Utils.call(() => (vcConfiguration.PropertySheets as IVCCollection));
-            //int numSheets = Utils.call(() => (sheets.Count));
-            //for (int i = 1; i <= numSheets; ++i)
-            //{
-            //     VCPropertySheet sheet = Utils.call(() => (sheets.Item(i) as VCPropertySheet));
-            //}
+            IVCCollection sheets = Utils.call(() => (vcConfiguration.PropertySheets as IVCCollection));
+            int numSheets = Utils.call(() => (sheets.Count));
+            for (int i = 1; i <= numSheets; ++i)
+            {
+                VCPropertySheet sheet = Utils.call(() => (sheets.Item(i) as VCPropertySheet));
+
+                // 1. The thing is that VCPropertySheet and VCConfiguration have more-or-less
+                //    identical interfaces. So we should be able to merge them fairly easily.
+                //
+                // 2. We should try multiple layers of inheritance
+
+                IVCCollection tools = Utils.call(() => (sheet.Tools as IVCCollection));
+                VCCLCompilerTool compilerTool = Utils.call(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
+
+            }
 
             // The configuration name...
             configurationInfo.Name = Utils.call(() => (vcConfiguration.ConfigurationName));

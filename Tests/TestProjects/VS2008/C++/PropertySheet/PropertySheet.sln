@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloLib", "HelloLib\HelloL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App\App.vcproj", "{5EA07239-08A0-4BCE-8A31-5430CFE347F4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorldLib", "WorldLib\WorldLib.vcproj", "{BEE6CA25-98C6-4EC1-A6BB-D1DC75016725}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{5EA07239-08A0-4BCE-8A31-5430CFE347F4}.Debug|Win32.Build.0 = Debug|Win32
 		{5EA07239-08A0-4BCE-8A31-5430CFE347F4}.Release|Win32.ActiveCfg = Release|Win32
 		{5EA07239-08A0-4BCE-8A31-5430CFE347F4}.Release|Win32.Build.0 = Release|Win32
+		{BEE6CA25-98C6-4EC1-A6BB-D1DC75016725}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BEE6CA25-98C6-4EC1-A6BB-D1DC75016725}.Debug|Win32.Build.0 = Debug|Win32
+		{BEE6CA25-98C6-4EC1-A6BB-D1DC75016725}.Release|Win32.ActiveCfg = Release|Win32
+		{BEE6CA25-98C6-4EC1-A6BB-D1DC75016725}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
