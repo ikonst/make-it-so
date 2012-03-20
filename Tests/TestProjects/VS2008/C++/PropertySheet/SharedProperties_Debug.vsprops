@@ -7,6 +7,8 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalIncludeDirectories="..\HelloLib"
+		WarningLevel="4"
+		WarnAsError="true"
 	/>
 	<Tool
 		Name="VCLinkerTool"

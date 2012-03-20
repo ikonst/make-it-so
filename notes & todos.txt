@@ -2,6 +2,41 @@ C++
 ---
 - Projects with property sheets, and inherited properties
 
+- How do we know whether properties 
+  - override parents?
+  - merge with parents?
+  - Some properties have a '<inherit from parent or project defaults>' setting
+    - Where is this stored? It doesn't seem to be on the properties themselves.
+  
+
+- VCConfiguration
+  - Intermediate folder
+  - Output folder
+  
+- Tools["VCCLCompilerTool"]
+  - AdditionalIncludeDirectories
+  - PreprocessorDefinitions
+  - WarningLevel
+  - WarnAsError
+  - Optimization
+  
+- Tools["VCLinkerTool"]
+  - AdditionalLibraryDirectories
+  - AdditionalDependencies
+  - LinkLibraryDependencies  
+  - GenerateDebugInformation
+  
+- Tools["VCLibrarianTool"]
+  - LinkLibraryDependencies
+  
+- Tools["VCPreBuildEventTool"]
+  - CommandLine
+  
+- Tools["VCPostBuildEventTool"]
+  - CommandLine
+  
+
+
 General
 -------
 - Make path to cygwin configurable for the tester
