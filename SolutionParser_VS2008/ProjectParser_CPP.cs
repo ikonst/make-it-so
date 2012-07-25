@@ -119,6 +119,14 @@ namespace SolutionParser_VS2008
             //       same type of target. 
             m_projectInfo.ProjectType = parseConfiguration_Type(vcConfiguration);
 
+            // Do not proceed for "invalid" configurations:
+            // 'Makefile' configurations cannot be automatically converted and therefore will be deemed invalid.
+            if (m_projectInfo.ProjectType == ProjectInfo.ProjectTypeEnum.INVALID)
+            {
+                Log.log("  unsupported configuration type - skipping");
+                return;
+            }
+
             // We get the intermediates folder and output folder...
             configurationInfo.IntermediateFolder = parseConfiguration_Folder(vcConfiguration, () => (vcConfiguration.IntermediateDirectory));
             configurationInfo.OutputFolder = parseConfiguration_Folder(vcConfiguration, () => (vcConfiguration.OutputDirectory));
