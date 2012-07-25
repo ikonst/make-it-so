@@ -346,6 +346,13 @@ namespace SolutionParser_VS2008
             IVCCollection tools = Utils.call(() => (vcConfiguration.Tools as IVCCollection));
             VCCLCompilerTool compilerTool = Utils.call(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
 
+            if (compilerTool == null)
+            {
+                // This should not usually happen
+                Log.log("  warning: configuration has no compiler tool");
+                return;
+            }
+
             // And extract various details from it...
             parseCompilerSettings_IncludePath(vcConfiguration, compilerTool, configurationInfo);
             parseCompilerSettings_PreprocessorDefinitions(vcConfiguration, compilerTool, configurationInfo);
