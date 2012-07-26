@@ -51,12 +51,15 @@ namespace MakeItSoLib
                     // We call the function passed in and return the result...
                     return fn();
                 }
-                catch (COMException)
+                catch (COMException ex)
                 {
-                    // We've caught a COM exception, which is most likely
-                    // a Server is Busy exception. So we sleep for a short
-                    // while, and then try again...
-                    Thread.Sleep(intervalMS);
+                    if ((uint)ex.ErrorCode == 0x8001010a) // RPC_E_SERVERCALL_RETRYLATER: The message filter indicated that the application is busy.
+                    {
+                        // Server is busy - we sleep for a short while, and then try again...
+                        Thread.Sleep(intervalMS);
+                    }
+                    else
+                        throw ex;
                 }
             }
 
@@ -81,12 +84,15 @@ namespace MakeItSoLib
                     fn();
                     return;
                 }
-                catch (COMException)
+                catch (COMException ex)
                 {
-                    // We've caught a COM exception, which is most likely
-                    // a Server is Busy exception. So we sleep for a short
-                    // while, and then try again...
-                    Thread.Sleep(intervalMS);
+                    if ((uint)ex.ErrorCode == 0x8001010a) // RPC_E_SERVERCALL_RETRYLATER: The message filter indicated that the application is busy.
+                    {
+                        // Server is busy - we sleep for a short while, and then try again...
+                        Thread.Sleep(intervalMS);
+                    }
+                    else
+                        throw ex;
                 }
             }
 
