@@ -246,22 +246,30 @@ namespace MakeItSoLib
         private void findImplicitlyLinkedLibraries(List<ImplicitLinkInfo> infos)
         {
             // We loop through the projects that this project depends on...
-            foreach (ProjectInfo_CPP requiredProject in getRequiredProjects())
+            foreach (ProjectInfo requiredProject in getRequiredProjects())
             {
+                // C++/CLI projects can depend on managed projects -- check for that
+                var requiredCppProject = requiredProject as ProjectInfo_CPP;
+                if (requiredCppProject == null)
+                {
+                    Log.log(string.Format("Warning: C++ project {0} requires non-C++ project {1} -- unsupported, skipping.", Name, requiredProject.Name));
+                    continue;
+                }
+
                 // Is the required project a static library?
-                if (requiredProject.ProjectType != ProjectTypeEnum.CPP_STATIC_LIBRARY
+                if (requiredCppProject.ProjectType != ProjectTypeEnum.CPP_STATIC_LIBRARY
                     &&
-                    requiredProject.ProjectType != ProjectTypeEnum.CPP_DLL)
+                    requiredCppProject.ProjectType != ProjectTypeEnum.CPP_DLL)
                 {
                     continue;
                 }
 
                 // We've found a library, so we add it to our collection 
                 // of items to link in...
-                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurationInfos())
+                foreach (ProjectConfigurationInfo_CPP configuration in requiredCppProject.getConfigurationInfos())
                 {
                     ImplicitLinkInfo info = new ImplicitLinkInfo();
-                    info.LibraryRawName = requiredProject.Name;
+                    info.LibraryRawName = requiredCppProject.Name;
                     info.ConfigurationName = configuration.Name;
                     info.OutputFolderAbsolute = configuration.OutputFolderAbsolute;
                     infos.Add(info);
@@ -270,9 +278,9 @@ namespace MakeItSoLib
                 // As long as this library is *not* set to link its own
                 // dependencies, we recurse into it to see if it has any
                 // library dependencies of its own...
-                if (requiredProject.LinkLibraryDependencies == false)
+                if (requiredCppProject.LinkLibraryDependencies == false)
                 {
-                    requiredProject.findImplicitlyLinkedLibraries(infos);
+                    requiredCppProject.findImplicitlyLinkedLibraries(infos);
                 }
             }
         }
@@ -284,21 +292,29 @@ namespace MakeItSoLib
         private void findImplicitlyLinkedObjectFiles(List<ImplicitLinkInfo> infos)
         {
             // We loop through the projects that this project depends on...
-            foreach (ProjectInfo_CPP requiredProject in getRequiredProjects())
+            foreach (ProjectInfo requiredProject in getRequiredProjects())
             {
+                // C++/CLI projects can depend on managed projects -- check for that
+                var requiredCppProject = requiredProject as ProjectInfo_CPP;
+                if (requiredCppProject == null)
+                {
+                    Log.log(string.Format("Warning: C++ project {0} requires non-C++ project {1} -- unsupported, skipping.", Name, requiredProject.Name));
+                    continue;
+                }
+
                 // Is the required project a static library?
-                if (requiredProject.ProjectType != ProjectTypeEnum.CPP_STATIC_LIBRARY)
+                if (requiredCppProject.ProjectType != ProjectTypeEnum.CPP_STATIC_LIBRARY)
                 {
                     continue;
                 }
 
                 // We've found a library, so we add its object files to our collection...
-                foreach (ProjectConfigurationInfo_CPP configuration in requiredProject.getConfigurationInfos())
+                foreach (ProjectConfigurationInfo_CPP configuration in requiredCppProject.getConfigurationInfos())
                 {
                     ImplicitLinkInfo info = new ImplicitLinkInfo();
                     info.ConfigurationName = configuration.Name;
                     info.IntermediateFolderAbsolute = configuration.IntermediateFolderAbsolute;
-                    foreach (string file in requiredProject.getFiles())
+                    foreach (string file in requiredCppProject.getFiles())
                     {
                         string objectFile = Path.ChangeExtension(file, ".o");
                         info.ObjectFileNames.Add(objectFile);
@@ -308,7 +324,7 @@ namespace MakeItSoLib
                 }
 
                 // We find object files in any libraries this project depends on...
-                requiredProject.findImplicitlyLinkedObjectFiles(infos);
+                requiredCppProject.findImplicitlyLinkedObjectFiles(infos);
             }
         }
 
