@@ -90,7 +90,11 @@ namespace SolutionParser_VS2008
                 Reference reference = Utils.call(() => references.Item(i));
                 string fullPath = Utils.call(() => (reference.Path));
                 bool copyLocal = Utils.call(() => (reference.CopyLocal));
-                m_projectInfo.addReference(fullPath, copyLocal);
+
+                // Some projects can have bogus references.
+                // It's not good but we shouldn't choke on them either.
+                if (!string.IsNullOrEmpty(fullPath))
+                    m_projectInfo.addReference(fullPath, copyLocal);
             }
         }
 
