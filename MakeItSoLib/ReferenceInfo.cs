@@ -10,6 +10,14 @@ namespace MakeItSoLib
     /// </summary>
     public class ReferenceInfo
     {
+        /// <remarks>
+        /// Implemented to aid debugging.
+        /// </remarks>
+        public override string ToString()
+        {
+            return RelativePath;
+        }
+
         /// <summary>
         /// Creates a copy of the data.
         /// </summary>
