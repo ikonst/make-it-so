@@ -433,6 +433,10 @@ namespace SolutionParser_VS2008
             // We read the delimited string of preprocessor definitions, and
             // split them...
             string strPreprocessorDefinitions = Utils.call(() => (compilerTool.PreprocessorDefinitions));
+            if (strPreprocessorDefinitions == null)
+            {
+                return;
+            }
             List<string> preprocessorDefinitions = Utils.split(strPreprocessorDefinitions, ';');
 
             // We add the definitions to the parsed configuration (removing ones that 
