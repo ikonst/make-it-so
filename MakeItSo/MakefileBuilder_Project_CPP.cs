@@ -499,7 +499,7 @@ namespace MakeItSo
             string objectFiles = "";
             foreach (string filename in m_projectInfo.getFiles())
             {
-                string path = String.Format("{0}/{1}", intermediateFolder, filename);
+                string path = String.Format("{0}/{1}", intermediateFolder, Path.GetFileName(filename));
                 string objectPath = Path.ChangeExtension(path, ".o");
                 objectFiles += (objectPath + " ");
                 dependencies += (objectPath + " ");
@@ -588,7 +588,7 @@ namespace MakeItSo
             {
                 // We work out the filename, the object filename and the 
                 // dependencies filename...
-                string path = String.Format("{0}/{1}", intermediateFolder, filename);
+                string path = String.Format("{0}/{1}", intermediateFolder, Path.GetFileName(filename));
                 string objectPath = Path.ChangeExtension(path, ".o");
                 string dependenciesPath = Path.ChangeExtension(path, ".d");
 
