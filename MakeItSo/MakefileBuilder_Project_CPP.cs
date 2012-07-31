@@ -124,7 +124,7 @@ namespace MakeItSo
                 string variableName = getCompilerFlagsVariableName(configuration);
 
                 // The flags...
-                string flags = "";
+                var flags = new List<string>();
 
                 // If we are creating a DLL, we need the create-position-indepent-code flag
                 // (unless this is a cygwin build, which doesn't)...
@@ -132,16 +132,13 @@ namespace MakeItSo
                     &&
                     MakeItSoConfig.Instance.IsCygwinBuild == false)
                 {
-                    flags += "-fPIC ";
+                    flags.Add("-fPIC");
                 }
 
-                foreach (string flag in configuration.getCompilerFlags())
-                {
-                    flags += (flag + " ");
-                }
+                flags.AddRange(configuration.getCompilerFlags());
 
                 // We write the variable...
-                m_file.WriteLine("{0}={1}", variableName, flags);
+                m_file.WriteLine("{0}={1}", variableName, Utils.join(" ", flags));
             }
 
             m_file.WriteLine("");
@@ -162,14 +159,15 @@ namespace MakeItSo
                 string variableName = getPreprocessorDefinitionsVariableName(configuration);
 
                 // The definitions...
-                string definitions = "";
-                foreach (string definition in configuration.getPreprocessorDefinitions())
+                var definitions = configuration.getPreprocessorDefinitions().Select(
+                        d => string.Format("-D {0}", d)
+                    ).ToList();
                 {
                     definitions += String.Format("-D {0} ", definition);
                 }
 
                 // We write the variable...
-                m_file.WriteLine("{0}={1}", variableName, definitions);
+                m_file.WriteLine("{0}={1}", variableName, Utils.join(" ", definitions));
             }
 
             m_file.WriteLine("");
@@ -190,14 +188,10 @@ namespace MakeItSo
                 string variableName = getImplicitlyLinkedObjectsVariableName(configuration);
 
                 // The objects...
-                string objectFiles = "";
-                foreach (string objectFile in configuration.getImplicitlyLinkedObjectFiles())
-                {
-                    objectFiles += Utils.quoteAndSpace(objectFile);
-                }
+                var objectFiles = configuration.getImplicitlyLinkedObjectFiles().Select( objectFile => Utils.quote(objectFile) );
 
                 // We write the variable...
-                m_file.WriteLine("{0}={1}", variableName, objectFiles);
+                m_file.WriteLine("{0}={1}", variableName, Utils.join(" ", objectFiles));
             }
 
             m_file.WriteLine("");
@@ -215,15 +209,13 @@ namespace MakeItSo
                 // The variable name...
                 string variableName = getIncludePathVariableName(configuration);
 
-                // The include path...
-                string includePath = "";
-                foreach (string path in configuration.getIncludePaths())
-                {
-                    includePath += String.Format("-I{0} ", Utils.quote(path));
-                }
+                // Prepare include paths
+                var includePaths = configuration.getIncludePaths().Select(
+                        path => String.Format("-I{0}", Utils.quote(path))
+                    ).ToList();
 
                 // We write the variable...
-                m_file.WriteLine("{0}={1}", variableName, includePath);
+                m_file.WriteLine("{0}={1}", variableName, Utils.join(" ", includePaths));
             }
 
             m_file.WriteLine("");
@@ -242,14 +234,12 @@ namespace MakeItSo
                 string variableName = getLibraryPathVariableName(configuration);
 
                 // The library path...
-                string libraryPath = "";
-                foreach (string path in configuration.getLibraryPaths())
-                {
-                    libraryPath += String.Format("-L{0} ", Utils.quote(path));
-                }
+                var libraryPaths = configuration.getLibraryPaths().Select(
+                        path => String.Format("-L{0}", Utils.quote(path))
+                    );
 
                 // We write the variable...
-                m_file.WriteLine("{0}={1}", variableName, libraryPath);
+                m_file.WriteLine("{0}={1}", variableName, Utils.join(" ", libraryPaths));
             }
 
             m_file.WriteLine("");
@@ -269,22 +259,19 @@ namespace MakeItSo
                 string variableName = getLibrariesVariableName(configuration);
 
                 // The libraries...
-                string libraries = "";
-                foreach (string libraryName in configuration.getLibraryRawNames())
-                {
-                    libraries += String.Format("-l{0} ", libraryName);
-                }
+                var libraries = configuration.getLibraryRawNames().Select(
+                        libraryName => string.Format("-l{0}", libraryName)
+                    ).ToList();
 
                 // If we have some libraries, we surround them with start-group
                 // and end-group tags. This is needed as otherwise gcc is sensitive
                 // to the order than libraries are declared...
-                if (libraries != "")
-                {
-                    libraries = String.Format("-Wl,--start-group {0} -Wl,--end-group", libraries);
-                }
+                string librariesStr = (libraries.Count > 0) ?
+                    String.Format("-Wl,--start-group {0} -Wl,--end-group", Utils.join(" ", libraries)) :
+                    string.Empty;
 
                 // We write the variable...
-                m_file.WriteLine("{0}={1}", variableName, libraries);
+                m_file.WriteLine("{0}={1}", variableName, librariesStr);
             }
 
             m_file.WriteLine("");
@@ -350,11 +337,8 @@ namespace MakeItSo
         private void createAllConfigurationsTarget()
         {
             // We create a list of the configuration names...
-            string strConfigurations = "";
-            foreach (ProjectConfigurationInfo_CPP configuration in m_projectInfo.getConfigurationInfos())
-            {
-                strConfigurations += (configuration.Name + " ");
-            }
+            string strConfigurations = Utils.join(" ",
+                m_projectInfo.getConfigurationInfos().Select( c => c.Name ));
 
             // And create a target that depends on both configurations...
             m_file.WriteLine("# Builds all configurations for this project...");
@@ -478,73 +462,91 @@ namespace MakeItSo
             m_file.WriteLine(".PHONY: {0}", configurationInfo.Name);
 
             // The targets that this target depends on...
-            string dependencies = "create_folders ";
+            var dependencies = new List<string>();
+
+            dependencies.Add("create_folders");
 
             // Is there a pre-build event for this configuration?
             if (configurationInfo.PreBuildEvent != "")
             {
                 string preBuildTargetName = getPreBuildTargetName(configurationInfo);
-                dependencies += (preBuildTargetName + " ");
+                dependencies.Add(preBuildTargetName);
             }
 
             // We add any custom build targets as dependencies...
             foreach (CustomBuildRuleInfo_CPP ruleInfo in configurationInfo.getCustomBuildRuleInfos())
             {
                 string ruleTargetName = getCustomRuleTargetName(configurationInfo, ruleInfo);
-                dependencies += (ruleTargetName + " ");
+                dependencies.Add(ruleTargetName);
             }
 
             // The object files the target depends on...
             string intermediateFolder = getIntermediateFolder(configurationInfo);
-            string objectFiles = "";
+            var objectFiles = new List<string>();
             foreach (string filename in m_projectInfo.getFiles())
             {
-                string path = String.Format("{0}/{1}", intermediateFolder, Path.GetFileName(filename));
-                string objectPath = Path.ChangeExtension(path, ".o");
-                objectFiles += (objectPath + " ");
-                dependencies += (objectPath + " ");
+                string path = String.Format("{0}/{1}.o", intermediateFolder, Path.GetFileNameWithoutExtension(filename));
+                objectFiles.Add(path);
+                dependencies.Add(path);
             }
 
             // We write the dependencies...
-            m_file.WriteLine("{0}: {1}", configurationInfo.Name, dependencies);
+            m_file.WriteLine("{0}: {1}", configurationInfo.Name, Utils.join(" ", dependencies));
 
             // We find variables needed for the link step...
             string outputFolder = getOutputFolder(configurationInfo);
-            string implicitlyLinkedObjectFiles = String.Format("$({0})", getImplicitlyLinkedObjectsVariableName(configurationInfo));
 
             // The link step...
             switch (m_projectInfo.ProjectType)
             {
                 // Creates a C++ executable...
                 case ProjectInfo_CPP.ProjectTypeEnum.CPP_EXECUTABLE:
-                    string libraryPath = getLibraryPathVariableName(configurationInfo);
-                    string libraries = getLibrariesVariableName(configurationInfo);
-                    m_file.WriteLine("\t$(CPP_COMPILER) {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe", objectFiles, libraryPath, libraries, outputFolder, m_projectInfo.Name);
-                    break;
-
+                    {
+                        m_file.WriteLine("\t$(CPP_COMPILER) {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe",
+                            Utils.join(" ", objectFiles),
+                            getLibraryPathVariableName(configurationInfo),
+                            getLibrariesVariableName(configurationInfo),
+                            outputFolder,
+                            m_projectInfo.Name);
+                        break;
+                    }
 
                 // Creates a static library...
                 case ProjectInfo_CPP.ProjectTypeEnum.CPP_STATIC_LIBRARY:
-                    m_file.WriteLine("\tar rcs {0}/lib{1}.a {2} {3}", outputFolder, m_projectInfo.Name, objectFiles, implicitlyLinkedObjectFiles);
-                    break;
-
+                    {
+                        m_file.WriteLine("\tar rcs {0}/lib{1}.a {2} $({3})",
+                            outputFolder,
+                            m_projectInfo.Name,
+                            Utils.join(" ", objectFiles),
+                            getImplicitlyLinkedObjectsVariableName(configurationInfo));
+                        break;
+                    }
 
                 // Creates a DLL (shared-objects) library...
                 case ProjectInfo_CPP.ProjectTypeEnum.CPP_DLL:
-                    string dllName, pic;
-                    if(MakeItSoConfig.Instance.IsCygwinBuild == true)
                     {
-                        dllName = String.Format("lib{0}.dll", m_projectInfo.Name);
-                        pic = "";
+                        string dllName, pic;
+                        if (MakeItSoConfig.Instance.IsCygwinBuild == true)
+                        {
+                            dllName = String.Format("lib{0}.dll", m_projectInfo.Name);
+                            pic = "";
+                        }
+                        else
+                        {
+                            dllName = String.Format("lib{0}.so", m_projectInfo.Name);
+                            pic = "-fPIC";
+                        }
+
+                        m_file.WriteLine("\t$(CPP_COMPILER) {0} -shared -Wl,-soname,{1} -o {2}/{1} {3} $({4}) $({5}) $({6})",
+                            pic,
+                            dllName,
+                            outputFolder,
+                            Utils.join(" ", objectFiles),
+                            getImplicitlyLinkedObjectsVariableName(configurationInfo),
+                            getLibraryPathVariableName(configurationInfo),
+                            getLibrariesVariableName(configurationInfo));
+                        break;
                     }
-                    else
-                    {
-                        dllName = String.Format("lib{0}.so", m_projectInfo.Name);
-                        pic = "-fPIC";
-                    }
-                
-                    m_file.WriteLine("\t$(CPP_COMPILER) {0} -shared -Wl,-soname,{1} -o {2}/{1} {3} {4}", pic, dllName, outputFolder, objectFiles, implicitlyLinkedObjectFiles);
-                    break;
             }
 
             // The post-build step, if there is one...

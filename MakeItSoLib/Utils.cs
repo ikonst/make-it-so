@@ -256,11 +256,21 @@ namespace MakeItSoLib
         }
 
         /// <summary>
-        /// Returns the input string surrounded by quotes and with a trailing space.
+        /// Joins items into a delimited string.
         /// </summary>
-        public static string quoteAndSpace(string input)
+        public static string join(string delimiter, IEnumerable<string> items)
         {
-            return String.Format("\"{0}\" ", input);
+            StringBuilder sb = new StringBuilder();
+            bool isFirst = true;
+            foreach (var item in items)
+            {
+                if (isFirst)
+                    isFirst = false;
+                else
+                    sb.Append(" ");
+                sb.Append(item);                
+            }
+            return sb.ToString();
         }
 
         /// <summary>
