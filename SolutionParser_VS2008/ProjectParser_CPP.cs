@@ -95,22 +95,6 @@ namespace SolutionParser_VS2008
             ProjectConfigurationInfo_CPP configurationInfo = new ProjectConfigurationInfo_CPP();
             configurationInfo.ParentProjectInfo = m_projectInfo;
 
-            IVCCollection sheets = Utils.call(() => (vcConfiguration.PropertySheets as IVCCollection));
-            int numSheets = Utils.call(() => (sheets.Count));
-            for (int i = 1; i <= numSheets; ++i)
-            {
-                VCPropertySheet sheet = Utils.call(() => (sheets.Item(i) as VCPropertySheet));
-
-                // 1. The thing is that VCPropertySheet and VCConfiguration have more-or-less
-                //    identical interfaces. So we should be able to merge them fairly easily.
-                //
-                // 2. We should try multiple layers of inheritance
-
-                IVCCollection tools = Utils.call(() => (sheet.Tools as IVCCollection));
-                VCCLCompilerTool compilerTool = Utils.call(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
-
-            }
-
             // The configuration name...
             configurationInfo.Name = Utils.call(() => (vcConfiguration.ConfigurationName));
 
@@ -161,6 +145,33 @@ namespace SolutionParser_VS2008
             // a .sh file with the same name.
             parseConfiguration_PreBuildEvent(vcConfiguration, configurationInfo);
             parseConfiguration_PostBuildEvent(vcConfiguration, configurationInfo);
+
+            // Go over the property sheets and complement tools properties as needed.
+            // (VCConfiguration already merges property sheets into the properties it returns,
+            //  so there's no need to merge it.)
+            IVCCollection sheets = Utils.call(() => (vcConfiguration.PropertySheets as IVCCollection));
+            int numSheets = Utils.call(() => (sheets.Count));
+            for (int i = 1; i <= numSheets; ++i)
+            {
+                VCPropertySheet sheet = Utils.call(() => (sheets.Item(i) as VCPropertySheet));
+
+                // 1. The thing is that VCPropertySheet and VCConfiguration have more-or-less
+                //    identical interfaces. So we should be able to merge them fairly easily.
+                //
+                // 2. We should try multiple layers of inheritance
+
+                IVCCollection tools = Utils.call(() => (sheet.Tools as IVCCollection));
+                
+                VCCLCompilerTool compilerTool = Utils.call(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
+                if (compilerTool != null)
+                {
+                    parseCompilerSettings_IncludePath(vcConfiguration, compilerTool, configurationInfo);
+                    parseCompilerSettings_PreprocessorDefinitions(vcConfiguration, compilerTool, configurationInfo);
+                    parseCompilerSettings_CompilerFlags(vcConfiguration, compilerTool, configurationInfo);
+                }
+
+                VCLinkerTool linkerTool = Utils.call(() => (tools.Item("VCLinkerTool") as VCLinkerTool));
+            }
 
             // We add the configuration to the collection of them for the project...
             m_projectInfo.addConfigurationInfo(configurationInfo);
@@ -432,33 +443,85 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseCompilerSettings_IncludePath(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP configurationInfo)
         {
+            IVCCollection sheets = Utils.call(() => (vcConfiguration.PropertySheets as IVCCollection));
+            int numSheets = Utils.call(() => (sheets.Count));
+
+            parseCompilerSettings_IncludePath_Process(vcConfiguration, sheets, 0, numSheets, compilerTool, configurationInfo);
+        }
+
+        /// <summary>
+        /// Processes the include paths of a given compiler tool and inherits (from the next property sheets) as necessary.
+        /// </summary>
+        private void parseCompilerSettings_IncludePath_Process(VCConfiguration vcConfiguration, IVCCollection sheets, int sheetIndex, int numSheets, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP configurationInfo)
+        {
             // We:
             // 1. Read the additional include paths (which are in a semi-colon-delimited string)
             // 2. Split it into separate paths
             // 3. Resolve any symbols
             // 4. Make sure all paths are relative to the project root folder
-
+            
             // 1 & 2...
             string strAdditionalIncludeDirectories = Utils.call(() => (compilerTool.AdditionalIncludeDirectories));
             if (strAdditionalIncludeDirectories == null)
             {
+                parseCompilerSettings_IncludePath_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // try the next sheet
                 return;
             }
 
             List<string> additionalIncludeDirectories = Utils.split(strAdditionalIncludeDirectories, ';', ',');
+
+            bool noInherit = additionalIncludeDirectories.Contains("$(NoInherit)");
+            bool explicitInherit = false;
             foreach (string additionalIncludeDirectory in additionalIncludeDirectories)
             {
-                // The string may be quoted. We need to remove the quotes...
-                string unquotedIncludeDirectory = additionalIncludeDirectory.Trim('"');
-
-                // 3 & 4...
-                string resolvedPath = Utils.call(() => (vcConfiguration.Evaluate(unquotedIncludeDirectory)));
-                if (resolvedPath != "")
+                if (!noInherit && additionalIncludeDirectory == "$(Inherit)")
                 {
-                    string relativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, resolvedPath);
-                    configurationInfo.addIncludePath(relativePath);
+                    explicitInherit = true;
+                    parseCompilerSettings_IncludePath_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // inherit from next sheet
+                }
+                else
+                {
+                    // The string may be quoted. We need to remove the quotes...
+                    string unquotedIncludeDirectory = additionalIncludeDirectory.Trim('"');
+
+                    // 3 & 4...
+                    string resolvedPath = Utils.call(() => (vcConfiguration.Evaluate(unquotedIncludeDirectory)));
+                    if (resolvedPath != "")
+                    {
+                        string relativePath = Utils.makeRelativePath(m_projectInfo.RootFolderAbsolute, resolvedPath);
+                        configurationInfo.addIncludePath(relativePath);
+                    }
                 }
             }
+
+            if (!noInherit && !explicitInherit)
+            {
+                // Implicitly inherit
+                parseCompilerSettings_IncludePath_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // inherit from next sheet
+            }
+
+            return;
+        }
+
+        /// <summary>
+        /// Inherits the include paths from the property sheet (at the given index and onwards -- called recursively).
+        /// </summary>
+        private void parseCompilerSettings_IncludePath_Inherit(VCConfiguration vcConfiguration, IVCCollection sheets, int sheetIndex, int numSheets, ProjectConfigurationInfo_CPP configurationInfo)
+        {
+            if (sheetIndex >= numSheets)
+                return; // reached the last sheet
+
+            // Get the sheet and its compiler tool
+            VCPropertySheet sheet = Utils.call(() => (sheets.Item(sheetIndex) as VCPropertySheet));
+            IVCCollection tools = Utils.call(() => (sheet.Tools as IVCCollection));
+            VCCLCompilerTool compilerTool = Utils.call(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
+            if (compilerTool == null)
+            {
+                parseCompilerSettings_IncludePath_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // try the next sheet
+                return;
+            }
+
+            parseCompilerSettings_IncludePath_Process(vcConfiguration, sheets, sheetIndex, numSheets, compilerTool, configurationInfo);
         }
 
         /// <summary>
@@ -466,21 +529,67 @@ namespace SolutionParser_VS2008
         /// </summary>
         private void parseCompilerSettings_PreprocessorDefinitions(VCConfiguration vcConfiguration, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP configurationInfo)
         {
+            IVCCollection sheets = Utils.call(() => (vcConfiguration.PropertySheets as IVCCollection));
+            int numSheets = Utils.call(() => (sheets.Count));
+
+            parseCompilerSettings_PreprocessorDefinitions_Process(vcConfiguration, sheets, 0, numSheets, compilerTool, configurationInfo);
+        }
+
+        /// <summary>
+        /// Processes the preprocessor definitions of a given compiler tool and inherits (from the next property sheets) as necessary.
+        /// </summary>
+        private void parseCompilerSettings_PreprocessorDefinitions_Process(VCConfiguration vcConfiguration, IVCCollection sheets, int sheetIndex, int numSheets, VCCLCompilerTool compilerTool, ProjectConfigurationInfo_CPP configurationInfo)
+        {
             // We read the delimited string of preprocessor definitions, and
             // split them...
             string strPreprocessorDefinitions = Utils.call(() => (compilerTool.PreprocessorDefinitions));
             if (strPreprocessorDefinitions == null)
             {
+                parseCompilerSettings_PreprocessorDefinitions_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // try the next sheet
                 return;
             }
             List<string> preprocessorDefinitions = Utils.split(strPreprocessorDefinitions, ';');
 
             // We add the definitions to the parsed configuration (removing ones that 
             // aren't relevant to a linux build)...
+            bool noInherit = preprocessorDefinitions.Contains("$(NoInherit)");
+            bool explicitInherit = false;
             foreach(string definition in preprocessorDefinitions)
             {
-                configurationInfo.addPreprocessorDefinition(definition);
+                if (!noInherit && definition == "$(Inherit)")
+                {
+                    explicitInherit = true;
+                    parseCompilerSettings_PreprocessorDefinitions_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // inherit from next sheet
+                }
+                else
+                    configurationInfo.addPreprocessorDefinition(definition);
             }
+
+            if (!noInherit && !explicitInherit)
+            {
+                // Implicitly inherit
+                parseCompilerSettings_PreprocessorDefinitions_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // inherit from next sheet
+            }
+        }
+
+        /// <summary>
+        /// Inherits the preprocessor definitions from the property sheet (at the given index and onwards -- called recursively).
+        /// </summary>
+        private void parseCompilerSettings_PreprocessorDefinitions_Inherit(VCConfiguration vcConfiguration, IVCCollection sheets, int sheetIndex, int numSheets, ProjectConfigurationInfo_CPP configurationInfo)
+        {
+            if (sheetIndex >= numSheets)
+                return; // reached the last sheet
+
+            VCPropertySheet sheet = Utils.call(() => (sheets.Item(sheetIndex) as VCPropertySheet));
+            IVCCollection tools = Utils.call(() => (sheet.Tools as IVCCollection));
+            VCCLCompilerTool compilerTool = Utils.call(() => (tools.Item("VCCLCompilerTool") as VCCLCompilerTool));
+            if (compilerTool == null)
+            {
+                parseCompilerSettings_PreprocessorDefinitions_Inherit(vcConfiguration, sheets, sheetIndex + 1, numSheets, configurationInfo); // try the next sheet
+                return;
+            }
+
+            parseCompilerSettings_PreprocessorDefinitions_Process(vcConfiguration, sheets, sheetIndex, numSheets, compilerTool, configurationInfo);
         }
 
         /// <summary>
