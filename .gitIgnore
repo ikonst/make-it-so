@@ -1,3 +1,5 @@
+*.suo
+*.csproj.user
 outputDebug
 */obj
 */bin
