@@ -58,6 +58,7 @@ namespace MakeItSo
         private MakefileBuilder_Project_CPP(ProjectInfo_CPP project)
         {
             m_projectInfo = project;
+            m_projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
             try
             {
                 // We create the file '[project-name].makefile', and set it to 
@@ -105,9 +106,8 @@ namespace MakeItSo
             // We create an collection of compiler flags for each configuration...
             m_file.WriteLine("# Compiler flags...");
 
-            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
-            m_file.WriteLine("CPP_COMPILER = " + projectConfig.CPPCompiler);
-            m_file.WriteLine("C_COMPILER = " + projectConfig.CCompiler);
+            m_file.WriteLine("CPP_COMPILER = " + m_projectConfig.CPPCompiler);
+            m_file.WriteLine("C_COMPILER = " + m_projectConfig.CCompiler);
             m_file.WriteLine("");
         }
 
@@ -426,17 +426,16 @@ namespace MakeItSo
             // generates it is a C++ or C# project.)
             string executablePath = Path.Combine(configuration.ParentProjectInfo.RootFolderAbsolute, ruleInfo.RelativePathToExecutable);
             ProjectInfo.ProjectTypeEnum projectType = m_projectInfo.ParentSolution.isOutputObject(executablePath);
-            MakeItSoConfig_Project projectConfig = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name);
 
             string folderPrefix = "";
             switch(projectType)
             {
                 case ProjectInfo.ProjectTypeEnum.CPP_EXECUTABLE:
-                    folderPrefix = projectConfig.CPPFolderPrefix;
+                    folderPrefix = m_projectConfig.CPPFolderPrefix;
                     break;
 
                 case ProjectInfo.ProjectTypeEnum.CSHARP_EXECUTABLE:
-                    folderPrefix = projectConfig.CSharpFolderPrefix;
+                    folderPrefix = m_projectConfig.CSharpFolderPrefix;
                     break;
             }
 
@@ -669,8 +668,7 @@ namespace MakeItSo
         /// </summary>
         private string getIntermediateFolder(ProjectConfigurationInfo_CPP configuration)
         {
-            string prefix = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name).CPPFolderPrefix;
-            return Utils.addPrefixToFolderPath(configuration.IntermediateFolder, prefix);
+            return Utils.addPrefixToFolderPath(configuration.IntermediateFolder, m_projectConfig.CPPFolderPrefix);
         }
 
         /// <summary>
@@ -678,8 +676,7 @@ namespace MakeItSo
         /// </summary>
         private string getOutputFolder(ProjectConfigurationInfo_CPP configuration)
         {
-            string prefix = MakeItSoConfig.Instance.getProjectConfig(m_projectInfo.Name).CPPFolderPrefix;
-            return Utils.addPrefixToFolderPath(configuration.OutputFolder, prefix);
+            return Utils.addPrefixToFolderPath(configuration.OutputFolder, m_projectConfig.CPPFolderPrefix);
         }
 
         #endregion
@@ -688,6 +685,9 @@ namespace MakeItSo
 
         // The parsed project data that we are creating the makefile from...
         private ProjectInfo_CPP m_projectInfo = null;
+
+        // The configuration for this project
+        MakeItSoConfig_Project m_projectConfig = null;
 
         // The file we write to...
         private StreamWriter m_file = null;
