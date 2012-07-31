@@ -418,6 +418,13 @@ namespace SolutionParser_VS2008
                     configurationInfo.addCompilerFlag("-O3");
                     break;
             }
+
+            // Treat wchar_t as Built-in Type
+            bool treatWChar_tAsBuiltInType = Utils.call(() => (compilerTool.TreatWChar_tAsBuiltInType));
+            if (!treatWChar_tAsBuiltInType)
+            {
+                configurationInfo.addCompilerFlag("-fshort-wchar");
+            }
         }
 
         /// <summary>
