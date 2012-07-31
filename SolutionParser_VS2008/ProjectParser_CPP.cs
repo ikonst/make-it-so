@@ -131,6 +131,20 @@ namespace SolutionParser_VS2008
             configurationInfo.IntermediateFolder = parseConfiguration_Folder(vcConfiguration, () => (vcConfiguration.IntermediateDirectory));
             configurationInfo.OutputFolder = parseConfiguration_Folder(vcConfiguration, () => (vcConfiguration.OutputDirectory));
 
+            // Get Unicode / MBCS settings
+            switch (Utils.call(() => (vcConfiguration.CharacterSet)))
+            {
+                case charSet.charSetMBCS:
+                    configurationInfo.CharacterSet = CharacterSet.MBCS;
+                    break;
+                case charSet.charSetUnicode:
+                    configurationInfo.CharacterSet = CharacterSet.Unicode;
+                    break;
+                case charSet.charSetNotSet:
+                    configurationInfo.CharacterSet = CharacterSet.NotSet;
+                    break;
+            }
+
             // We get compiler settings, such as the include path and 
             // preprocessor definitions...
             parseConfiguration_CompilerSettings(vcConfiguration, configurationInfo);

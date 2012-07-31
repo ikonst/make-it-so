@@ -162,8 +162,11 @@ namespace MakeItSo
                 var definitions = configuration.getPreprocessorDefinitions().Select(
                         d => string.Format("-D {0}", d)
                     ).ToList();
+
+                // Add Unicode defines
+                if (configuration.CharacterSet == CharacterSet.Unicode)
                 {
-                    definitions += String.Format("-D {0} ", definition);
+                    definitions.Add("-D UNICODE");
                 }
 
                 // We write the variable...
