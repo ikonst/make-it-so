@@ -519,7 +519,7 @@ namespace MakeItSo
                 case ProjectInfo_CPP.ProjectTypeEnum.CPP_EXECUTABLE:
                     string libraryPath = getLibraryPathVariableName(configurationInfo);
                     string libraries = getLibrariesVariableName(configurationInfo);
-                    m_file.WriteLine("\tg++ {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe", objectFiles, libraryPath, libraries, outputFolder, m_projectInfo.Name);
+                    m_file.WriteLine("\t$(CPP_COMPILER) {0} $({1}) $({2}) -Wl,-rpath,./ -o {3}/{4}.exe", objectFiles, libraryPath, libraries, outputFolder, m_projectInfo.Name);
                     break;
 
 
@@ -543,7 +543,7 @@ namespace MakeItSo
                         pic = "-fPIC";
                     }
                 
-                    m_file.WriteLine("\tg++ {0} -shared -Wl,-soname,{1} -o {2}/{1} {3} {4}", pic, dllName, outputFolder, objectFiles, implicitlyLinkedObjectFiles);
+                    m_file.WriteLine("\t$(CPP_COMPILER) {0} -shared -Wl,-soname,{1} -o {2}/{1} {3} {4}", pic, dllName, outputFolder, objectFiles, implicitlyLinkedObjectFiles);
                     break;
             }
 
