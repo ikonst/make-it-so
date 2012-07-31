@@ -16,9 +16,10 @@ namespace MakeItSoLib
         /// <summary>
         /// Constructor
         /// </summary>
-        public MakeItSoConfig_Configuration(MakeItSoConfig_Project projectConfig)
+        public MakeItSoConfig_Configuration(MakeItSoConfig_Project projectConfig, MakeItSoConfig_Configuration parentConfig)
         {
             m_projectConfig = projectConfig;
+            m_parentConfig = parentConfig;
         }
 
         /// <summary>
@@ -41,9 +42,11 @@ namespace MakeItSoLib
         /// <summary>
         /// Returns the collection of libraries to add to this configuration.
         /// </summary>
-        public List<string> getLibrariesToAdd()
+        public IEnumerable<string> getLibrariesToAdd()
         {
-            return m_librariesToAdd.ToList();
+            return m_parentConfig != null ? 
+                m_librariesToAdd.Concat(m_parentConfig.getLibrariesToAdd()) :
+                m_librariesToAdd;
         }
 
         /// <summary>
@@ -71,17 +74,19 @@ namespace MakeItSoLib
         /// <summary>
         /// Returns the collection of library paths to add to this configuration.
         /// </summary>
-        public List<string> getLibraryPathsToAdd()
+        public IEnumerable<string> getLibraryPathsToAdd()
         {
-            return m_libraryPathsToAdd.ToList();
+            return m_parentConfig != null ?
+                m_libraryPathsToAdd.Concat(m_parentConfig.getLibraryPathsToAdd()) :
+                m_libraryPathsToAdd;
         }
 
         /// <summary>
         /// Returns the collection of include paths to add to this configuration.
         /// </summary>
-        public List<string> getIncludePathsToAdd()
+        public IEnumerable<string> getIncludePathsToAdd()
         {
-            return m_includePathsToAdd.ToList();
+            return m_includePathsToAdd;
         }
 
         /// <summary>
@@ -95,9 +100,11 @@ namespace MakeItSoLib
         /// <summary>
         /// Gets the collection of preprocessor-definitions to add.
         /// </summary>
-        public List<string> getPreprocessorDefinitionsToAdd()
+        public IEnumerable<string> getPreprocessorDefinitionsToAdd()
         {
-            return m_preprocessorDefinitionsToAdd.ToList();
+            return m_parentConfig != null ?
+                m_preprocessorDefinitionsToAdd.Concat(m_parentConfig.getPreprocessorDefinitionsToAdd()) :
+                m_preprocessorDefinitionsToAdd;
         }
 
         /// <summary>
@@ -111,9 +118,11 @@ namespace MakeItSoLib
         /// <summary>
         /// Gets the collection of compiler flags to add.
         /// </summary>
-        public List<string> getCompilerFlagsToAdd()
+        public IEnumerable<string> getCompilerFlagsToAdd()
         {
-            return m_compilerFlagsToAdd.ToList();
+            return m_parentConfig != null ?
+                m_compilerFlagsToAdd.Concat(m_parentConfig.getCompilerFlagsToAdd()) :
+                m_compilerFlagsToAdd;
         }
 
         #endregion
@@ -122,6 +131,9 @@ namespace MakeItSoLib
 
         // The project-config that this configuration-config is part of...
         private MakeItSoConfig_Project m_projectConfig = null;
+
+        // The default configuration to inherit from...
+        private MakeItSoConfig_Configuration m_parentConfig = null;
 
         // Libraries to be added to the configuration...
         private HashSet<string> m_librariesToAdd = new HashSet<string>();

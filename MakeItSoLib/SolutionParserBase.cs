@@ -88,7 +88,7 @@ namespace MakeItSoLib
             }
 
             // We add any new definitions...
-            List<string> flagsToAdd = projectSettings.getConfiguration(configuration.Name).getCompilerFlagsToAdd();
+            List<string> flagsToAdd = projectSettings.getConfiguration(configuration.Name).getCompilerFlagsToAdd().ToList();
             foreach (string flag in flagsToAdd)
             {
                 configuration.addCompilerFlag(flag);
@@ -117,7 +117,7 @@ namespace MakeItSoLib
             }
 
             // We add any new definitions...
-            List<string> definitionsToAdd = projectSettings.getConfiguration(configuration.Name).getPreprocessorDefinitionsToAdd();
+            List<string> definitionsToAdd = projectSettings.getConfiguration(configuration.Name).getPreprocessorDefinitionsToAdd().ToList();
             foreach (string definition in definitionsToAdd)
             {
                 configuration.addPreprocessorDefinition(definition);
@@ -154,7 +154,7 @@ namespace MakeItSoLib
             }
 
             // We add any new paths...
-            List<string> pathsToAdd = projectSettings.getConfiguration(configuration.Name).getLibraryPathsToAdd();
+            List<string> pathsToAdd = projectSettings.getConfiguration(configuration.Name).getLibraryPathsToAdd().ToList();
             foreach (string pathToAdd in pathsToAdd)
             {
                 string relativePath = Utils.makeRelativePath(projectRootFolder, pathToAdd);
@@ -183,7 +183,7 @@ namespace MakeItSoLib
             }
 
             // We add any new paths...
-            List<string> pathsToAdd = projectSettings.getConfiguration(configuration.Name).getIncludePathsToAdd();
+            List<string> pathsToAdd = projectSettings.getConfiguration(configuration.Name).getIncludePathsToAdd().ToList();
             foreach (string pathToAdd in pathsToAdd)
             {
                 string relativePath = Utils.makeRelativePath(projectRootFolder, pathToAdd);
@@ -209,7 +209,7 @@ namespace MakeItSoLib
             }
 
             // We add any that need adding...
-            List<string> librariesToAdd = projectSettings.getConfiguration(configuration.Name).getLibrariesToAdd();
+            List<string> librariesToAdd = projectSettings.getConfiguration(configuration.Name).getLibrariesToAdd().ToList();
             foreach (string library in librariesToAdd)
             {
                 string rawName = Utils.convertLinuxLibraryNameToRawName(library);

@@ -20,6 +20,7 @@ namespace MakeItSoLib
         public MakeItSoConfig_Project(MakeItSoConfig solutionConfig)
         {
             m_solutionConfig = solutionConfig;
+            m_defaultConfig = new MakeItSoConfig_Configuration(this, null);
         }
 
         /// <summary>
@@ -87,13 +88,28 @@ namespace MakeItSoLib
         /// <summary>
         /// Returns the config for the configuration passed in.
         /// </summary>
+        private MakeItSoConfig_Configuration getConfiguration(XmlAttribute configurationAttr)
+        {
+            return configurationAttr != null ?
+                getConfiguration(configurationAttr.Value) :
+                m_defaultConfig;
+        }
+
+        /// <summary>
+        /// Returns the config for the configuration passed in.
+        /// </summary>
         public MakeItSoConfig_Configuration getConfiguration(string configurationName)
         {
-            if (m_configurations.ContainsKey(configurationName) == false)
+            if (configurationName == null)
+                throw new ArgumentNullException("configurationName");
+
+            MakeItSoConfig_Configuration config;
+            if (!m_configurations.TryGetValue(configurationName, out config))
             {
-                m_configurations.Add(configurationName, new MakeItSoConfig_Configuration(this));
+                config = new MakeItSoConfig_Configuration(this, m_defaultConfig);
+                m_configurations.Add(configurationName, config);
             }
-            return m_configurations[configurationName];
+            return config;
         }
 
         /// <summary>
@@ -268,8 +284,8 @@ namespace MakeItSoLib
             {
                 XmlAttribute configurationAttribute = addCompilerFlagNode.Attributes["configuration"];
                 XmlAttribute flagAttribute = addCompilerFlagNode.Attributes["flag"];
-                if (flagAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addCompilerFlagToAdd(flagAttribute.Value);
+                if (flagAttribute == null) continue;
+                getConfiguration(configurationAttribute).addCompilerFlagToAdd(flagAttribute.Value);
             }
         }
 
@@ -294,8 +310,8 @@ namespace MakeItSoLib
             {
                 XmlAttribute configurationAttribute = addPreprocessorDefinitionNode.Attributes["configuration"];
                 XmlAttribute definitionAttribute = addPreprocessorDefinitionNode.Attributes["definition"];
-                if (definitionAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addPreprocessorDefinitionToAdd(definitionAttribute.Value);
+                if (definitionAttribute == null) continue;
+                getConfiguration(configurationAttribute).addPreprocessorDefinitionToAdd(definitionAttribute.Value);
             }
         }
 
@@ -320,8 +336,8 @@ namespace MakeItSoLib
             {
                 XmlAttribute configurationAttribute = addLibraryPathNode.Attributes["configuration"];
                 XmlAttribute pathAttribute = addLibraryPathNode.Attributes["path"];
-                if (pathAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addLibraryPathToAdd(pathAttribute.Value);
+                if (pathAttribute == null) continue;
+                getConfiguration(configurationAttribute).addLibraryPathToAdd(pathAttribute.Value);
             }
         }
 
@@ -346,8 +362,8 @@ namespace MakeItSoLib
             {
                 XmlAttribute configurationAttribute = addIncludePathNode.Attributes["configuration"];
                 XmlAttribute pathAttribute = addIncludePathNode.Attributes["path"];
-                if (pathAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addIncludePathToAdd(pathAttribute.Value);
+                if (pathAttribute == null) continue;
+                getConfiguration(configurationAttribute).addIncludePathToAdd(pathAttribute.Value);
             }
         }
 
@@ -372,8 +388,8 @@ namespace MakeItSoLib
             {
                 XmlAttribute configurationAttribute = addLibraryNode.Attributes["configuration"];
                 XmlAttribute libraryAttribute = addLibraryNode.Attributes["library"];
-                if (libraryAttribute == null || configurationAttribute == null) continue;
-                getConfiguration(configurationAttribute.Value).addLibraryToAdd(libraryAttribute.Value);
+                if (libraryAttribute == null) continue;
+                getConfiguration(configurationAttribute).addLibraryToAdd(libraryAttribute.Value);
             }
         }
 
@@ -440,6 +456,9 @@ namespace MakeItSoLib
         // Config for specific configurations (debug, release) in this project as a map of:
         // Configuration-name => config for the configuration
         private Dictionary<string, MakeItSoConfig_Configuration> m_configurations = new Dictionary<string, MakeItSoConfig_Configuration>();
+        
+        // Configurations that apply to all configurations
+        MakeItSoConfig_Configuration m_defaultConfig;
 
         // The C# compiler to use when building this project...
         private string m_csharpCompiler = "gmcs";
