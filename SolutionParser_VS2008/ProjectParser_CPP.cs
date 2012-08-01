@@ -65,23 +65,24 @@ namespace SolutionParser_VS2008
         /// </summary>
         static private void _Get(ArgData data, int sheetIndex)
         {
+            if (sheetIndex > data.numSheets) // sheet indices are 1-based
+                return; // past last sheet
+
             object tool = GetTool(data, sheetIndex);
             if (tool == null)
             {
-                if (sheetIndex < data.numSheets)
-                    // This property sheet has no settings for this tool,
-                    // but perhaps the next one has.
-                    _Get(data, sheetIndex + 1);
+                // This property sheet has no settings for this tool,
+                // but perhaps the next one has.
+                _Get(data, sheetIndex + 1);
                 return;
             }
 
             List<string> list = data.propGetter(tool);
             if (list == null)
             {
-                if (sheetIndex < data.numSheets)
-                    // This property sheet isn't customizing this particular setting,
-                    // but perhaps the next one does.
-                    _Get(data, sheetIndex + 1);
+                // This property sheet isn't customizing this particular setting,
+                // but perhaps the next one does.
+                _Get(data, sheetIndex + 1);
                 return;
             }
 
@@ -96,8 +97,7 @@ namespace SolutionParser_VS2008
                 if (!noInherit && item == "$(Inherit)")
                 {
                     explicitInherit = true;
-                    if (sheetIndex < data.numSheets)
-                        _Get(data, sheetIndex + 1); // inherit from next sheet
+                    _Get(data, sheetIndex + 1); // inherit from next sheet
                 }
                 else
                 {
@@ -109,8 +109,7 @@ namespace SolutionParser_VS2008
             // we "append" an implicit one at the end.
             if (!noInherit && !explicitInherit)
             {
-                if (sheetIndex < data.numSheets)
-                    _Get(data, sheetIndex + 1); // inherit from next sheet
+                _Get(data, sheetIndex + 1); // inherit from next sheet
             }
         }
 
